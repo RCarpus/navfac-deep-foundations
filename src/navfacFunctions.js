@@ -243,10 +243,10 @@ export function cohesiveNc(depth, width) {
 }
 
 /**
- * @param {[number]} unitWeights array of unit weights for each sublayer (pcf)
+ * @param {Array.<number>} unitWeights array of unit weights for each sublayer (pcf)
  * @param {number} increment thickness of each sublayer in feet
  * @param {number} groundwaterDepth the depth from ground surface to water, (ft)
- * @returns {[number]} array of effective stress values (psf)
+ * @returns {Array.<number>} array of effective stress values (psf)
  * @description Calculates the effective vertical stress at the bottom of each 
  *  sublayer given the unit weights of each sublayer, size of each sublayer,
  *  and the depth to groundwater. Returns an array of effective stress values 
@@ -280,12 +280,12 @@ export function effStressBottomProfile(unitWeights, increment, groundwaterDepth)
 }
 
 /**
- * @param {[number]} unitWeights array of unit weights for each sublayer (pcf)
+ * @param {Array.<number>} unitWeights array of unit weights for each sublayer (pcf)
  * @param {number} increment thickness of each sublayer in feet
  * @param {number} groundwaterDepth the depth from ground surface to water, (ft)
- * @param {[number]} effStressBottom array of calculated effective stress
+ * @param {Array.<number>} effStressBottom array of calculated effective stress
  *  values at the bottom of each sublayer
- * @returns {[number]} array of effective stress values (psf)
+ * @returns {Array.<number>} array of effective stress values (psf)
  * @description Calculates the effective vertical stress at the midpoint of each
  *  sublayer given the unit weights of each sublayer, size of each sublayer,
  *  the depth to groundwater, and a calculated array of effective vertical stress 
@@ -325,10 +325,10 @@ export function effStressMidpointProfile(
 }
 
 /**
- * @param {[number]} effStress array of effective stress values
+ * @param {Array.<number>} effStress array of effective stress values
  * @param {number} width the width of the foundation in feet
  * @param {number} increment the depth of each sublayer in feet
- * @returns {{[number], boolean}} Object containing possibly modified 
+ * @returns {object} Object containing possibly modified 
  *  effective stress values and a boolean to indicate if values were modified.
  * @description Limits the effective stress used in calculations to the value 
  *  at 20B, the depth that is 20 times the width of the foundation. 
@@ -353,7 +353,7 @@ export function limitEffStress(effStress, width, increment) {
 }
 
 /**
- * @param {[number]} width Array of lengths in. This should contain a single 
+ * @param {Array.<number>} width Array of lengths in. This should contain a single 
  *  value corresponding to the diameter if it is a circle, or two values 
  *  corresponding to the length and width if it is a rectangle.
  * @param {string} shape Either "CIRCLE" or "RECTANGLE"
@@ -377,7 +377,7 @@ export function perimeter(width, shape) {
 }
 
 /**
- * @param {[number]} width diameter of circle (one value) or height and width 
+ * @param {Array.<number>} width diameter of circle (one value) or height and width 
  *  of rectangle (two values)
  * @param {string} shape "CIRCLE" or "RECTANGLE"
  * @returns {number} area of the shape
@@ -464,7 +464,7 @@ export function granularEndBearing(Pt, Nq, area) {
 /**
  * @param {number} depth the total depth to be analyzed (ft)
  * @param {number} increment the thickness of each sublayer (ft)
- * @returns {[number]} an array of numbers corresponding to the depth at the 
+ * @returns {Array.<number>} an array of numbers corresponding to the depth at the 
  *  bottom of each sublayer (ft)
  * @description Generate an array of depths corresponding to the depth at the 
  *  bottom of each sublayer for a given total depth.
