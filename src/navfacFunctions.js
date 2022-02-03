@@ -402,3 +402,17 @@ export function granularSkinFriction(Kh, P0, delta, perimeter, increment) {
 export function cohesiveSkinFriction(adhesion, perimeter, increment) {
   return adhesion * perimeter * increment;
 }
+
+/**
+ * @param {number} cohesion Clay cohesion in psf
+ * @param {number} area Area of the foundation in square feet
+ * @param {number} Nc Bearing capacity factor for clay
+ * @returns {number} Bearing capacity in pounds
+ * @description Calculates the end bearing load capacity when bearing within 
+ *  a cohesive layer. Returns the ultimate capacity in pounds.
+ * 
+ *  Cohesive end bearing = cohesion(psf) * area(sf) * Nc
+ */
+export function cohesiveEndBearing(cohesion, area, Nc) {
+  return cohesion * area * Nc;
+}

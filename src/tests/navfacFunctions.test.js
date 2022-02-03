@@ -14,6 +14,7 @@ import {
   area,
   granularSkinFriction,
   cohesiveSkinFriction,
+  cohesiveEndBearing,
 } from '../navfacFunctions';
 
 // granularNq
@@ -439,3 +440,15 @@ test(`Cohesive skin friction of a foundation with different params`, () => {
   expect(cohesiveSkinFriction(adhesion1, perimeter1, increment1)).toBe(3000);
   expect(cohesiveSkinFriction(adhesion2, perimeter2, increment2)).toBe(600);
 });
+
+// cohesiveEndBearing
+test(`Cohesive end bearing with different params`, () => {
+  const cohesion1 = 2000,
+    area1 = 3,
+    Nc1 = 9,
+    cohesion2 = 350,
+    area2 = 7,
+    Nc2 = 8;
+  expect(cohesiveEndBearing(cohesion1, area1, Nc1)).toBe(54000);
+  expect(cohesiveEndBearing(cohesion2, area2, Nc2)).toBe(19600);
+})
