@@ -9,6 +9,7 @@ import {
   cohesiveNc,
   effStressBottomProfile,
   effStressMidpointProfile,
+  limitEffStress,
 } from '../navfacFunctions';
 
 // granularNq
@@ -352,4 +353,24 @@ test(`Eff stress midpoint profile with one sublayer should behave
   expect(effStressMidpointProfile(unitWeights, increment,
     0, effStressBottom))
     .toEqual(resultSaturated);
+});
+
+// limitEffStress
+test(`Effective stress should not be limited when depth < 20B`, () => {
+  const effStress = [100, 200, 300, 400, 500];
+  const width = 3;
+  const increment = 5;
+  const limitedEffStress = limitEffStress(effStress, width, increment);
+  expect(limitedEffStress.limitedEffStress).toEqual(effStress);
+  expect(limitedEffStress.isLimited).toBe(false);
+});
+
+test(`Effective stress should  be limited when depth > 20B`, () => {
+  const effStress = [100, 200, 300, 400, 500];
+  const width = 1;
+  const increment = 5;
+  const limitedEffStress = limitEffStress(effStress, width, increment);
+  const result = [100, 200, 300, 400, 400];
+  expect(limitedEffStress.limitedEffStress).toEqual(result);
+  expect(limitedEffStress.isLimited).toBe(true);
 });

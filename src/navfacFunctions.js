@@ -273,7 +273,7 @@ export function effStressBottomProfile(unitWeights, increment, groundwaterDepth)
  *    <half of the incremental vertical stress for the current layer>
  */
 export function effStressMidpointProfile(
-    unitWeights, increment, groundwaterDepth, effStressBottom) {
+  unitWeights, increment, groundwaterDepth, effStressBottom) {
   let effStressMidpoint = [];
   let currentDepth = increment;
   // Calculate the effective stress for the first sublayer
@@ -283,12 +283,38 @@ export function effStressMidpointProfile(
   // Calculate the effective stress for subsequent layers, accounting for water
   // If groundwater is present within a sublayer, the weight of the water gets
   // subtracted from the soil unit weight for that layer.
-  for (let i=1; i<unitWeights.length; i++) {
+  for (let i = 1; i < unitWeights.length; i++) {
     currentDepth += increment;
     effStressMidpoint.push(groundwaterDepth < currentDepth ?
-      effStressBottom[i-1] + (unitWeights[i] - UNIT_WEIGHT_WATER) * (increment / 2) :
-      effStressBottom[i-1] + unitWeights[i] * (increment / 2)
+      effStressBottom[i - 1] + (unitWeights[i] - UNIT_WEIGHT_WATER) * (increment / 2) :
+      effStressBottom[i - 1] + unitWeights[i] * (increment / 2)
     );
   }
   return effStressMidpoint;
+}
+
+/**
+ * @param {[number]} effStress array of effective stress values
+ * @param {number} width the width of the foundation in feet
+ * @param {number} increment the depth of each sublayer in feet
+ * @returns {{[number], boolean}} Object containing possibly modified 
+ *  effective stress values and a boolean to indicate if values were modified.
+ * @description Limits the effective stress used in calculations to the value 
+ *  at 20B, the depth that is 20 times the width of the foundation. 
+ *  This practice is recommended when calculating end bearing. 
+ *  See p.215 of NAVFAC
+ */
+export function limitEffStress(effStress, width, increment) {
+  const limitingDepth = width * 20;
+  let limitedEffStress = [];
+  let isLimited = false;
+  let currentDepth = 0;
+  for (let i = 0; i < effStress.length; i++) {
+    currentDepth += increment;
+    limitedEffStress.push(
+      currentDepth > limitingDepth ? limitedEffStress[i - 1] : effStress[i]
+    );
+  }
+  if (currentDepth > limitingDepth) isLimited = true;
+  return { limitedEffStress, isLimited };
 }
