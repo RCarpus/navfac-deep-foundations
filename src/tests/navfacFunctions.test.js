@@ -10,6 +10,7 @@ import {
   effStressBottomProfile,
   effStressMidpointProfile,
   limitEffStress,
+  perimeter,
 } from '../navfacFunctions';
 
 // granularNq
@@ -373,4 +374,20 @@ test(`Effective stress should  be limited when depth > 20B`, () => {
   const result = [100, 200, 300, 400, 400];
   expect(limitedEffStress.limitedEffStress).toEqual(result);
   expect(limitedEffStress.isLimited).toBe(true);
+});
+
+// perimeter
+test(`Perimeter of a circle with diameter 3.6 is approx. 11.31`, () => {
+  const diameter = [3.6];
+  expect(Number(perimeter(diameter, 'CIRCLE').toFixed(2))).toBe(11.31);
+});
+
+test(`Perimeter of a rectangle with width 3.6 and height 4 is 15.2`, () => {
+  const width = [3.6, 4];
+  expect(Number(perimeter(width, 'RECTANGLE').toFixed(2))).toBe(15.2);
+});
+
+test(`Perimeter of an unsupported shape should be 0`, () => {
+  const width = [3.6, 4];
+  expect(Number(perimeter(width, 'TRIANGLE').toFixed(2))).toBe(0);
 });

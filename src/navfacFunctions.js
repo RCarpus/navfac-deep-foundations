@@ -320,3 +320,27 @@ export function limitEffStress(effStress, width, increment) {
   if (currentDepth > limitingDepth) isLimited = true;
   return { limitedEffStress, isLimited };
 }
+
+/**
+ * @param {[number]} width Array of lengths in. This should contain a single 
+ *  value corresponding to the diameter if it is a circle, or two values 
+ *  corresponding to the length and width if it is a rectangle.
+ * @param {string} shape Either "CIRCLE" or "RECTANGLE"
+ * @returns {number} the circumference or a circle or perimeter of a rectangle
+ * @description Calculates the circumference of a circle or the perimeter of a 
+ *  rectangle regardless of units. 
+ * 
+ *  Circumference = PI * width 
+ *  Perimeter = 2 * (width + height)
+ */
+export function perimeter(width, shape) {
+  switch (shape) {
+    case ('CIRCLE'):
+      return Math.PI * width;
+    case ('RECTANGLE'):
+      return 2 * (width[0] + width[1]);
+    default:
+      console.error(`Invalid shape for perimeter. Returning 0.`);
+      return 0;
+  }
+}
