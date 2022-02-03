@@ -8,6 +8,7 @@ import {
   adhesion,
   cohesiveNc,
   effStressBottomProfile,
+  effStressMidpointProfile,
 } from '../navfacFunctions';
 
 // granularNq
@@ -144,92 +145,92 @@ test(`hor. Earth pressure coef. for "DRILLED-PILE"
 // adhesion
 test(`adhesion for clay with c=150 and "CONCRETE" 
   should be 150`, () => {
-    expect(adhesion(150, "CONCRETE")).toBe(150);
+  expect(adhesion(150, "CONCRETE")).toBe(150);
 });
 
 test(`adhesion for clay with c=400 and "CONCRETE" 
   should be 388`, () => {
-    expect(adhesion(400, "CONCRETE")).toBe(388);
+  expect(adhesion(400, "CONCRETE")).toBe(388);
 });
 
 test(`adhesion for clay with c=750 and "CONCRETE" 
   should be 615`, () => {
-    expect(adhesion(750, "CONCRETE")).toBe(615);
+  expect(adhesion(750, "CONCRETE")).toBe(615);
 });
 
 test(`adhesion for clay with c=1850 and "CONCRETE" 
   should be 920`, () => {
-    expect(adhesion(1850, "CONCRETE")).toBe(920);
+  expect(adhesion(1850, "CONCRETE")).toBe(920);
 });
 
 test(`adhesion for clay with c=3100 and "CONCRETE" 
   should be 1142.5`, () => {
-    expect(adhesion(3100, "CONCRETE")).toBe(1142.5);
+  expect(adhesion(3100, "CONCRETE")).toBe(1142.5);
 });
 
 test(`adhesion for clay with c=5000 and "CONCRETE" 
   should be 1300`, () => {
-    expect(adhesion(5000, "CONCRETE")).toBe(1300);
+  expect(adhesion(5000, "CONCRETE")).toBe(1300);
 });
 
 test(`adhesion for clay with c=150 and "TIMBER" 
   should be 150`, () => {
-    expect(adhesion(150, "TIMBER")).toBe(150);
+  expect(adhesion(150, "TIMBER")).toBe(150);
 });
 
 test(`adhesion for clay with c=400 and "TIMBER" 
   should be 388`, () => {
-    expect(adhesion(400, "TIMBER")).toBe(388);
+  expect(adhesion(400, "TIMBER")).toBe(388);
 });
 
 test(`adhesion for clay with c=750 and "TIMBER" 
   should be 615`, () => {
-    expect(adhesion(750, "TIMBER")).toBe(615);
+  expect(adhesion(750, "TIMBER")).toBe(615);
 });
 
 test(`adhesion for clay with c=1850 and "TIMBER" 
   should be 920`, () => {
-    expect(adhesion(1850, "TIMBER")).toBe(920);
+  expect(adhesion(1850, "TIMBER")).toBe(920);
 });
 
 test(`adhesion for clay with c=3100 and "TIMBER" 
   should be 1142.5`, () => {
-    expect(adhesion(3100, "TIMBER")).toBe(1142.5);
+  expect(adhesion(3100, "TIMBER")).toBe(1142.5);
 });
 
 test(`adhesion for clay with c=5000 and "TIMBER" 
   should be 1300`, () => {
-    expect(adhesion(5000, "TIMBER")).toBe(1300);
+  expect(adhesion(5000, "TIMBER")).toBe(1300);
 });
 
 test(`adhesion for clay with c=100 and "STEEL" 
   should be 100`, () => {
-    expect(adhesion(100, "STEEL")).toBe(100);
+  expect(adhesion(100, "STEEL")).toBe(100);
 });
 
 test(`adhesion for clay with c=450 and "STEEL" 
   should be 418`, () => {
-    expect(adhesion(450, "STEEL")).toBe(418);
+  expect(adhesion(450, "STEEL")).toBe(418);
 });
 
 test(`adhesion for clay with c=615 and "STEEL" 
   should be 515.2`, () => {
-    expect(adhesion(615, "STEEL")).toBe(515.2);
+  expect(adhesion(615, "STEEL")).toBe(515.2);
 });
 
 test(`adhesion for clay with c=1550 and "STEEL" 
   should be 711`, () => {
-    expect(adhesion(1550, "STEEL")).toBe(711);
+  expect(adhesion(1550, "STEEL")).toBe(711);
 });
 
 test(`adhesion for clay with c=2700 and "STEEL" 
   should be 730.5`, () => {
-    expect(adhesion(2700, "STEEL")).toBe(730.5);
+  expect(adhesion(2700, "STEEL")).toBe(730.5);
 });
 
 test(`adhesion for clay with c=5000 and "STEEL" 
   should be 750`, () => {
-    expect(adhesion(5000, "STEEL")).toBe(750);
+  expect(adhesion(5000, "STEEL")).toBe(750);
 });
 
 // cohesiveNc
@@ -252,43 +253,103 @@ test(`Nc for depth=20 and width=8 is 8.69 (rounded to 2 places)`, () => {
 // effStressBottomProfile
 test(`Eff stress bottom profile for an unsaturated soil should return an 
   array uneffected by pore pressure.`, () => {
-    const unitWeights = [120, 125, 125];
-    const increment = 5;
-    const groundwaterDepth = 100;
-    const result = [600, 1225, 1850];
-    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
-      .toEqual(result);
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 100;
+  const result = [600, 1225, 1850];
+  expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+    .toEqual(result);
 });
 
 test(`Eff stress bottom profile with groundwater mid-depth return an 
   array partially effected by pore pressure.`, () => {
-    const unitWeights = [120, 125, 125];
-    const increment = 5;
-    const groundwaterDepth = 10;
-    const result = [600, 1225, 1538];
-    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
-      .toEqual(result);
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 10;
+  const result = [600, 1225, 1538];
+  expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+    .toEqual(result);
 });
 
 test(`Eff stress bottom profile with groundwater at surface should return an 
   array completely effected by pore pressure.`, () => {
-    const unitWeights = [120, 125, 125];
-    const increment = 5;
-    const groundwaterDepth = 0;
-    const result = [288, 601, 914];
-    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
-      .toEqual(result);
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 0;
+  const result = [288, 601, 914];
+  expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+    .toEqual(result);
 });
 
 test(`Eff stress bottom profile with a single increment should behave
   as expected.`, () => {
-    const unitWeights = [120];
-    const increment = 5;
-    const groundwaterDepth = 5;
-    const result = [600];
-    const resultSaturated = [288];
-    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
-      .toEqual(result);
-    expect(effStressBottomProfile(unitWeights, increment, 0))
-      .toEqual(resultSaturated);
+  const unitWeights = [120];
+  const increment = 5;
+  const groundwaterDepth = 5;
+  const result = [600];
+  const resultSaturated = [288];
+  expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+    .toEqual(result);
+  expect(effStressBottomProfile(unitWeights, increment, 0))
+    .toEqual(resultSaturated);
+});
+
+test(`Eff stress midpoint profile for an unsaturated soil should return an 
+  array uneffected by pore pressure.`, () => {
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 100;
+  // effStressBottom = [600, 1225, 1850]
+  const effStressBottom = effStressBottomProfile(
+    unitWeights, increment, groundwaterDepth);
+  const result = [300, 912.5, 1537.5];
+  expect(effStressMidpointProfile(unitWeights, increment,
+    groundwaterDepth, effStressBottom))
+    .toEqual(result);
+});
+
+test(`Eff stress midpoint profile with groundwater mid-depth should return an 
+  array partially effected by pore pressure.`, () => {
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 10;
+  // effStressBottom = [600, 1225, 1538]
+  const effStressBottom = effStressBottomProfile(
+    unitWeights, increment, groundwaterDepth);
+  const result = [300, 912.5, 1381.5];
+  expect(effStressMidpointProfile(unitWeights, increment,
+    groundwaterDepth, effStressBottom))
+    .toEqual(result);
+});
+
+test(`Eff stress midpoint profile with groundwater at surface should return an 
+  array completely effected by pore pressure.`, () => {
+  const unitWeights = [120, 125, 125];
+  const increment = 5;
+  const groundwaterDepth = 0;
+  // effStressBottom = [288, 601, 914]
+  const effStressBottom = effStressBottomProfile(
+    unitWeights, increment, groundwaterDepth);
+  const result = [144, 444.5, 757.5];
+  expect(effStressMidpointProfile(unitWeights, increment,
+    groundwaterDepth, effStressBottom))
+    .toEqual(result);
+});
+
+test(`Eff stress midpoint profile with one sublayer should behave
+  as expected.`, () => {
+  const unitWeights = [120];
+  const increment = 5;
+  const groundwaterDepth = 5;
+  // value of effStressBottom shouldn't matter
+  const effStressBottom = effStressBottomProfile(
+    unitWeights, increment, groundwaterDepth);
+  const resultDry = [300];
+  const resultSaturated = [144];
+  expect(effStressMidpointProfile(unitWeights, increment,
+    groundwaterDepth, effStressBottom))
+    .toEqual(resultDry);
+  expect(effStressMidpointProfile(unitWeights, increment,
+    0, effStressBottom))
+    .toEqual(resultSaturated);
 });

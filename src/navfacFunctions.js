@@ -213,7 +213,7 @@ export function cohesiveNc(depth, width) {
 
 /**
  * @param {[number]} unitWeights array of unit weights for each sublayer (pcf)
- * @param {number} increment thickness of each sublay in feet
+ * @param {number} increment thickness of each sublayer in feet
  * @param {number} groundwaterDepth the depth from ground surface to water, (ft)
  * @returns {[number]} array of effective stress values (psf)
  * @description Calculates the effective vertical stress at the bottom of each 
@@ -246,4 +246,49 @@ export function effStressBottomProfile(unitWeights, increment, groundwaterDepth)
     );
   }
   return effStressBottom;
+}
+
+/**
+ * @param {[number]} unitWeights array of unit weights for each sublayer (pcf)
+ * @param {number} increment thickness of each sublayer in feet
+ * @param {number} groundwaterDepth the depth from ground surface to water, (ft)
+ * @param {[number]} effStressBottom array of calculated effective stress
+ *  values at the bottom of each sublayer
+ * @returns {[number]} array of effective stress values (psf)
+ * @description Calculates the effective vertical stress at the midpoint of each
+ *  sublayer given the unit weights of each sublayer, size of each sublayer,
+ *  the depth to groundwater, and a calculated array of effective vertical stress 
+ *  at the bottom of each sublayer. Returns an array of effective stress values 
+ *  in pounds per square foot (psf).
+ * 
+ *  Effective vertical stress = <total vertical Stress> - <pore water pressure>
+ *  total vertical stress = <depth> * <unit weight>
+ *  pore water pressure = <depth from top of groundwater table> * UNIT_WEIGHT_WATER 
+ * 
+ *  For each layer, the effective stress from the above layer is taken from the 
+ *  effStressBottom array, and the incremental additional effective vertical 
+ *  stress is calculated by cutting the interval in half.
+ * 
+ *  effStressMidpoint = <effStressBottom from layer above> + 
+ *    <half of the incremental vertical stress for the current layer>
+ */
+export function effStressMidpointProfile(
+    unitWeights, increment, groundwaterDepth, effStressBottom) {
+  let effStressMidpoint = [];
+  let currentDepth = increment;
+  // Calculate the effective stress for the first sublayer
+  effStressMidpoint[0] = (groundwaterDepth < currentDepth) ?
+    (unitWeights[0] - UNIT_WEIGHT_WATER) * (increment / 2) :
+    unitWeights[0] * (increment / 2);
+  // Calculate the effective stress for subsequent layers, accounting for water
+  // If groundwater is present within a sublayer, the weight of the water gets
+  // subtracted from the soil unit weight for that layer.
+  for (let i=1; i<unitWeights.length; i++) {
+    currentDepth += increment;
+    effStressMidpoint.push(groundwaterDepth < currentDepth ?
+      effStressBottom[i-1] + (unitWeights[i] - UNIT_WEIGHT_WATER) * (increment / 2) :
+      effStressBottom[i-1] + unitWeights[i] * (increment / 2)
+    );
+  }
+  return effStressMidpoint;
 }
