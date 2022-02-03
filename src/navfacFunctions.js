@@ -429,3 +429,23 @@ export function cohesiveEndBearing(cohesion, area, Nc) {
 export function granularEndBearing(Pt, Nq, area) {
   return Pt * Nq * area;
 }
+
+/**
+ * @param {number} depth the total depth to be analyzed (ft)
+ * @param {number} increment the thickness of each sublayer (ft)
+ * @returns {[number]} an array of numbers corresponding to the depth at the 
+ *  bottom of each sublayer (ft)
+ * @description Generate an array of depths corresponding to the depth at the 
+ *  bottom of each sublayer for a given total depth.
+ * 
+ *  depth[i + 1] = depth[i] + increment
+ */
+export function sublayerDepths(depth, increment) {
+  let depths = [];
+  let currentDepth = increment;
+  while (currentDepth <= depth) {
+    depths.push(currentDepth);
+    currentDepth += increment;
+  }
+  return depths;
+}

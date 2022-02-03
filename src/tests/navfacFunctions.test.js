@@ -16,6 +16,7 @@ import {
   cohesiveSkinFriction,
   cohesiveEndBearing,
   granularEndBearing,
+  sublayerDepths,
 } from '../navfacFunctions';
 
 // granularNq
@@ -464,4 +465,19 @@ test(`Granular end bearing with different params`, () => {
     area2 = 2;
   expect(granularEndBearing(Pt1, Nq1, area1)).toBe(1290000);
   expect(granularEndBearing(Pt2, Nq2, area2)).toBe(725000);
+});
+
+// sublayerDepths
+test(`Sublayer depths for a depth with several sublayers`, () => {
+  const depth = 20,
+    increment = 5,
+    result = [5, 10, 15, 20];
+  expect(sublayerDepths(depth, increment)).toEqual(result);
+});
+
+test(`Sublayer depths for a depth with a single sublayer`, () => {
+  const depth = 5,
+    increment = 5,
+    result = [5];
+  expect(sublayerDepths(depth, increment)).toEqual(result);
 })
