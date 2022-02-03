@@ -344,3 +344,24 @@ export function perimeter(width, shape) {
       return 0;
   }
 }
+
+/**
+ * @param {number} Kh Horizontal earth pressure coefficient
+ * @param {number} P0 Effective vertical stress (psf) at the layer
+ * @param {number} delta contact friction angle between soil and pile
+ * @param {number} perimeter Perimeter in feet of foundation.
+ * @param {number} increment the thickness of each sublayer
+ * @returns {number} the incremental skin friction (psf) for a sublayer
+ * @description Calculates the incremental skin friction for a granular 
+ *  sublayer. This value depends on the horizontal earth pressure coefficient, 
+ *  the effective vertical stress over the sublayer, the contact friction 
+ *  angle between the soil and pile, the perimeter of the foundation, and the 
+ *  thickness of the sublayer. 
+ * 
+ *  Skin Friction = Kh * P0 * tan(delta) * perimeter * increment
+ */
+export function granularSkinFriction(Kh, P0, delta, perimeter, increment) {
+  // Math.tan() expects rads so I am converting from degrees
+  const tanDelta = Math.tan(delta * Math.PI / 180);
+  return Kh * P0 * tanDelta * perimeter * increment;
+}

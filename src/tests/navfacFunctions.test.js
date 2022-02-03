@@ -11,6 +11,7 @@ import {
   effStressMidpointProfile,
   limitEffStress,
   perimeter,
+  granularSkinFriction,
 } from '../navfacFunctions';
 
 // granularNq
@@ -391,3 +392,23 @@ test(`Perimeter of an unsupported shape should be 0`, () => {
   const width = [3.6, 4];
   expect(Number(perimeter(width, 'TRIANGLE').toFixed(2))).toBe(0);
 });
+
+// granularSkinFriction
+test(`Granular skin friction of a foundation with different params`, () => {
+  const Kh1 = .7,
+    P01 = 600,
+    delta1 = 20,
+    perimeter1 = 3,
+    increment1 = 4,
+    Kh2 = 1.2,
+    P02 = 3233,
+    delta2 = 30,
+    perimeter2 = 2,
+    increment2 = 1;
+  expect(Number(granularSkinFriction(
+    Kh1, P01, delta1, perimeter1, increment1).toFixed(2)))
+    .toBe(1834.41);
+  expect(Number(granularSkinFriction(
+    Kh2, P02, delta2, perimeter2, increment2).toFixed(2)))
+    .toBe(4479.78);
+})
