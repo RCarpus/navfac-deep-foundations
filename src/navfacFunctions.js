@@ -301,7 +301,9 @@ export function effStressMidpointProfile(
  *  effective stress values and a boolean to indicate if values were modified.
  * @description Limits the effective stress used in calculations to the value 
  *  at 20B, the depth that is 20 times the width of the foundation. 
- *  This practice is recommended when calculating end bearing. 
+ *  This practice is recommended when calculating end bearing. Returns an 
+ *  object with two properties: the updated effective stress profile and 
+ *  a boolean indicating if the profile has been modified.
  *  See p.215 of NAVFAC
  */
 export function limitEffStress(effStress, width, increment) {
