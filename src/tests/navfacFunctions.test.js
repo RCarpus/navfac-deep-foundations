@@ -3,6 +3,7 @@ import {
   granularNq,
   poundsToKips,
   ultimateLoadCapacity,
+  allowableLoadCapacity,
   contactFrictionAngle,
   horizontalEarthPressureCoefficient,
   adhesion,
@@ -60,12 +61,21 @@ test('982 pounds is .982 kips', () => {
 
 // ultimatLoadCapacity
 test(`Ultimate load capacity for a compression pile`, () => {
-  expect(ultimateLoadCapacity(3000, 30000, 7000, true)).toBe(26000);
+  expect(ultimateLoadCapacity(3000, 30000, 7000, true)).toBe(33000);
 });
 
 test(`Ultimate load capacity for a tension pile`, () => {
   expect(ultimateLoadCapacity(3000, 0, 7000, false)).toBe(10000);
 });
+
+// allowableLoadCapacity
+test(`Allowable load capacity for a compression pile`, () => {
+  expect(allowableLoadCapacity(3000, 30000, 7000, true, 3)).toBe(11000);
+})
+
+test(`Allowable load capacity for a tension pile`, () => {
+  expect(allowableLoadCapacity(3000, 0, 7000, false, 3)).toBe(8000);
+})
 
 // contactFrictionAngle
 test(`Contact friction angle for TIMBER with phi=32 is 24`, () => {

@@ -76,22 +76,46 @@ export function poundsToKips(pounds) {
  * @param {number} endBearingCapacity The end bearing capacity in pounds
  * @param {number} weight The weight of the pile in pounds
  * @param {boolean} isCompression true if compression, false if tension
- * @returns {number} The ultimate load capacity in kips
+ * @returns {number} The ultimate load capacity in pounds
  * @description Calculates the ultimate load capacity as the sum of the skin 
- *    friction and end bearing capacity, plus or minus the weight. 
+ *    friction and end bearing capacity, plus weight in tension. 
  *    In a tension condition, the skin friction will be zero. 
  *    The end bearing could only be zero if the pile was bearing in the 
  *    ignored zone, which you shouldn't be bothering with anyway.
  * 
- *    We subtract the weight when in compression (count it against capacity) 
+ *    We ignore the weight when in compression. 
  *    We add the weight when in tension (count it as a bonus for capacity)
  * 
  *    See p.215 for more details
  */
 export function ultimateLoadCapacity(
   skinFrictionCapacity, endBearingCapacity, weight, isCompression) {
-  const appliedWeight = isCompression ? - weight : weight;
+  const appliedWeight = isCompression ? 0 : weight;
   return skinFrictionCapacity + endBearingCapacity + appliedWeight;
+}
+
+/**
+ * @param {number} skinFrictionCapacity The skin friction capacity in pounds
+ * @param {number} endBearingCapacity The end bearing capacity in pounds
+ * @param {number} weight The weight of the pile in pounds
+ * @param {boolean} isCompression true if compression, false if tension
+ * @param {number} FS factor of safety, commonly equal to 3
+ * @returns {number} The allowable load capacity in pounds
+ * @description Calculates the allowable load capacity as the sum of the skin 
+ *    friction and end bearing capacity modified by the factor of safety, 
+ *    plus weight in tension. In a tension condition, the skin friction 
+ *    will be zero. The end bearing could only be zero if the pile was bearing 
+ *    in the ignored zone, which you shouldn't be bothering with anyway.
+ * 
+ *    We ignore the weight when in compression. 
+ *    We add the weight when in tension (count it as a bonus for capacity)
+ * 
+ *    See p.215 for more details
+ */
+ export function allowableLoadCapacity(
+  skinFrictionCapacity, endBearingCapacity, weight, isCompression, FS) {
+  const appliedWeight = isCompression ? 0 : weight;
+  return (skinFrictionCapacity + endBearingCapacity) / FS + appliedWeight;
 }
 
 /**
