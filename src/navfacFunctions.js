@@ -411,8 +411,21 @@ export function cohesiveSkinFriction(adhesion, perimeter, increment) {
  * @description Calculates the end bearing load capacity when bearing within 
  *  a cohesive layer. Returns the ultimate capacity in pounds.
  * 
- *  Cohesive end bearing = cohesion(psf) * area(sf) * Nc
+ *  Cohesive end bearing (pounds) = cohesion(psf) * area(sf) * Nc
  */
 export function cohesiveEndBearing(cohesion, area, Nc) {
   return cohesion * area * Nc;
+}
+
+/**
+ * @param {number} Pt Effective vertical stress at pile tip (psf) 
+ * @param {number} Nq Bearing capacity factor for granular soil
+ * @param {number} area foundation area (square feet)
+ * @description Calculates the end bearing load capacity when bearing within 
+ *  a granular layer. Returns the ultimate capacity in pounds.
+ * 
+ *  Granular end bearing (pounds) = Pt(psf) * Nq * area(sf)
+ */
+export function granularEndBearing(Pt, Nq, area) {
+  return Pt * Nq * area;
 }
