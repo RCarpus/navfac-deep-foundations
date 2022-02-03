@@ -208,5 +208,42 @@ export function adhesion(c, material) {
  */
 export function cohesiveNc(depth, width) {
   let x = depth / width;
-  return (x < 4) ? 6.29 + 1.88*x - 0.506*x**2 + 0.0632*x**3 - 0.0031*x**4 : 9;
+  return (x < 4) ? 6.29 + 1.88 * x - 0.506 * x ** 2 + 0.0632 * x ** 3 - 0.0031 * x ** 4 : 9;
+}
+
+/**
+ * @param {[number]} unitWeights array of unit weights for each sublayer (pcf)
+ * @param {number} increment thickness of each sublay in feet
+ * @param {number} groundwaterDepth the depth from ground surface to water, (ft)
+ * @returns {[number]} array of effective stress values (psf)
+ * @description Calculates the effective vertical stress at the bottom of each 
+ *  sublayer given the unit weights of each sublayer, size of each sublayer,
+ *  and the depth to groundwater. Returns an array of effective stress values 
+ *  in pounds per square foot (psf).
+ * 
+ *  Effective vertical stress = <total vertical Stress> - <pore water pressure>
+ *  total vertical stress = <depth> * <unit weight>
+ *  pore water pressure = <depth from top of groundwater table> * UNIT_WEIGHT_WATER
+ */
+export function effStressBottomProfile(unitWeights, increment, groundwaterDepth) {
+  let effStressBottom = [];
+  // The calculation will start at the depth of one increment
+  let currentDepth = increment;
+  // Calculate the effective stress for the first sublayer
+  if (groundwaterDepth < increment) {
+    effStressBottom[0] = (unitWeights[0] - UNIT_WEIGHT_WATER) * increment;
+  } else {
+    effStressBottom[0] = unitWeights[0] * increment;
+  }
+  // Calculate the effective stress for subsequent layers, accounting for water
+  // If groundwater is present within a sublayer, the weight of the water gets
+  // subtracted from the soil unit weight for that layer.
+  for (let i = 1; i < unitWeights.length; i++) {
+    currentDepth += increment;
+    effStressBottom.push(groundwaterDepth < currentDepth ?
+      effStressBottom[i - 1] + (unitWeights[i] - UNIT_WEIGHT_WATER) * increment :
+      effStressBottom[i - 1] + unitWeights[i] * increment
+    );
+  }
+  return effStressBottom;
 }

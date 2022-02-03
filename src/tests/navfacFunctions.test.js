@@ -7,6 +7,7 @@ import {
   horizontalEarthPressureCoefficient,
   adhesion,
   cohesiveNc,
+  effStressBottomProfile,
 } from '../navfacFunctions';
 
 // granularNq
@@ -246,4 +247,48 @@ test(`Nc for depth=0 and width=5 should be 6.29`, () => {
 
 test(`Nc for depth=20 and width=8 is 8.69 (rounded to 2 places)`, () => {
   expect(Number(cohesiveNc(20, 8).toFixed(2))).toBe(8.69);
+});
+
+// effStressBottomProfile
+test(`Eff stress bottom profile for an unsaturated soil should return an 
+  array uneffected by pore pressure.`, () => {
+    const unitWeights = [120, 125, 125];
+    const increment = 5;
+    const groundwaterDepth = 100;
+    const result = [600, 1225, 1850];
+    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+      .toEqual(result);
+});
+
+test(`Eff stress bottom profile with groundwater mid-depth return an 
+  array partially effected by pore pressure.`, () => {
+    const unitWeights = [120, 125, 125];
+    const increment = 5;
+    const groundwaterDepth = 10;
+    const result = [600, 1225, 1538];
+    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+      .toEqual(result);
+});
+
+test(`Eff stress bottom profile with groundwater at surface should return an 
+  array completely effected by pore pressure.`, () => {
+    const unitWeights = [120, 125, 125];
+    const increment = 5;
+    const groundwaterDepth = 0;
+    const result = [288, 601, 914];
+    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+      .toEqual(result);
+});
+
+test(`Eff stress bottom profile with a single increment should behave
+  as expected.`, () => {
+    const unitWeights = [120];
+    const increment = 5;
+    const groundwaterDepth = 5;
+    const result = [600];
+    const resultSaturated = [288];
+    expect(effStressBottomProfile(unitWeights, increment, groundwaterDepth))
+      .toEqual(result);
+    expect(effStressBottomProfile(unitWeights, increment, 0))
+      .toEqual(resultSaturated);
 });
