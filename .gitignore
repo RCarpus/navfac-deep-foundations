@@ -24,3 +24,6 @@ yarn-error.log*
 
 # files containing old functions from a previous implementation
 old_files
+
+# documentation
+out
