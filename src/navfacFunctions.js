@@ -72,19 +72,26 @@ export function poundsToKips(pounds) {
 }
 
 /**
- * @param {number} skinFrictionCapacity The skin friction capacity in kips
- * @param {number} endBearingCapacity The end bearing capacity in kips
+ * @param {number} skinFrictionCapacity The skin friction capacity in pounds
+ * @param {number} endBearingCapacity The end bearing capacity in pounds
+ * @param {number} weight The weight of the pile in pounds
+ * @param {boolean} isCompression true if compression, false if tension
  * @returns {number} The ultimate load capacity in kips
  * @description Calculates the ultimate load capacity as the sum of the skin 
- *    friction and end bearing capacity. In a tension condition, the skin 
- *    friction will be zero. The end bearing could only be zero if the pile 
- *    was bearing in the ignored zone, which you shouldn't be bothering with
- *    anyway.
+ *    friction and end bearing capacity, plus or minus the weight. 
+ *    In a tension condition, the skin friction will be zero. 
+ *    The end bearing could only be zero if the pile was bearing in the 
+ *    ignored zone, which you shouldn't be bothering with anyway.
+ * 
+ *    We subtract the weight when in compression (count it against capacity) 
+ *    We add the weight when in tension (count it as a bonus for capacity)
  * 
  *    See p.215 for more details
  */
-export function ultimateLoadCapacity(skinFrictionCapacity, endBearingCapacity) {
-  return skinFrictionCapacity + endBearingCapacity;
+export function ultimateLoadCapacity(
+  skinFrictionCapacity, endBearingCapacity, weight, isCompression) {
+  const appliedWeight = isCompression ? - weight : weight;
+  return skinFrictionCapacity + endBearingCapacity + appliedWeight;
 }
 
 /**

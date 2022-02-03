@@ -59,9 +59,12 @@ test('982 pounds is .982 kips', () => {
 })
 
 // ultimatLoadCapacity
-test(`Ultimate load capacity for 3 kips skin friction and 30 kips end 
-  bearing is 33 kips`, () => {
-  expect(ultimateLoadCapacity(3, 30)).toBe(33);
+test(`Ultimate load capacity for a compression pile`, () => {
+  expect(ultimateLoadCapacity(3000, 30000, 7000, true)).toBe(26000);
+});
+
+test(`Ultimate load capacity for a tension pile`, () => {
+  expect(ultimateLoadCapacity(3000, 0, 7000, false)).toBe(10000);
 });
 
 // contactFrictionAngle
