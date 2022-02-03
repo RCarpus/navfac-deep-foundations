@@ -346,6 +346,28 @@ export function perimeter(width, shape) {
 }
 
 /**
+ * @param {[number]} width diameter of circle (one value) or height and width 
+ *  of rectangle (two values)
+ * @param {string} shape "CIRCLE" or "RECTANGLE"
+ * @returns {number} area of the shape
+ * @description Calculates the area of a circle or rectangle regardless of units
+ * 
+ *  For circles, A = pi * radius^2 
+ *  For rectangles, A = width * height
+ */
+export function area(width, shape) {
+  switch (shape) {
+    case ("CIRCLE"):
+      return Math.PI * (width[0] / 2) ** 2;
+    case ("RECTANGLE"):
+      return width[0] * width[1];
+    default:
+      console.error(`Invalid shape for area. Returning 0.`);
+      return 0;
+  }
+}
+
+/**
  * @param {number} Kh Horizontal earth pressure coefficient
  * @param {number} P0 Effective vertical stress (psf) at the layer
  * @param {number} delta contact friction angle between soil and pile

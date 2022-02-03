@@ -11,6 +11,7 @@ import {
   effStressMidpointProfile,
   limitEffStress,
   perimeter,
+  area,
   granularSkinFriction,
   cohesiveSkinFriction,
 } from '../navfacFunctions';
@@ -392,6 +393,19 @@ test(`Perimeter of a rectangle with width 3.6 and height 4 is 15.2`, () => {
 test(`Perimeter of an unsupported shape should be 0`, () => {
   const width = [3.6, 4];
   expect(Number(perimeter(width, 'TRIANGLE').toFixed(2))).toBe(0);
+});
+
+// area
+test(`Area of a circle with diameter 3 should be 7.07`, () => {
+  expect(Number(area([3], 'CIRCLE').toFixed(2))).toBe(7.07);
+});
+
+test(`Area of a rectangle with width=3 and height=3.5 is 10.5`, () => {
+  expect(area([3, 3.5], 'RECTANGLE')).toBe(10.5);
+});
+
+test(`Area of an unsupported shape is 0`, () => {
+  expect(area([3, 3.5], 'TRIANGLE')).toBe(0);
 });
 
 // granularSkinFriction
