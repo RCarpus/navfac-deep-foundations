@@ -358,10 +358,25 @@ export function perimeter(width, shape) {
  *  angle between the soil and pile, the perimeter of the foundation, and the 
  *  thickness of the sublayer. 
  * 
- *  Skin Friction = Kh * P0 * tan(delta) * perimeter * increment
+ *  Skin Friction(lb) = Kh * P0(psf) * tan(delta) * perimeter(ft) * increment(ft)
  */
 export function granularSkinFriction(Kh, P0, delta, perimeter, increment) {
   // Math.tan() expects rads so I am converting from degrees
   const tanDelta = Math.tan(delta * Math.PI / 180);
   return Kh * P0 * tanDelta * perimeter * increment;
+}
+
+/**
+ * @param {number} adhesion Clay soil adhesion in psf
+ * @param {number} perimeter perimeter of foundation in feet
+ * @param {number} increment the thickness of each sublayer
+ * @returns {number} the incremental skin friction (psf) for a sublayer
+ * @description Calculates the incremental skin friction (psf) for a cohesive 
+ *  sublayer. This value depends on the adhesion between the clay and the 
+ *  foundation as well as the perimeter and thickness of the sublayer.
+ * 
+ *  Skin Friction(lb) = adhesion(psf) * perimeter(ft) * increment(ft)
+ */
+export function cohesiveSkinFriction(adhesion, perimeter, increment) {
+  return adhesion * perimeter * increment;
 }

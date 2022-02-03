@@ -12,6 +12,7 @@ import {
   limitEffStress,
   perimeter,
   granularSkinFriction,
+  cohesiveSkinFriction,
 } from '../navfacFunctions';
 
 // granularNq
@@ -411,4 +412,16 @@ test(`Granular skin friction of a foundation with different params`, () => {
   expect(Number(granularSkinFriction(
     Kh2, P02, delta2, perimeter2, increment2).toFixed(2)))
     .toBe(4479.78);
-})
+});
+
+// cohesionSkinFriction
+test(`Cohesive skin friction of a foundation with different params`, () => {
+  const adhesion1 = 500,
+    perimeter1 = 2,
+    increment1 = 3,
+    adhesion2 = 150,
+    perimeter2 = 4,
+    increment2 = 1;
+  expect(cohesiveSkinFriction(adhesion1, perimeter1, increment1)).toBe(3000);
+  expect(cohesiveSkinFriction(adhesion2, perimeter2, increment2)).toBe(600);
+});
