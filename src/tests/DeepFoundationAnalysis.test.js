@@ -1,8 +1,8 @@
-import DeepFoundationAnalysis from "../DeepFoundationAnalysis";
+import DeepFoundationAnalysis from "../navfac/DeepFoundationAnalysis";
 import {
   effStressBottomProfile,
   effStressMidpointProfile,
-} from '../navfacFunctions';
+} from '../navfac/navfacFunctions';
 
 test(`Generate generalSoilProfile when instantiating DeepFoundationAnalysis`,
   () => {
@@ -77,7 +77,7 @@ test(`Generate detailedSoilProfile when instantiating DeepFoundationAnalysis`,
       expectedEffStressMids = effStressMidpointProfile(
         expectedLayerUnitWeights, increment, groundwaterDepth,
         expectedEffStressBottoms);
-        
+
     let analysis = new DeepFoundationAnalysis(
       layerDepths, layerNames, layerUnitWeights, layerPhis, layerCohesions,
       groundwaterDepth, increment, ignoredDepth

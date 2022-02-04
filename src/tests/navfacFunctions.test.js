@@ -1,4 +1,4 @@
-import '../navfacFunctions';
+import '../navfac/navfacFunctions';
 import {
   granularNq,
   poundsToKips,
@@ -18,7 +18,7 @@ import {
   cohesiveEndBearing,
   granularEndBearing,
   sublayerDepths,
-} from '../navfacFunctions';
+} from '../navfac/navfacFunctions';
 
 // granularNq
 test('Drilled pier with phi=0 has Nq of 0', () => {
