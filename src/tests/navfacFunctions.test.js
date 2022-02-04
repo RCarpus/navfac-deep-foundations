@@ -18,6 +18,7 @@ import {
   cohesiveEndBearing,
   granularEndBearing,
   sublayerDepths,
+  pileWeight,
 } from '../navfac/navfacFunctions';
 
 // granularNq
@@ -493,4 +494,36 @@ test(`Sublayer depths for a depth with a single sublayer`, () => {
     increment = 5,
     result = [5];
   expect(sublayerDepths(depth, increment)).toEqual(result);
-})
+});
+
+test(`Pile weight for timber`, () => {
+  const height = 10,
+    area = 3,
+    material = "TIMBER",
+    result = 900;
+  expect(pileWeight(material, height, area)).toBe(900);
+});
+
+test(`Pile weight for steel`, () => {
+  const height = 10,
+    area = 3,
+    material = "STEEL",
+    result = 4500;
+  expect(pileWeight(material, height, area)).toBe(4500);
+});
+
+test(`Pile weight for concrete`, () => {
+  const height = 10,
+    area = 3,
+    material = "CONCRETE",
+    result = 4500;
+  expect(pileWeight(material, height, area)).toBe(4500);
+});
+
+test(`Pile weight for unsupported material`, () => {
+  const height = 10,
+    area = 3,
+    material = "WOOD",
+    result = 4500;
+  expect(pileWeight(material, height, area)).toBe(0);
+});

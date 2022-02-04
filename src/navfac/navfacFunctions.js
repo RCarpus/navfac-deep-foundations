@@ -95,6 +95,27 @@ export function ultimateLoadCapacity(
 }
 
 /**
+ * Determine the weight of the pile. Concrete and steel are assumed to have 
+ * unit weight of 150 pcf. Timber is assumed to be 30 pcf.
+ * @param {string} material "CONCRETE", "STEEL", "TIMBER" 
+ * @param {number} height feet
+ * @param {number} area feet squared
+ * @returns weight of pile in pounds
+ */
+export function pileWeight(material, height, area) {
+  switch (material) {
+    case "CONCRETE":
+      return 150 * height * area;
+    case "STEEL":
+      return 150 * height * area;
+    case "TIMBER":
+      return 30 * height * area;
+    default:
+      return 0;
+  }
+}
+
+/**
  * @param {number} skinFrictionCapacity The skin friction capacity in pounds
  * @param {number} endBearingCapacity The end bearing capacity in pounds
  * @param {number} weight The weight of the pile in pounds
@@ -112,7 +133,7 @@ export function ultimateLoadCapacity(
  * 
  *    See p.215 for more details
  */
- export function allowableLoadCapacity(
+export function allowableLoadCapacity(
   skinFrictionCapacity, endBearingCapacity, weight, isCompression, FS) {
   const appliedWeight = isCompression ? 0 : weight;
   return (skinFrictionCapacity + endBearingCapacity) / FS + appliedWeight;
