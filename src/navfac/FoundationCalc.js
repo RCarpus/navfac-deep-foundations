@@ -26,6 +26,45 @@ import * as nf from './navfacFunctions';
  *  @param {boolean} isCompression true if compression, false if tension
  *  @param {number} FS Factor of safety, probably 3
  *  @param {number} ignoredDepth depth to ignore in skin friction calc
+ *  @property {object} detailedSoilProfile see params
+ *  @property {string} material see params
+ *  @property {string} pileType see params
+ *  @property {Array.<number>} width see params
+ *  @property {number} bearingDepth see params
+ *  @property {number} increment see params
+ *  @property {boolean} isCompression see params
+ *  @property {number} FS see params
+ *  @property {number} ignoredDepth see params
+ *  @property {Array.<number>} contactFrictionAngles Array of contact friction 
+ *    angles determined from detailedSoilProfile and material
+ *  @property {Array.<number>} adhesions Array of adhesions determined by 
+ *    detailedSoilProfile and material
+ *  @property {number} earthPressureCoefficient Number determined from 
+ *    pileType and isCompression
+ *  @property {string} shape Determined from pileType, either "CIRLCE" or 
+ *    "RECTANGLE"
+ *  @property {number} pileArea Area of the pile determined by it's shape and 
+ *    width
+ *  @property {number} pilePerimeter Perimeter or circumberence determined by 
+ *    its shape and width
+ *  @property {boolean} isDrilled true if pileType is "DRILLED-SHAFT" 
+ *    otherwise false
+ *  @property {number} granularNq Granular bearing capacity factor determined 
+ *    by isDrilled, detailedSoilProfile, bearingDepth
+ *  @property {number} cohesiveNc Cohesive bearing capacity factor determined 
+ *    by detailedSoilProfile, bearingDepth
+ *  @property {object} limitedBottomStresses contains array of potentially 
+ *    modifed bottom effective stress values and a boolean indicating if 
+ *    changes were applied. Determined by detailedSoilProfile, width, 
+ *    and increment.
+ *    { limitedEffStress : {Array.<number>}, isLimited : {boolean} }
+ *  @property {object} limitedMidStresses contains array of potentially 
+ *    modifed middle effective stress values and a boolean indicating if 
+ *    changes were applied. Determined by detailedSoilProfile, width, 
+ *    and increment.
+ *    { limitedEffStress : {Array.<number>}, isLimited : {boolean} }
+ *  @property {number} effStressAtBearing the effective stress at the 
+ *    bearing elevation. Determined by detailedSoilProfile, bearingDepth
  *  @description I'd like to know how this works as well.
  */
 export default class FoundationCalc {
@@ -116,8 +155,8 @@ export default class FoundationCalc {
     this.pileWeight = nf.pileWeight(this.material, this.bearingDepth,
       this.pileArea);
     this.ultimateCapacity = nf.ultimateLoadCapacity(
-      this.totalSkinFriction, 
-      this.endBearing.value, 
+      this.totalSkinFriction,
+      this.endBearing.value,
       this.pileWeight,
       this.isCompression
     );
@@ -196,9 +235,9 @@ export default class FoundationCalc {
    * @param {Array.<number>} EffStressMidProfile 
    * @param {Array.<number>} contactFrictionAngleProfile 
    * @param {number} perimeter 
-   * @param {number``} increment 
+   * @param {number} increment 
    * @param {Array.<number>} adhesionProfile 
-   * @param {number``} ignoredDepth 
+   * @param {number} ignoredDepth 
    * @param {number} bearingDepth 
    * @param {Array.<number>} layerBottomDepths 
    * @returns {Array.<number>} Array of skin friction values
