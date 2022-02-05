@@ -4,7 +4,7 @@
  * @description This file contains the FoundationCalc class. This class 
  *  receives a detailedSoilProfile object as input along with details about 
  *  the foundation to be analyzed and performs the calculation. The constructor 
- *  does the calculation and stores the results as a results object.
+ *  does the calculations and saves the results into various params.
  */
 
 import * as nf from './navfacFunctions';
@@ -79,7 +79,9 @@ import * as nf from './navfacFunctions';
  *    totalSkinFriction, endBearing.value, pileWeight, isCompression
  *  @property {number} allowableCapacity the allowable capacity determined from 
  *    totalSkinFriciton, endBearing.value, pileWeight, isCompression, FS
- *  @description I'd like to know how this works as well.
+ *  @description Given a detailed soil profile and pile input params, 
+ *    performs all necessary calculations for a deep foundation. The results 
+ *    are stored in various params.
  */
 export default class FoundationCalc {
   constructor(
