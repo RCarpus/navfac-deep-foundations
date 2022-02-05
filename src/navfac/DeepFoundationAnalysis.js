@@ -15,6 +15,7 @@
  */
 
 import * as nf from './navfacFunctions';
+import FoundationCalc from './FoundationCalc';
 
 /**
  * @param {Array.<number>} layerDepths depths (feet) to bottom of each stratum. 
@@ -62,6 +63,7 @@ export default class DeepFoundationAnalysis {
     };
     this.increment = increment;
     this.ignoredDepth = ignoredDepth;
+    this.calculations = {};
 
     // Generate the detailed soil profile using the input data
     this.detailedSoilProfile = this.generateDetailedSoilProfile(
@@ -138,5 +140,51 @@ export default class DeepFoundationAnalysis {
     }
 
     return detailedSoilProfile;
+  }
+
+  /**
+   * @param {*} material "TIMBER", "CONRETE", or "STEEL"
+   * @param {*} pileType Must be one of: 
+   *    [
+   *      "DRIVEN-SINGLE-H-PILE",
+   *      "DRIVEN-SINGLE-DISPLACEMENT-PILE",
+   *      "DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE",
+   *      "DRIVEN-JETTED-PILE",
+   *      "DRILLED-PILE"
+   *    ]  
+   * @param {*} widthArray Array of widths. Each width is an array with one 
+   *   value for circular foundations or two values for rectangular.
+   * @param {*} bearingDepthArray Array of bearing depths.
+   * @param {*} FS Factor of safety, probably equal to 3
+   * @returns {null}
+   * @description Performs a suite of deep foundation calculations iterating 
+   *  over an array of widths and an array of bearingDepths for a set 
+   *  value of material, pileType, FS, and ignoredDepth. This function 
+   *  modifies the DeepFoundationAnalysis instance value of calculations and 
+   *  returns null. After running this function, the calculations property will 
+   *  take on the following shape:
+   *  {
+   *    compressionAnalyses : {Array.<FoundationCalc>},
+   *    tensionAnalyses : {Array.<FoundationCalc>}
+   *  }
+   */
+  analyze = (material, pileType,
+    widthArray, bearingDepthArray, FS) => {
+    let compressionAnalyses = [];
+    let tensionAnalyses = [];
+    // Perform a suite of analyses for each bearingDepth and width.
+    // Save an instance of FoundationCalc for each width/bearingDepth pair.
+    widthArray.forEach(width => {
+      bearingDepthArray.forEach(bearingDepth => {
+        compressionAnalyses.push(new FoundationCalc(
+          this.detailedSoilProfile, material, pileType, width, bearingDepth,
+          this.increment, true, FS, this.ignoredDepth));
+        tensionAnalyses.push(new FoundationCalc(
+          this.detailedSoilProfile, material, pileType, width, bearingDepth,
+          this.increment, false, FS, this.ignoredDepth));
+      });
+    });
+    this.calculations = {compressionAnalyses, tensionAnalyses};
+    return null;
   }
 }

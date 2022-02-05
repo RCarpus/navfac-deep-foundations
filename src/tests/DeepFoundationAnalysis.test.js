@@ -1,4 +1,5 @@
 import DeepFoundationAnalysis from "../navfac/DeepFoundationAnalysis";
+import FoundationCalc from "../navfac/FoundationCalc";
 import {
   effStressBottomProfile,
   effStressMidpointProfile,
@@ -99,3 +100,37 @@ test(`Generate detailedSoilProfile when instantiating DeepFoundationAnalysis`,
     expect(analysis.detailedSoilProfile.groundwaterDepth)
       .toBe(groundwaterDepth);
   });
+
+test(`Calling analyze() on a DeepFoundationAnalysis with 3 widths and 4 
+  depths should generate 12 compression and 12 tension analyses`, () => {
+  // Inputs for the class constructor
+  const layerDepths = [3, 6, 8.5, 20],
+    layerNames = ['LS', 'StCl', 'SCl', 'CS'],
+    layerUnitWeights = [120, 120, 125, 135],
+    layerPhis = [28, 0, 0, 36],
+    layerCohesions = [0, 1500, 300, 0],
+    groundwaterDepth = 9.5,
+    increment = 0.5,
+    ignoredDepth = 3;
+
+  // Inputs for analyze()
+  const material = "CONCRETE",
+    pileType = "DRILLED-PILE",
+    widthArray = [[1], [2], [3]],
+    bearingDepthArray = [5, 12, 17, 19],
+    FS = 3;
+  
+  // create the DeepFoundationAnalysis
+  let analysis = new DeepFoundationAnalysis(
+    layerDepths, layerNames, layerUnitWeights, layerPhis, layerCohesions,
+    groundwaterDepth, increment, ignoredDepth
+  );
+
+  // perform the analyses
+  analysis.analyze(material, pileType, widthArray, 
+    bearingDepthArray, FS, ignoredDepth);
+  expect(analysis.calculations.compressionAnalyses).toHaveLength(12);
+  expect(analysis.calculations.compressionAnalyses).toHaveLength(12);
+
+
+});
