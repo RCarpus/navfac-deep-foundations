@@ -65,6 +65,20 @@ import * as nf from './navfacFunctions';
  *    { limitedEffStress : {Array.<number>}, isLimited : {boolean} }
  *  @property {number} effStressAtBearing the effective stress at the 
  *    bearing elevation. Determined by detailedSoilProfile, bearingDepth
+ *  @property {Array.<number>} skinFrictions array of incremental skin frition 
+ *    values determined by earthPressureCoefficient, limitedMidStresses, 
+ *    contactFrictionAngles, pilePerimeter, increment, adhesions, 
+ *    ignoredDepth, bearingDepth, detailedSoilProfile
+ *  @property {number} totalSkinFriction the sum of the values in skinFrictions
+ *  @property {number} endBearing the calculated end bearing value based on 
+ *    cohesionAtBearingDepth, cohesiveNc, effStressAtBearing, granularNq, 
+ *    pileArea, isCompression
+ *  @property {number} pileWeight the weight of the pile based on material, 
+ *    bearingDepth and pileArea
+ *  @property {number} ultimateCapacity the ultimate capacity determined from 
+ *    totalSkinFriction, endBearing.value, pileWeight, isCompression
+ *  @property {number} allowableCapacity the allowable capacity determined from 
+ *    totalSkinFriciton, endBearing.value, pileWeight, isCompression, FS
  *  @description I'd like to know how this works as well.
  */
 export default class FoundationCalc {
