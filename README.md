@@ -3,6 +3,9 @@ This application performs axial capacity analysis for a variety of deep foundati
 
 After submitting an analysis, the user will be presented with a collection of summary tables showing the ultimate and allowable axial capacity of each foundation in compression and in tension. Beyond the summary tables, the user can view a detailed output for each individual pile showing the results of each calculation. The results may be downloaded in PDF form, and users can save their projects to enable tweaking the input parameters. Additionally, users can clone projects so they can easily analyze different pile types without needing to input the soil data again. 
 
+## Disclaimer
+This application is not a substitute for engineering knowledge, and this README is not a design tutorial. Any engineer who uses this tool is expected to understand the NAVFAC analysis process as a prerequite and to review the calculations for accuracy. The author of this program takes no responsibility for any engineering decisions made by anybody using this application. Use it at your own risk.
+
 ## Caculations
 Calculations are performed based on established soil science and the NAVFAC Foundations & Earth Structures Design Manual 7.02, last edited September 1986. This manual is available to download for free at https://web.mst.edu/~rogersda/umrcourses/ge441/DM7_02.pdf.  
 
@@ -37,6 +40,7 @@ This calculation package itself does not enforce correctly formatting the data i
 TO BE CLEAR, If these rules are not applied before attempting to perform calculations, the results will at best be completely and obviously broken, and at worst, quietly and unknowingly broken.
 
 ### Data Input Rules
+#### DeepFoundationAnalysis constructor
 - When instantiating a new `DeepFoundationAnalysis`, the following parameters must all be arrays of equal length:
   - `layerDepths`
   - `layerNames`
@@ -51,76 +55,34 @@ TO BE CLEAR, If these rules are not applied before attempting to perform calcula
 - `layerCohesions` must be an array of numbers with values of either 0 (for granular soils) or positive values (for cohesive soils).
 - `ignoredDepth` must be any non-negative number following the increment rule. 
 
+#### FoundationCalc constructor
+- `detailedSoilProfile` should be the `detailelSoilProfile` saved as a property within `DeepFoundationAnalysis`. 
+- `material` must be one of the following strings:
+  - "TIMBER"
+  - "CONCRETE"
+  - "STEEL"
+- `pileType` must be one of the following strings:
+  - "DRIVEN-SINGLE-H-PILE"
+  - "DRIVEN-SINGLE-DISPLACEMENT-PILE"
+  - "DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE"
+  - "DRIVEN-JETTED-PILE"
+  - "DRILLED-PILE"
+- `width` must be an array with either 1 or 2 positive numbers.
+  - 1 number of the pileType is NOT "DRIVEN-SINGLE-H-PILE"
+  - 2 numbers if the foundation IS "DRIVEN-SINGLE-H-PILE"
+  - If two numbers are passed, the smaller number should be first.
+- `bearingDepth` must be a positive multiple of `increment` AND must be less than the deepest depth in the soil profile (ie: `bearingDepth < layerDepths[layerDepths.length-1]`).
+- `increment` is the same increment from `DeepFoundationAnalysis`.
+- `isCompression` is a boolean. Must be true or false
+- `FS` must be a positive number, and should be greater than 1. The recommended value is 3.
+- `ignoredDepth` is the same `ignoredDepth` from `DeepFoundationAnalysis`.
+
+#### DeepFoundationAnalysis.analyze()
+- `material` - See FoundationCalc constructor.
+- `pileType` - See FoundationCalc constructor.
+- `widthArray` must be an array of widths meeting the requirements in FoundationCalc constructor.
+- `bearingDepthArray` must be an array of depths meeting the requirements in FoundationCalc constructor.
+- `FS` - See FoundationCalc constructor.
 
 
 
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
