@@ -1,0 +1,20 @@
+.register {
+  width: 100%
+}
+
+.login__title {
+  max-width: 99%;
+  margin: auto;
+  text-align: center;
+}
+
+.login__form, .login__to-registration-container {
+  max-width: 300px;
+  margin: auto;
+}
+
+.login__form__line {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+}
+

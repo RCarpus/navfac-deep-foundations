@@ -1,0 +1,25 @@
+.register {
+  width: 100%;
+}
+
+.register__title {
+  max-width: 99%;
+  margin: auto;
+  text-align: center;
+}
+
+.register__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.register__form, .register__to-login-container {
+  max-width: 300px;
+  margin: auto;
+}
+
+.register__form__line {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+}
+
