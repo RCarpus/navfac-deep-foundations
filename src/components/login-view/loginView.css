@@ -2,13 +2,14 @@
   width: 100%
 }
 
-.login__title {
+.login__title, .login__failed {
   max-width: 99%;
   margin: auto;
   text-align: center;
 }
 
-.login__form, .login__to-registration-container {
+
+#login__form, .login__to-registration-container {
   max-width: 300px;
   margin: auto;
 }

@@ -1,7 +1,27 @@
+/**
+ * @module ProfileView
+ */
+
 import React from "react";
 import './profileView.css';
 
+/**
+ * @description ProfileView allows the user to view their personal details 
+ * or update them. Fields are inactive by default, but can be set to active 
+ * by clicking the "edit" button. Real-time data validation prevents the user 
+ * from submitted improperly formatted data to the server.
+ * 
+ * The bottom of the view has a "Delete Account" button. To avoid accidental 
+ * account deletion, the user is prompted to enter their email address and 
+ * confirm their decision before deleting the account. 
+ * 
+ * If the account is deleted, the login info is cleared from localStorage 
+ * and the user is redirected to the WelcomeView.
+ */
 export default class ProfileView extends React.Component {
+  componentDidMount(props) {
+    this.props.checkLoginStatus();
+  }
   render() {
     return (
       <div className="profile">

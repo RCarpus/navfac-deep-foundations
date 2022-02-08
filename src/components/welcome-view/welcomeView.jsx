@@ -1,7 +1,16 @@
 import React from 'react';
 import './welcomeView.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
 
 export default class WelcomeView extends React.Component {
+  constructor(props) {
+    super(props);
+
+  }
+
   render() {
     return (
       <div className="welcome">
@@ -56,11 +65,11 @@ export default class WelcomeView extends React.Component {
             <h2>
               Have an account?
             </h2>
-            <button>Login</button>
+            <Link to="/login">Login</Link>
             <h2>
               New user?
             </h2>
-            <button>Create a free account</button>
+            <Link to="/register">Create a free account</Link>
           </div>
         </div>
       </div>
