@@ -1,0 +1,24 @@
+.home {
+  width: 100%;
+}
+
+.home__title {
+  max-width: 99%;
+  margin: auto;
+  text-align: center;
+}
+
+.home__grid {
+  display: grid;
+  max-width: 750px;
+  margin: auto;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+}
+
+.home__plug {
+  max-width: 750px;
+  text-align: center;
+  margin: auto;
+}
