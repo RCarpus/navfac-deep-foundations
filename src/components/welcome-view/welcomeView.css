@@ -1,0 +1,19 @@
+.welcome {
+  width: 100%;
+}
+
+.welcome__title {
+  width: 99%;
+  margin: auto;
+  text-align: center;
+}
+
+.welcome__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2em;
+}
+
+.welcome__grid__item {
+
+}
