@@ -1,0 +1,33 @@
+.profile {
+  max-width: 800px;
+}
+
+.profile__title {
+  max-width: 99%;
+  margin: auto;
+  text-align: center;
+}
+
+.profile__enable-edit-button {
+  width: 50px;
+  float: right;
+
+}
+
+.profile__form {
+  max-width: 300px;
+  margin: auto;
+}
+
+.profile__form__line {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+}
+
+#delete-account-btn {
+  background-color: red;
+  color: white;
+  margin: auto;
+  max-width: 300px;
+  display: block;
+}
