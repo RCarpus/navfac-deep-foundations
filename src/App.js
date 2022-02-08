@@ -36,10 +36,11 @@ class App extends React.Component {
     }
     axios.get(API_URL + 'checktoken', headers)
       .then(response => {
-        this.setState({ isLoggedIn: true });
+        this.setState({ isLoggedIn: true }, console.log('e'));
         return response;
       })
       .catch(error => {
+        this.setState({ isLoggedIn: false });
         window.location.href = '/';
         return error;
       });
@@ -61,10 +62,12 @@ class App extends React.Component {
   }
 
   render() {
+    const { isLoggedIn } = this.state;
+    console.log(isLoggedIn);
     return (
       <div className="App">
         <Router>
-          <Navbar />
+          <Navbar isLoggedIn={isLoggedIn}/>
           <Routes>
             <Route path="/" element={<WelcomeView />} />
             <Route path="/profile" element={<ProfileView
