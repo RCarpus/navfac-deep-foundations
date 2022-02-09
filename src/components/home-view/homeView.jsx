@@ -27,7 +27,7 @@ export default class HomeView extends React.Component {
         <div className="home__grid">
           <button>Load Most Recent</button>
           <Link to="/new-project">Create New Project</Link>
-          <button>Load Project</button>
+          <Link to="/load-project">Load Project</Link>
           <Link to="/profile">Edit Profile</Link>
           <button>Load Demo Project</button>
           <button>View Demo Video</button>
