@@ -101,15 +101,19 @@ export default class LoadProjectView extends React.Component {
 
   /**
    * Opens the selected project.
-   * NOT YET IMPLEMENTED
+   * This is done by saving the current project name in localStorage, 
+   * then redirecting to the project page.
    */
   openProject() {
     const name = this.state.selectedProject;
-    window.alert(`Opening "${name}"`);
+    if (name) {
+      localStorage.setItem('currentProject', name);
+      window.location.href = '/edit-project';
+    }
   }
 
   render() {
-    const { projects } = this.state;
+    const { projects, selectedProject } = this.state;
 
     // Generate a table row for each project
     let tableRows = [];
@@ -142,7 +146,7 @@ export default class LoadProjectView extends React.Component {
             {tableRows}
           </tbody>
         </table>
-        <button onClick={()=>this.openProject()}>Open</button>
+        <button onClick={()=>this.openProject(selectedProject)}>Open</button>
       </div>
     )
   }
