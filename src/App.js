@@ -7,6 +7,7 @@ import HomeView from './components/home-view/homeView';
 import ProfileView from './components/profile-view/profileView';
 import NewProjectView from './components/new-project-view/newProjectView';
 import LoadProjectView from './components/load-project-view/loadProjectView';
+import ProjectEditView from './components/project-edit-view/projectEditView';
 
 import {
   BrowserRouter as Router,
@@ -64,7 +65,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { isLoggedIn } = this.state;
+    const { isLoggedIn, currentProjectName } = this.state;
     return (
       <div className="App">
         <Router>
@@ -82,6 +83,8 @@ class App extends React.Component {
             <Route path="/new-project" element={<NewProjectView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="/load-project" element={<LoadProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            <Route path="/edit-project" element={<ProjectEditView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
           </Routes>
         </Router>
