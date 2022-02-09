@@ -6,6 +6,7 @@ import RegisterView from './components/register-view/registerView';
 import HomeView from './components/home-view/homeView';
 import ProfileView from './components/profile-view/profileView';
 import NewProjectView from './components/new-project-view/newProjectView';
+import LoadProjectView from './components/load-project-view/loadProjectView';
 
 import {
   BrowserRouter as Router,
@@ -37,7 +38,7 @@ class App extends React.Component {
     }
     axios.get(API_URL + 'checktoken', headers)
       .then(response => {
-        this.setState({ isLoggedIn: true }, console.log('e'));
+        this.setState({ isLoggedIn: true });
         return response;
       })
       .catch(error => {
@@ -64,7 +65,6 @@ class App extends React.Component {
 
   render() {
     const { isLoggedIn } = this.state;
-    console.log(isLoggedIn);
     return (
       <div className="App">
         <Router>
@@ -80,6 +80,8 @@ class App extends React.Component {
             <Route path="/home" element={<HomeView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="/new-project" element={<NewProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            <Route path="/load-project" element={<LoadProjectView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
           </Routes>
         </Router>
