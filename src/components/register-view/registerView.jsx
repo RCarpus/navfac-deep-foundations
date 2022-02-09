@@ -47,16 +47,16 @@ export default class RegisterView extends React.Component {
    */
   register(e) {
     e.preventDefault();
-    const FirstName = document.
-      getElementById('register__form__first-name').value;
-    const LastName = document.
-      getElementById('register__form__last-name').value;
-    const Email = document.
-      getElementById('register__form__email').value;
-    const Company = document.
-      getElementById('register__form__company').value;
-    const Password = document.
-      getElementById('register__form__password').value;
+    const FirstName = document
+      .getElementById('register__form__first-name').value;
+    const LastName = document
+      .getElementById('register__form__last-name').value;
+    const Email = document
+      .getElementById('register__form__email').value;
+    const Company = document
+      .getElementById('register__form__company').value;
+    const Password = document
+      .getElementById('register__form__password').value;
     const userInfo = { FirstName, LastName, Email, Company, Password };
     if (this.validateUserInfo(userInfo)) {
       axios.post(API_URL + 'users/register', userInfo)
