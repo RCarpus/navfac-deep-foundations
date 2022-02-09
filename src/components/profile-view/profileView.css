@@ -8,12 +8,6 @@
   text-align: center;
 }
 
-.profile__enable-edit-button {
-  width: 50px;
-  float: right;
-
-}
-
 .profile__form {
   max-width: 300px;
   margin: auto;
