@@ -4,6 +4,7 @@
 
 import React from "react";
 import './homeView.css';
+import { Link } from "react-router-dom";
 
 /**
  * @description The home view is where logged in user's generally start. 
@@ -20,20 +21,21 @@ export default class HomeView extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <div className="home">
         <h2 className="home__title">Get Started</h2>
         <div className="home__grid">
           <button>Load Most Recent</button>
-          <button>Create New Project</button>
+          <Link to="/new-project">Create New Project</Link>
           <button>Load Project</button>
-          <button>Edit Profile</button>
+          <Link to="/profile">Edit Profile</Link>
           <button>Load Demo Project</button>
           <button>View Demo Video</button>
-          <button>About</button>
+          <a href="https://github.com/RCarpus/navfac-deep-foundations"
+            target="_blank">About</a>
         </div>
         <p className="home__plug">
-          A personal plug for Ryan Carpus and his portfolio. 
+          A personal plug for Ryan Carpus and his portfolio.
           Very impressive stuff here.
         </p>
       </div>

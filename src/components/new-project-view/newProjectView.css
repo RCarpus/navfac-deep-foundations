@@ -1,0 +1,20 @@
+.new-project {
+  width: 100%;
+}
+
+.new-project__title {
+  max-width: 99%;
+  text-align: center;
+  margin: auto;
+}
+
+.new-project__form {
+  max-width: 800px;
+  display: block;
+  margin: auto;
+}
+
+.new-project__form__line {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}

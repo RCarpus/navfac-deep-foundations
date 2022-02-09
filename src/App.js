@@ -5,6 +5,7 @@ import LoginView from './components/login-view/loginView';
 import RegisterView from './components/register-view/registerView';
 import HomeView from './components/home-view/homeView';
 import ProfileView from './components/profile-view/profileView';
+import NewProjectView from './components/new-project-view/newProjectView';
 
 import {
   BrowserRouter as Router,
@@ -67,16 +68,18 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router>
-          <Navbar isLoggedIn={isLoggedIn}/>
+          <Navbar isLoggedIn={isLoggedIn} />
           <Routes>
             <Route path="/" element={<WelcomeView />} />
             <Route path="/profile" element={<ProfileView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="/login" element={<LoginView 
-            redirectHomeIfLoggedIn={()=>this.redirectHomeIfLoggedIn()}/>} />
-            <Route path="/register" element={<RegisterView 
-            redirectHomeIfLoggedIn={()=>this.redirectHomeIfLoggedIn()}/>} />
+            <Route path="/login" element={<LoginView
+              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+            <Route path="/register" element={<RegisterView
+              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
             <Route path="/home" element={<HomeView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            <Route path="/new-project" element={<NewProjectView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
           </Routes>
         </Router>

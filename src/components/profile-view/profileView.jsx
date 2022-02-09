@@ -195,6 +195,16 @@ export default class ProfileView extends React.Component {
     }
   }
 
+  /**
+   * Deletes the user's account. 
+   * Prior to deletion, the user is prompted to enter their email address.
+   * If the email is not correct or if the user cancels, the account will 
+   * not be deleted.
+   * Upon succesful deletion, localStorage is cleared and the page is reloaded,
+   * triggering a redirect to the welcome view.
+   * @param {string} email the user's email address 
+   * @returns null or false
+   */
   deleteAccount(email) {
     const promptText = `Are you sure you want to delete your account? 
     This cannot be undone. Your profile and projects will all be erased.
