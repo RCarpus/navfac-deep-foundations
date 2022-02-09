@@ -64,7 +64,7 @@ export default class NewProjectView extends React.Component {
   createNewProject(e) {
     e.preventDefault();
     // Extract data from form
-    const Name = document.getElementById('new-project__form__name').value;
+    const Name = document.getElementById('new-project__form__name').value.trim();
     const Client = document.getElementById('new-project__form__client').value;
     const Engineer = document.getElementById('new-project__form__engineer').value;
     const Notes = document.getElementById('new-project__form__notes').value;
