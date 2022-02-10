@@ -80,3 +80,41 @@ button {
     display: block;
   }
 }
+
+#edit__project-info {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  background-color: white;
+  border: solid var(--color-tirtiary);
+  padding: .5em 10em 2em 5em;
+}
+
+@media only screen and (max-width: 1200px) {
+  #edit__project-info {
+    left: 1em;
+    padding: 1em;
+  }
+}
+
+#project-info-close-btn {
+  float: right;
+}
+
+.project-info-line {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  margin: .5em;
+}
+
+.project-info-label {
+  margin-right: 1em;
+}
+
+#project-info-notes {
+  height: 10em;
+}
+
+.hidden {
+  opacity: 0;
+}

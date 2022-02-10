@@ -105,6 +105,8 @@ export default class ProjectEditView extends React.Component {
     e.preventDefault();
     const showProjectInfo = !this.state.showProjectInfo;
     this.setState({ showProjectInfo });
+    let info = document.getElementById('edit__project-info');
+    info.classList.toggle('hidden');
   }
 
   /** TODO
@@ -367,6 +369,29 @@ export default class ProjectEditView extends React.Component {
                 </div>
 
               </div>
+            </div>
+          </div>
+
+
+          {/* Project Info */}
+          <div id="edit__project-info" className="hidden">
+            <button id="project-info-close-btn" onClick={(e) => this.toggleProjectInfo(e)}>close</button>
+            <h2 className="edit__title">Project Info</h2>
+            <div className="project-info-line">
+              <label className="project-info-label">Project Name/Number</label>
+              <input id="new-project__form__name" placeholder={project.Meta.Name} />
+            </div>
+            <div className="project-info-line">
+              <label className="project-info-label">Client</label>
+              <input id="new-project__form__client" placeholder={project.Meta.Client} />
+            </div>
+            <div className="project-info-line">
+              <label className="project-info-label">Engineer</label>
+              <input id="new-project__form__engineer" placeholder={project.Meta.Engineer} />
+            </div>
+            <div className="project-info-line">
+              <label className="project-info-label">Notes</label>
+              <textarea id="project-info-notes" placeholder={project.Meta.Notes} />
             </div>
           </div>
         </form>
