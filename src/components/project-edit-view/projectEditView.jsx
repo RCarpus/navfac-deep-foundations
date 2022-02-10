@@ -257,7 +257,13 @@ export default class ProjectEditView extends React.Component {
             <td><input placeholder={project.SoilProfile.LayerDepths[i]} /></td>
             <td><input placeholder={project.SoilProfile.LayerNames[i]} /></td>
             <td><input placeholder={project.SoilProfile.LayerUnitWeights[i]} /></td>
-            <td><input placeholder={phiOrC} /></td>
+            <td>
+              <select name="phi-or-c" >
+                <option value={phiOrC}>{phiOrC}</option>
+                <option value="Φ">Φ</option>
+                <option value="C">C</option>
+              </select>
+            </td>
             <td><input placeholder={project.SoilProfile.LayerPhiOrCValues[i]} /></td>
           </tr>
         );
@@ -272,7 +278,13 @@ export default class ProjectEditView extends React.Component {
             <td><input placeholder='---' /></td>
             <td><input placeholder='---' /></td>
             <td><input placeholder='---' /></td>
-            <td><input placeholder='---' /></td>
+            <td>
+              <select name="phi-or-c" >
+                <option value="---">---</option>
+                <option value="Φ">Φ</option>
+                <option value="C">C</option>
+              </select>
+            </td>
             <td><input placeholder='---' /></td>
           </tr>
         )
