@@ -1,0 +1,82 @@
+.edit {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+button {
+  background-color: var(--color-tirtiary);
+}
+
+.edit__analyze-btn {
+  background-color: var(--color-secondary);
+  width: 300px;
+  height: 2em;
+  font-size: 1.5em;
+  display: block;
+  margin: auto;
+}
+
+.edit__project-info-btn {
+  background-color: var(--color-tirtiary);
+  float: left;
+  font-size: 1.2em;
+}
+
+.edit__grid__container {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  column-gap: 5em;
+}
+
+.edit__subtitle {
+  max-width: 99%;
+  text-align: center;
+}
+
+.edit__subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.edit__subgrid__item {
+  border: solid var(--color-tirtiary) 1px;
+  padding: 0.5em;
+}
+
+.edit__subgrid__input {
+  width: 30px;
+  margin-left: 1em;
+}
+
+#soil-table {
+  table-layout: fixed;
+  width: 550px;
+  margin-top: 2em;
+}
+
+.soil-table-row-count {
+  text-align: center;
+}
+
+.soil-table__narrow {
+  width: 3em;
+}
+
+.soil-table__wide {
+  width: 10em;
+}
+
+#foundation-details {
+  max-width: 600px;
+}
+
+.foundation-details-line {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+}
+
+@media only screen and (max-width: 1200px) {
+  .edit__grid__container {
+    display: block;
+  }
+}

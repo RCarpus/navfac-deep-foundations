@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import './projectEditView';
+import './projectEditView.css';
 import axios from 'axios';
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
@@ -141,7 +141,7 @@ export default class ProjectEditView extends React.Component {
         let phiOrC = project.SoilProfile.LayerPhiOrCs[i] === 'PHI' ? 'Φ' : 'C';
         soilProfileRows.push(
           <tr key={`row:${layerNo}`}>
-            <td>{layerNo}</td>
+            <td className="soil-table-row-count">{layerNo}</td>
             <td><input placeholder={project.SoilProfile.LayerDepths[i]} /></td>
             <td><input placeholder={project.SoilProfile.LayerNames[i]} /></td>
             <td><input placeholder={project.SoilProfile.LayerUnitWeights[i]} /></td>
@@ -156,7 +156,7 @@ export default class ProjectEditView extends React.Component {
       for (let i = 0; i < additionalSoilRows; i++) {
         blankSoilRows.push(
           <tr key={`row:${layerNo}`}>
-            <td>{layerNo}</td>
+            <td className="soil-table-row-count">{layerNo}</td>
             <td><input placeholder='---' /></td>
             <td><input placeholder='---' /></td>
             <td><input placeholder='---' /></td>
@@ -222,7 +222,8 @@ export default class ProjectEditView extends React.Component {
 
         <form className="edit__form">
 
-          <button onClick={(e) => this.toggleProjectInfo(e)}>
+          <button onClick={(e) => this.toggleProjectInfo(e)}
+            className="edit__project-info-btn">
             {showProjectInfo ? "Hide Project Info" : "Show Project Info"}
           </button>
           <button onClick={(e) => this.calculate(e)} className="edit__analyze-btn">
@@ -231,46 +232,52 @@ export default class ProjectEditView extends React.Component {
           <div className="edit__grid__container">
             <div className="edit__grid__item">
               <h2 className="edit__title">Soil Profile</h2>
-              <p>
+              <p className="edit__subtitle">
                 These inputs are independent of the individual piles to be analyzed.
               </p>
 
               {/* Groundwater Depth, Ignored Depth, Sublayer Increment */}
               <div className="edit__subgrid">
-                <label htmlFor="groundwater-depth">
-                  Groundwater Depth (ft)
-                </label>
-                <input id="groundwater-depth"
-                  placeholder={project.SoilProfile.GroundwaterDepth || 'required'} />
-                <p>
-                  Leave blank or input a high number of no groundwater is present.
-                </p>
-                <label htmlFor="ignored-depth">Ignored Depth (ft)</label>
-                <input id="ignored-depth"
-                  placeholder={project.SoilProfile.IgnoredDepth || 'required'} />
-                <p>
-                  Soil within this depth from the ground surface will be ignored
-                  in skin friction calculations
-                </p>
-                <label htmlFor="sublayer-increment">Sublayer Increment (ft)</label>
-                <input id="sublayer-increment"
-                  placeholder={project.SoilProfile.Increment || 'required'} />
-                <p>
-                  Soil profile will be divided up into small sublayers with
-                  this thickness. It is recommended to use 0.5 or 1.0.
-                </p>
+                <div className="edit__subgrid__item">
+                  <label htmlFor="groundwater-depth">
+                    Groundwater Depth (ft)
+                  </label>
+                  <input className="edit__subgrid__input" id="groundwater-depth"
+                    placeholder={project.SoilProfile.GroundwaterDepth || 'required'} />
+                  <p>
+                    Leave blank or input a high number of no groundwater is present.
+                  </p>
+                </div>
+                <div className="edit__subgrid__item">
+                  <label htmlFor="ignored-depth">Ignored Depth (ft)</label>
+                  <input className="edit__subgrid__input" id="ignored-depth"
+                    placeholder={project.SoilProfile.IgnoredDepth || 'required'} />
+                  <p>
+                    Soil within this depth from the ground surface will be ignored
+                    in skin friction calculations
+                  </p>
+                </div>
+                <div className="edit__subgrid__item">
+                  <label htmlFor="sublayer-increment">Sublayer Increment (ft)</label>
+                  <input className="edit__subgrid__input" id="sublayer-increment"
+                    placeholder={project.SoilProfile.Increment || 'required'} />
+                  <p>
+                    Soil profile will be divided up into small sublayers with
+                    this thickness. It is recommended to use 0.5 or 1.0.
+                  </p>
+                </div>
               </div>
 
               {/* Soil layer details */}
-              <table>
+              <table id="soil-table">
                 <thead>
                   <tr>
                     <th>Layer No.</th>
-                    <th>Bottom Depth (ft)</th>
-                    <th>Name</th>
-                    <th>Unit Weight (pcf)</th>
-                    <th>C/Φ</th>
-                    <th>C/Φ value (deg or psf)</th>
+                    <th className="soil-table__narrow">Bottom Depth (ft)</th>
+                    <th className="soil-table__wide">Name</th>
+                    <th className="soil-table__narrow">Unit Weight (pcf)</th>
+                    <th className="soil-table__narrow">C/Φ</th>
+                    <th className="soil-table__wide">C/Φ value (deg or psf)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -281,23 +288,29 @@ export default class ProjectEditView extends React.Component {
               <button onClick={(e) => this.addSoilRow(e)}>Add Row</button>
             </div>
 
-            <div className="edit__grid__item">
+            <div className="edit__grid__item" id="foundation-details">
               <h2 className="edit__title">Foundation Details</h2>
-              <p>These inputs affect the soil properties and capacity calculations</p>
+              <p className="edit__subtitle">These inputs affect the soil properties and capacity calculations</p>
 
               {/* Pile Type, Material, Factor of Safety */}
-              <label htmlFor="pile-type">Pile Type</label>
-              <input placeholder={project.FoundationDetails.PileType || 'required'} />
-              <label htmlFor="material">Material</label>
-              <input placeholder={project.FoundationDetails.Material || 'required'} />
-              <label htmlFor="FS">Factor of Safety</label>
-              <input placeholder={project.FoundationDetails.FS || 'required'} />
+              <div className="foundation-details-line">
+                <label className="foundation-details-label" htmlFor="pile-type">Pile Type</label>
+                <input placeholder={project.FoundationDetails.PileType || 'required'} />
+              </div>
+              <div className="foundation-details-line">
+                <label className="foundation-details-label" htmlFor="material">Material</label>
+                <input placeholder={project.FoundationDetails.Material || 'required'} />
+              </div>
+              <div className="foundation-details-line">
+                <label className="foundation-details-label" htmlFor="FS">Factor of Safety</label>
+                <input placeholder={project.FoundationDetails.FS || 'required'} />
+              </div>
 
               {/* Nested grid for width and depth tables */}
               <div className="edit__subgrid">
                 {/* Widths */}
                 <div className="edit__widths">
-                  <table>
+                  <table className="foundation-table">
                     <thead>
                       <tr>
                         <th>Widths (ft)</th>
@@ -313,7 +326,7 @@ export default class ProjectEditView extends React.Component {
 
                 {/* Depths */}
                 <div className="edit__depths">
-                  <table>
+                  <table className="foundation-table">
                     <thead>
                       <tr>
                         <th>Bearing Depths (ft)</th>
