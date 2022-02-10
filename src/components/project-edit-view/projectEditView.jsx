@@ -88,6 +88,27 @@ export default class ProjectEditView extends React.Component {
       });
   }
 
+  saveProject(project) {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const projectName = localStorage.getItem('currentProject');
+    const newProjectName = project.Meta.Name;
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.put(API_URL + `users/${ID}/projects/${projectName}`, project, headers)
+      .then(response => {
+        localStorage.setItem('currentProject', newProjectName);
+        console.log(response);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+  }
+
   /**
    * Adds a row to the soil profile table
    * @param {object} e event object
@@ -236,8 +257,18 @@ export default class ProjectEditView extends React.Component {
         Notes,
       }
     }
+    // Do various validation checks
     const validationResult = this.validateProjectInputs(updatedProject);
-    console.log(validationResult);
+
+    // Set the result of validation into localStorage
+    localStorage.setItem('validatedProject', JSON.stringify(validationResult));
+
+    // notify the user if they have issues
+    if (!validationResult) {
+      window.alert('Analysis failed. Your input data has issues.');
+    } else {
+      this.saveProject(validationResult);
+    }
   }
 
   /**
