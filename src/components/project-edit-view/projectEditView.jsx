@@ -20,11 +20,13 @@ export default class ProjectEditView extends React.Component {
     super(props);
     this.state = {
       project: undefined,
+      names: [],
       showProjectInfo: false,
       useTwoWidthColumns: false,
       additionalSoilRows: 1,
       additionalWidthRows: 1,
       additionalDepthRows: 1,
+      validation: undefined,
     }
   }
 
@@ -34,6 +36,7 @@ export default class ProjectEditView extends React.Component {
    */
   componentDidMount() {
     this.loadCurrentProject();
+    this.getProjectNames();
   }
 
   /**
@@ -51,7 +54,6 @@ export default class ProjectEditView extends React.Component {
     };
     axios.get(API_URL + `users/${ID}/projects/${currentProject}`, headers)
       .then(response => {
-        console.log(response.data);
         const useTwoWidthColumns = response.data.FoundationDetails.PileType
           === "DRIVEN-SINGLE-H-PILE";
         this.setState({ project: response.data, useTwoWidthColumns });
@@ -60,6 +62,29 @@ export default class ProjectEditView extends React.Component {
         console.error(error);
         window.alert(`Failed to load project. Returning home.`);
         window.location.href = '/home';
+      });
+  }
+
+  /**
+ * Download the names of the user's existing projects and save to state.
+ * This is used to check the new project's name and make sure their 
+ * are no duplicate names.
+ */
+  getProjectNames() {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.get(API_URL + `users/${ID}/projects`, headers)
+      .then(response => {
+        let names = response.data.map(project => project.Name);
+        this.setState({ names });
+      })
+      .catch(error => {
+        console.error(error);
       });
   }
 
@@ -133,7 +158,7 @@ export default class ProjectEditView extends React.Component {
     let LayerDepths = [];
     let LayerNames = [];
     let LayerUnitWeights = [];
-    let LayerPhisOrCs = [];
+    let LayerPhiOrCs = [];
     let LayerPhiOrCValues = [];
     let soilTable = document.getElementById('soil-table');
     for (let row = 1; row < soilTable.rows.length; row++) {
@@ -143,7 +168,7 @@ export default class ProjectEditView extends React.Component {
         || soilTable.rows[row].cells[2].firstChild.placeholder);
       LayerUnitWeights.push(soilTable.rows[row].cells[3].firstChild.value
         || soilTable.rows[row].cells[3].firstChild.placeholder);
-      LayerPhisOrCs.push(soilTable.rows[row].cells[4].firstChild.value
+      LayerPhiOrCs.push(soilTable.rows[row].cells[4].firstChild.value
         || soilTable.rows[row].cells[4].firstChild.placeholder);
       LayerPhiOrCValues.push(soilTable.rows[row].cells[5].firstChild.value
         || soilTable.rows[row].cells[5].firstChild.placeholder);
@@ -194,7 +219,7 @@ export default class ProjectEditView extends React.Component {
         LayerDepths,
         LayerNames,
         LayerUnitWeights,
-        LayerPhisOrCs,
+        LayerPhiOrCs,
         LayerPhiOrCValues
       },
       FoundationDetails: {
@@ -211,7 +236,236 @@ export default class ProjectEditView extends React.Component {
         Notes,
       }
     }
-    console.log(updatedProject);
+    const validationResult = this.validateProjectInputs(updatedProject);
+    console.log(validationResult);
+  }
+
+  /**
+   * Attempt to clean data and notify via state if any inputs are bad.
+   * Return cleaned object if inputs are valid, return false otherwise
+   * @param {object} project object containing all user-modifiable project data
+   * @returns {object} cleaned project data or false.
+   */
+  validateProjectInputs(project) {
+    let validation = {
+      SoilProfile: {},
+      FoundationDetails: {},
+      Meta: {},
+    };
+    const nonzeroNum = /^[0-9]*\.?[0-9]*$/;
+
+    /* GroundwaterDepth must be a non-negative number */
+    validation.SoilProfile.GroundwaterDepth = nonzeroNum.test(
+      project.SoilProfile.GroundwaterDepth);
+
+    /* IgnoredDepth must be a non-negative number */
+    validation.SoilProfile.IgnoredDepth = nonzeroNum.test(
+      project.SoilProfile.IgnoredDepth);
+
+    /* Increment must be a positive number */
+    validation.SoilProfile.Increment = nonzeroNum.test(
+      project.SoilProfile.Increment)
+      && project.SoilProfile.Increment > 0;
+
+    /* PileType must have a selection (ie: not "required") */
+    validation.FoundationDetails.PileType = project.FoundationDetails.PileType
+      !== "required";
+
+    /* Material must have a selection (ie: not "required") */
+    validation.FoundationDetails.Material = project.FoundationDetails.Material
+      !== "required";
+
+    /* FS must be a positive number */
+    validation.FoundationDetails.FS = nonzeroNum.test(
+      project.FoundationDetails.FS)
+      && project.FoundationDetails.FS > 0;
+
+    /* Name must be a non-null string with no trailing white space.
+    We can cut the white space here for the user.
+    Also, the name must either be the current project name or a unique name */
+    let Name = project.Meta.Name.trim();
+    validation.Meta.Name = Name.length > 0
+      && (this.state.names.indexOf(Name) === -1
+        || Name === this.state.project.Meta.Name);
+
+    /* The Client, Engineer, and Notes fields have no rules */
+    validation.Meta.Client = true;
+    validation.Meta.Engineer = true;
+    validation.Meta.Notes = true;
+
+    /* SoilProfile cleaning 
+      Removes any unfinished layers and then makes sure each layer is good.*/
+    let cleanLayerDepths = project.SoilProfile.LayerDepths;
+    let cleanLayerNames = project.SoilProfile.LayerNames;
+    let cleanLayerUnitWeights = project.SoilProfile.LayerUnitWeights;
+    let cleanLayerPhiOrCs = project.SoilProfile.LayerPhiOrCs;
+    let cleanLayerPhiOrCValues = project.SoilProfile.LayerPhiOrCValues;
+    let start = cleanLayerDepths.length - 1;
+    // iterate backwards through the arrays so we can remove by index without
+    // messing anything up.
+    for (let i = start; i >= 0; i--) {
+      if (cleanLayerDepths[i] === '---'
+        || cleanLayerNames[i] === '---'
+        || cleanLayerUnitWeights[i] === '---'
+        || cleanLayerPhiOrCs[i] === '---'
+        || cleanLayerPhiOrCValues[i] === '---') {
+        cleanLayerDepths.splice(i, 1);
+        cleanLayerNames.splice(i, 1);
+        cleanLayerUnitWeights.splice(i, 1);
+        cleanLayerPhiOrCs.splice(i, 1);
+        cleanLayerPhiOrCValues.splice(i, 1);
+      }
+    }
+    // After removing incomplete layers, each remaining layer must be correct
+    // Bottom Depth
+    const validDepths = cleanLayerDepths.every(function (depth, index) {
+      if (nonzeroNum.test(depth) && index === 0) return true;
+      if (nonzeroNum.test(depth) && Number(depth) > Number(cleanLayerDepths[index - 1])) return true;
+      return false;
+    });
+    validation.SoilProfile.LayerDepths = validDepths;
+
+    // Cast depths as numbers
+    if (validDepths) {
+      cleanLayerDepths = cleanLayerDepths.map(depth => {
+        return Number(depth);
+      })
+    }
+
+    // Layer Names
+    const validLayerNames = cleanLayerNames.every(name => {
+      return name.length > 0 ? true : false;
+    });
+    validation.SoilProfile.LayerNames = validLayerNames;
+
+    // Unit Weights
+    const validUnitWeights = cleanLayerUnitWeights.every(weight => {
+      return nonzeroNum.test(weight) && Number(weight) > 0;
+    });
+    validation.SoilProfile.LayerUnitWeights = validUnitWeights;
+    // cast the weights as numbers
+    if (validUnitWeights) {
+      cleanLayerUnitWeights = cleanLayerUnitWeights.map(weight => {
+        return Number(weight);
+      });
+    }
+
+    // C or Phi
+    const validCorPhis = cleanLayerPhiOrCs.every(value => {
+      return value === 'C' || value === 'Φ';
+    });
+    validation.SoilProfile.LayerPhiOrCs = validCorPhis;
+    // Change the phi character to the string expected by the server
+    if (validCorPhis) {
+      cleanLayerPhiOrCs = cleanLayerPhiOrCs.map(value => {
+        if (value === 'Φ') {
+          return 'PHI';
+        } else {
+          return value;
+        }
+      })
+    }
+
+    // C or Phi value
+    const validCorPhiValues = cleanLayerPhiOrCValues.every(function (value, index) {
+      if (cleanLayerPhiOrCs[index] === 'PHI'
+        && value >= 26 && value <= 40
+        && nonzeroNum.test(value)) {
+        return true;
+      } else if (cleanLayerPhiOrCs[index] === 'C'
+        && nonzeroNum.test(value)) return true;
+      return false;
+    });
+    validation.SoilProfile.LayerPhiOrCValues = validCorPhiValues;
+    if (validCorPhiValues) {
+      cleanLayerPhiOrCValues = cleanLayerPhiOrCValues.map(value => {
+        return Number(value);
+      })
+    }
+
+    /* Bearing depths cleaning */
+    let cleanBearingDepths = project.FoundationDetails.BearingDepths;
+    start = cleanBearingDepths.length - 1;
+    for (let i = start; i >= 0; i--) {
+      if (cleanBearingDepths[i] === '---') {
+        cleanBearingDepths.splice(i, 1);
+      }
+    }
+    const validBearingDepths = cleanBearingDepths.every(depth => {
+      return nonzeroNum.test(depth) ? true : false;
+    });
+    validation.FoundationDetails.BearingDepths = validBearingDepths;
+    if (validBearingDepths) {
+      cleanBearingDepths = cleanBearingDepths.map(depth => {
+        return Number(depth);
+      })
+    }
+
+    /* Widths cleaning */
+    let cleanWidths = project.FoundationDetails.Widths;
+    start = cleanWidths.length - 1;
+    for (let i = start; i >= 0; i--) {
+      let blankWidth = cleanWidths[i].indexOf('---') > -1;
+      if (blankWidth) {
+        cleanWidths.splice(i, 1);
+      }
+    }
+    const validWidths = cleanWidths.every(width => {
+      return width.every(subWidth => {
+        return nonzeroNum.test(subWidth);
+      });
+    });
+    validation.FoundationDetails.Widths = validWidths;
+    if (validWidths) {
+      cleanWidths = cleanWidths.map(width => {
+        return width.map(subWidth => {
+          return Number(subWidth);
+        });
+      });
+    }
+
+    // The validation is done, so we can update state to render and warnings.
+    this.setState({ validation });
+
+    // If ANY of these validations failed, we need to return false.
+    let keys = Object.keys(validation);
+    let validationSuccess = true;
+    keys.forEach(key => {
+      let subkeys = Object.keys(validation[key]);
+      subkeys.forEach(subkey => {
+        if (!validation[key][subkey]) validationSuccess = false;
+      });
+    });
+    if (!validationSuccess) return false;
+
+    // This is the object that will be sent to the server if valid
+    const validatedProject = {
+      SoilProfile: {
+        GroundwaterDepth: project.SoilProfile.GroundwaterDepth,
+        IgnoredDepth: project.SoilProfile.IgnoredDepth,
+        Increment: project.SoilProfile.Increment,
+        LayerDepths: cleanLayerDepths,
+        LayerNames: cleanLayerNames,
+        LayerUnitWeights: cleanLayerUnitWeights,
+        LayerPhiOrCs: cleanLayerPhiOrCs,
+        LayerPhiOrCValues: cleanLayerPhiOrCValues,
+      },
+      FoundationDetails: {
+        PileType: project.FoundationDetails.PileType,
+        Material: project.FoundationDetails.Material,
+        FS: project.FoundationDetails.FS,
+        Widths: cleanWidths,
+        BearingDepths: cleanBearingDepths,
+      },
+      Meta: {
+        Name,
+        Client: project.Meta.Client,
+        Engineer: project.Meta.Engineer,
+        Notes: project.Meta.Notes,
+      }
+    }
+
+    return validatedProject;
   }
 
   /**
@@ -232,9 +486,6 @@ export default class ProjectEditView extends React.Component {
       additionalWidthRows,
       additionalDepthRows,
       useTwoWidthColumns } = this.state;
-    console.log(project);
-
-
 
     let soilProfileRows = [];
     let blankSoilRows = [];
