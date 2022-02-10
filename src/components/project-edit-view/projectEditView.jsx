@@ -21,6 +21,7 @@ export default class ProjectEditView extends React.Component {
     this.state = {
       project: undefined,
       showProjectInfo: false,
+      useTwoWidthColumns: false,
       additionalSoilRows: 1,
       additionalWidthRows: 1,
       additionalDepthRows: 1,
@@ -51,7 +52,9 @@ export default class ProjectEditView extends React.Component {
     axios.get(API_URL + `users/${ID}/projects/${currentProject}`, headers)
       .then(response => {
         console.log(response.data);
-        this.setState({ project: response.data });
+        const useTwoWidthColumns = response.data.FoundationDetails.PileType
+          === "DRIVEN-SINGLE-H-PILE";
+        this.setState({ project: response.data, useTwoWidthColumns });
       })
       .catch(error => {
         console.error(error);
@@ -61,7 +64,7 @@ export default class ProjectEditView extends React.Component {
   }
 
   /**
-   * Adds a row the soil profile table
+   * Adds a row to the soil profile table
    * @param {object} e event object
    */
   addSoilRow(e) {
@@ -118,7 +121,8 @@ export default class ProjectEditView extends React.Component {
       showProjectInfo,
       additionalSoilRows,
       additionalWidthRows,
-      additionalDepthRows } = this.state;
+      additionalDepthRows,
+      useTwoWidthColumns } = this.state;
     console.log(project);
 
     let soilProfileRows = [];
@@ -167,17 +171,25 @@ export default class ProjectEditView extends React.Component {
       for (let i = 0; i < project.FoundationDetails.Widths.length; i++) {
         widthRows.push(
           <tr key={`row:${widthNo}`}>
-            <td><input placeholder={project.FoundationDetails.Widths[i]} /></td>
+            <td><input placeholder={project.FoundationDetails.Widths[i][0]} /></td>
+            {useTwoWidthColumns &&
+              <td><input placeholder={project.FoundationDetails.Widths[i][1]} /></td>
+            }
           </tr>
         );
         widthNo++;
       };
+
 
       // Generate additional table rows beyond those originally included
       for (let i = 0; i < additionalWidthRows; i++) {
         blankWidthRows.push(
           <tr key={`row:${widthNo}`}>
             <td><input placeholder="---" /></td>
+            {useTwoWidthColumns &&
+              <td><input placeholder="---" /></td>
+            }
+
           </tr>
         );
         widthNo++;
