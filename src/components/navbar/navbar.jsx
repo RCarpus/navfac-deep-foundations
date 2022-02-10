@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import './navbar.css';
+import { Link } from 'react-router-dom';
 
 /**
  * @description Navbar is pinned to the top of the screen at all times.
@@ -28,11 +29,14 @@ export default class Navbar extends React.Component {
     const { isLoggedIn } = this.props;
     return (
       <div className="banner">
-        <h1 className="banner__title">NAVFAC Deep Foundation Design</h1>
-        {this.props.isLoggedIn &&
-          <button onClick={(e)=>this.logout(e)}>logout</button>
-        }
 
+        {this.props.isLoggedIn &&
+          <div className="banner__links">
+            <button className="banner__link" onClick={(e) => this.logout(e)}>Logout</button>
+            <Link className="banner__link" to="/home">Home</Link>
+          </div>
+        }
+        <h1 className="banner__title">NAVFAC Deep Foundation Design</h1>
       </div>
     )
   }
