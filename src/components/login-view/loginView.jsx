@@ -63,9 +63,12 @@ export default class LoginView extends React.Component {
     return (
       <div className="login">
         <h2 className="login__title">Returning User Login</h2>
-        {loginFailed &&
-          <p className="login__failed">Login Failed. Check your credentials and try again.</p>
-        }
+        <div className="login__failed__container">
+          {loginFailed &&
+            <p className="login__failed">Login Failed. Check your credentials and try again.</p>
+          }
+        </div>
+
         <form id="login__form">
           <div className="login__form__line">
             <label>Email</label>
@@ -75,10 +78,13 @@ export default class LoginView extends React.Component {
             <label>Password</label>
             <input id="login__form__password" type="password" />
           </div>
-          <button onClick={(e) => this.handleLogin(e)}>Login</button>
+          <button className="login-btn"
+            onClick={(e) => this.handleLogin(e)}>
+            Login
+          </button>
         </form>
         <div className="login__to-registration-container">
-          <span>
+          <span className="login__to-registration__text">
             Need an account?
           </span>
           <Link to="/register">Register</Link>
