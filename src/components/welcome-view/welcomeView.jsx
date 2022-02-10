@@ -21,7 +21,7 @@ export default class WelcomeView extends React.Component {
           Axial capacity design tool
         </h2>
         <div className="welcome__video-container">
-          <a className="welcome__video-link" href="#">Demonstration Video</a>
+          <a className="welcome__link video-link" href="#">Demonstration Video</a>
         </div>
         <div className="welcome__grid">
           <div className="welcome__grid__item">
@@ -65,11 +65,13 @@ export default class WelcomeView extends React.Component {
             <h2>
               Have an account?
             </h2>
-            <Link to="/login">Login</Link>
+            <Link className="welcome__link" to="/login">Login</Link>
             <h2>
               New user?
             </h2>
-            <Link to="/register">Create a free account</Link>
+            <Link className="welcome__link" to="/register">
+              Create a free account
+            </Link>
           </div>
         </div>
       </div>

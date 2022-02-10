@@ -1,11 +1,13 @@
 .welcome {
   width: 100%;
+  padding: 1.5em;
 }
 
 .welcome__title {
   width: 99%;
   margin: auto;
   text-align: center;
+  margin-bottom: 1em;
 }
 
 .welcome__grid {
@@ -14,3 +16,41 @@
   grid-column-gap: 2em;
 }
 
+h2 {
+  text-align: center;
+}
+
+.welcome__link {
+  max-width: 300px;
+  margin: auto;
+  border: solid rgba(0, 0, 0, 0.281) 1px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  color: black;
+  background-color: var(--color-secondary);
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.video-link {
+  background-color: var(--color-tirtiary);
+  margin-bottom: 0.5em;
+}
+
+@media only screen and (max-width: 768px) {
+  .welcome__grid {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  p {
+    margin-right: 25px;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .welcome__link {
+    max-width: 200px;
+  }
+}
