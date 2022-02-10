@@ -93,7 +93,7 @@ export default class ProjectEditView extends React.Component {
     this.setState({ additionalDepthRows: current + 1 });
   }
 
-  /** TODO
+  /**
    * Toggles the Project info content on or off. This content includes 
    * - Name
    * - Client
@@ -115,7 +115,103 @@ export default class ProjectEditView extends React.Component {
    */
   calculate(e) {
     e.preventDefault();
-    window.alert('clicked calculate');
+    const project = this.state.project;
+    // collect all the info from the form
+    // Start with the easy stuff
+    const GroundwaterDepth = Number(document.getElementById('groundwater-depth').value)
+      || project.SoilProfile.GroundwaterDepth;
+    const IgnoredDepth = Number(document.getElementById('ignored-depth').value)
+      || project.SoilProfile.IgnoredDepth;
+    const Increment = Number(document.getElementById('sublayer-increment').value)
+      || project.SoilProfile.Increment;
+    const PileType = document.getElementById('pile-type').value;
+    const Material = document.getElementById('material').value;
+    const FS = Number(document.getElementById('FS').value)
+      || project.FoundationDetails.FS;
+
+    // Extract data from the SoilProfile table
+    let LayerDepths = [];
+    let LayerNames = [];
+    let LayerUnitWeights = [];
+    let LayerPhisOrCs = [];
+    let LayerPhiOrCValues = [];
+    let soilTable = document.getElementById('soil-table');
+    for (let row = 1; row < soilTable.rows.length; row++) {
+      LayerDepths.push(soilTable.rows[row].cells[1].firstChild.value
+        || soilTable.rows[row].cells[1].firstChild.placeholder);
+      LayerNames.push(soilTable.rows[row].cells[2].firstChild.value
+        || soilTable.rows[row].cells[2].firstChild.placeholder);
+      LayerUnitWeights.push(soilTable.rows[row].cells[3].firstChild.value
+        || soilTable.rows[row].cells[3].firstChild.placeholder);
+      LayerPhisOrCs.push(soilTable.rows[row].cells[4].firstChild.value
+        || soilTable.rows[row].cells[4].firstChild.placeholder);
+      LayerPhiOrCValues.push(soilTable.rows[row].cells[5].firstChild.value
+        || soilTable.rows[row].cells[5].firstChild.placeholder);
+    }
+
+    // Extract data from widths table
+    let Widths = [];
+    let widthTable = document.getElementById('width-table');
+    for (let row = 1; row < widthTable.rows.length; row++) {
+      let width1 = widthTable.rows[row].cells[0].firstChild.value
+        || widthTable.rows[row].cells[0].firstChild.placeholder;
+      let width2;
+      if (widthTable.rows[row].cells[1]) {
+        width2 = widthTable.rows[row].cells[1].firstChild.value
+          || widthTable.rows[row].cells[1].firstChild.placeholder;
+      }
+      if (width2) {
+        Widths.push([width1, width2]);
+      } else {
+        Widths.push([width1]);
+      }
+    }
+
+    // Extract data from the depths table
+    let BearingDepths = [];
+    let depthTable = document.getElementById('depth-table');
+    for (let row = 1; row < depthTable.rows.length; row++) {
+      BearingDepths.push(depthTable.rows[row].cells[0].firstChild.value
+        || depthTable.rows[row].cells[0].firstChild.placeholder);
+    }
+
+    // Extract Project Info
+    let Name = document.getElementById('project-info-name').value
+      || project.Meta.Name;
+    let Client = document.getElementById('project-info-client').value
+      || project.Meta.Client;
+    let Engineer = document.getElementById('project-info-engineer').value
+      || project.Meta.Engineer;
+    let Notes = document.getElementById('project-info-notes').value
+      || project.Meta.Notes;
+
+    // Aggregate form data into a new updatedProject object
+    let updatedProject = {
+      SoilProfile: {
+        GroundwaterDepth,
+        IgnoredDepth,
+        Increment,
+        LayerDepths,
+        LayerNames,
+        LayerUnitWeights,
+        LayerPhisOrCs,
+        LayerPhiOrCValues
+      },
+      FoundationDetails: {
+        PileType,
+        Material,
+        FS,
+        Widths,
+        BearingDepths,
+      },
+      Meta: {
+        Name,
+        Client,
+        Engineer,
+        Notes,
+      }
+    }
+    console.log(updatedProject);
   }
 
   /**
@@ -331,14 +427,14 @@ export default class ProjectEditView extends React.Component {
               </div>
               <div className="foundation-details-line">
                 <label className="foundation-details-label" htmlFor="FS">Factor of Safety</label>
-                <input placeholder={project.FoundationDetails.FS || 'required'} />
+                <input id="FS" placeholder={project.FoundationDetails.FS || 'required'} />
               </div>
 
               {/* Nested grid for width and depth tables */}
               <div className="edit__subgrid">
                 {/* Widths */}
                 <div className="edit__widths">
-                  <table className="foundation-table">
+                  <table id="width-table" className="foundation-table">
                     <thead>
                       <tr>
                         <th>Widths (ft)</th>
@@ -354,7 +450,7 @@ export default class ProjectEditView extends React.Component {
 
                 {/* Depths */}
                 <div className="edit__depths">
-                  <table className="foundation-table">
+                  <table id="depth-table" className="foundation-table">
                     <thead>
                       <tr>
                         <th>Bearing Depths (ft)</th>
@@ -379,15 +475,15 @@ export default class ProjectEditView extends React.Component {
             <h2 className="edit__title">Project Info</h2>
             <div className="project-info-line">
               <label className="project-info-label">Project Name/Number</label>
-              <input id="new-project__form__name" placeholder={project.Meta.Name} />
+              <input id="project-info-name" placeholder={project.Meta.Name} />
             </div>
             <div className="project-info-line">
               <label className="project-info-label">Client</label>
-              <input id="new-project__form__client" placeholder={project.Meta.Client} />
+              <input id="project-info-client" placeholder={project.Meta.Client} />
             </div>
             <div className="project-info-line">
               <label className="project-info-label">Engineer</label>
-              <input id="new-project__form__engineer" placeholder={project.Meta.Engineer} />
+              <input id="project-info-engineer" placeholder={project.Meta.Engineer} />
             </div>
             <div className="project-info-line">
               <label className="project-info-label">Notes</label>
