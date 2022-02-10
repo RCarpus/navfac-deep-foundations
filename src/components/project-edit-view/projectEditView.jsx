@@ -116,6 +116,17 @@ export default class ProjectEditView extends React.Component {
     window.alert('clicked calculate');
   }
 
+  /**
+   * When the user changes the pile type with the dropdown selector, 
+   * determines whether two columns should be displayed for the 
+   * width selections.
+   */
+  handleChangePileType() {
+    let pileType = document.getElementById('pile-type').value;
+    const useTwoWidthColumns = pileType === 'DRIVEN-SINGLE-H-PILE';
+    this.setState({ useTwoWidthColumns });
+  }
+
   render() {
     const { project,
       showProjectInfo,
@@ -124,6 +135,8 @@ export default class ProjectEditView extends React.Component {
       additionalDepthRows,
       useTwoWidthColumns } = this.state;
     console.log(project);
+
+
 
     let soilProfileRows = [];
     let blankSoilRows = [];
@@ -136,6 +149,7 @@ export default class ProjectEditView extends React.Component {
     let widthNo = 1;
     let depthNo = 1;
     if (project) {
+
       // Generate table rows for the soil profile
       for (let i = 0; i < project.SoilProfile.LayerDepths.length; i++) {
         let phiOrC = project.SoilProfile.LayerPhiOrCs[i] === 'PHI' ? 'Φ' : 'C';
@@ -295,11 +309,23 @@ export default class ProjectEditView extends React.Component {
               {/* Pile Type, Material, Factor of Safety */}
               <div className="foundation-details-line">
                 <label className="foundation-details-label" htmlFor="pile-type">Pile Type</label>
-                <input placeholder={project.FoundationDetails.PileType || 'required'} />
+                <select name="pile-type" id="pile-type" onChange={() => this.handleChangePileType()}>
+                  <option value={project.FoundationDetails.PileType || 'required'}>{project.FoundationDetails.PileType || 'required'}</option>
+                  <option value="DRIVEN-SINGLE-H-PILE">DRIVEN-SINGLE-H-PILE</option>
+                  <option value="DRIVEN-SINGLE-DISPLACEMENT-PILE">DRIVEN-SINGLE-DISPLACEMENT-PILE</option>
+                  <option value="DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE">DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE</option>
+                  <option value="DRIVEN-JETTED-PILE">DRIVEN-JETTED-PILE</option>
+                  <option value="DRILLED-PILE">DRILLED-PILE</option>
+                </select>
               </div>
               <div className="foundation-details-line">
                 <label className="foundation-details-label" htmlFor="material">Material</label>
-                <input placeholder={project.FoundationDetails.Material || 'required'} />
+                <select name="material" id="material">
+                  <option value={project.FoundationDetails.Material || 'required'}>{project.FoundationDetails.Material || 'required'}</option>
+                  <option value="CONCRETE">CONCRETE</option>
+                  <option value="STEEL">STEEL</option>
+                  <option value="TIMBER">TIMBER</option>
+                </select>
               </div>
               <div className="foundation-details-line">
                 <label className="foundation-details-label" htmlFor="FS">Factor of Safety</label>
