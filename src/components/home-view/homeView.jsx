@@ -21,16 +21,20 @@ export default class HomeView extends React.Component {
   }
 
   render() {
+    const currentProject = localStorage.getItem('currentProject');
     return (
       <div className="home">
         <h2 className="home__title">Get Started</h2>
         <div className="home__grid">
-          <button>Load Most Recent</button>
+          {currentProject &&
+            <Link to="/edit-project">Load Most Recent</Link>
+          }
           <Link to="/new-project">Create New Project</Link>
           <Link to="/load-project">Load Project</Link>
           <Link to="/profile">Edit Profile</Link>
-          <button>Load Demo Project</button>
-          <button>View Demo Video</button>
+          <a>Load Demo Project</a>
+          <a href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"
+            target="_blank">View Demo Video</a>
           <a href="https://github.com/RCarpus/navfac-deep-foundations"
             target="_blank">About</a>
         </div>
