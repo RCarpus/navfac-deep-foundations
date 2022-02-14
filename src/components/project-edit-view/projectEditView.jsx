@@ -102,7 +102,7 @@ export default class ProjectEditView extends React.Component {
     axios.put(API_URL + `users/${ID}/projects/${projectName}`, project, headers)
       .then(response => {
         localStorage.setItem('currentProject', newProjectName);
-        console.log(response);
+        window.location.href = "/analyze";
       })
       .catch(error => {
         console.error(error);
