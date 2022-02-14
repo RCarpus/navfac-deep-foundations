@@ -34,3 +34,6 @@ todo.md
 
 # Design materials the world doesn't need to see
 mockups
+
+# Debug config
+.vscode/launch.json
