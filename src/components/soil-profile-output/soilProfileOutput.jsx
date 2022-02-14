@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import './soilProfileOutput';
+import './soilProfileOutput.css';
 
 /**
  * Display a table with detailed soil profile data for a completed analysis.
@@ -15,7 +15,7 @@ export default class SoilProfileOutput extends React.Component {
     const tableRows = data.detailedSoilProfile.layerPhis.map((layer, index) => {
       return (
         <tr>
-          <td>{index+1}</td>
+          <td>{index + 1}</td>
           <td>{data.detailedSoilProfile.layerBottomDepths[index]}</td>
           <td>{data.detailedSoilProfile.layerNames[index]}</td>
           <td>{data.detailedSoilProfile.layerUnitWeights[index]}</td>
@@ -27,21 +27,24 @@ export default class SoilProfileOutput extends React.Component {
       )
     })
     return (
-      <div>
+      <div className="soil-profile-output">
         <h2>Summary of Soil Properties</h2>
-        <div>
-          <h3>Groundwater Depth (ft)</h3>
-          <span>{data.generalSoilProfile.groundwaterDepth}</span>
+        <div className="soil-profile-grid">
+          <div className="soil-profile-subgrid">
+            <p>Groundwater Depth (ft):</p>
+            <p>{data.generalSoilProfile.groundwaterDepth}</p>
+          </div>
+          <div className="soil-profile-subgrid">
+            <p>Ignored Depth (ft):</p>
+            <p>{data.ignoredDepth}</p>
+          </div>
+          <div className="soil-profile-subgrid">
+            <p>Sublayer Thickness (ft):</p>
+            <p>{data.increment}</p>
+          </div>
+
         </div>
-        <div>
-          <h3>Ignored Depth (ft)</h3>
-          <span>{data.ignoredDepth}</span>
-        </div>
-        <div>
-          <h3>Sublayer Thickness (ft)</h3>
-          <span>{data.increment}</span>
-        </div>
-        <table>
+        <table className="soil-profile-table">
           <thead>
             <tr>
               <th>Layer No.</th>
@@ -55,9 +58,10 @@ export default class SoilProfileOutput extends React.Component {
             </tr>
           </thead>
           <tbody>
-          {tableRows}
+            {tableRows}
           </tbody>
         </table>
+        <div className="pagebreak"></div>
       </div>
     )
   }

@@ -50,3 +50,9 @@ h1 {
     margin: 2px;
   }
 }
+
+@media print {
+  .banner {
+    display: none;
+  }
+}

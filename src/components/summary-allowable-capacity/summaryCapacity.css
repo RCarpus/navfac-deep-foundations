@@ -1,0 +1,18 @@
+.summary-capacity-page {
+  width: 8in;
+}
+
+.summary-capacity-table {
+  margin-bottom: 2em;
+  border-collapse: collapse;
+}
+
+.summary-capacity-subtitle {
+  margin: auto;
+}
+
+.summary-table-cell {
+  padding: 0 .5em;
+  border: 1px solid;
+  border-color: var(--color-tirtiary);
+}

@@ -1,8 +1,10 @@
 import React from 'react';
+import './analysisView.css';
 import DeepFoundationAnalysis from '../../navfac/DeepFoundationAnalysis';
 import SummaryCapacity from '../summary-allowable-capacity/summaryCapacity';
 import AnalysisHeader from '../analysis-header/analysisHeader';
 import SoilProfileOutput from '../soil-profile-output/soilProfileOutput';
+import PileOutput from '../pile-output/pileOutput';
 
 
 
@@ -97,17 +99,35 @@ export default class AnalysisView extends React.Component {
 
   render() {
     if (this.state.analyzed) {
-      const { allCompSum, 
-        allTenSum, 
-        ultCompSum, 
+      const { allCompSum,
+        allTenSum,
+        ultCompSum,
         ultTenSum,
         project,
-      analysis } = this.state;
+        analysis } = this.state;
+
+      const compressionPiles = analysis
+        .calculations.compressionAnalyses.map((pile) => {
+          return (
+            <PileOutput pile={pile}
+              groundwaterDepth={analysis.generalSoilProfile.groundwaterDepth}
+              increment={analysis.increment} />
+          )
+        });
+
+      const tensionPiles = analysis
+        .calculations.tensionAnalyses.map((pile) => {
+          return (
+            <PileOutput pile={pile}
+              groundwaterDepth={analysis.generalSoilProfile.groundwaterDepth}
+              increment={analysis.increment} />
+          )
+        });
 
 
       console.log(analysis);
       return (
-        <div>
+        <div className="analysis-view">
           <AnalysisHeader name={project.Meta.Name}
             client={project.Meta.Client}
             engineer={project.Meta.Engineer} />
@@ -120,6 +140,8 @@ export default class AnalysisView extends React.Component {
             widths={project.FoundationDetails.Widths}
             depths={project.FoundationDetails.BearingDepths} />
           <SoilProfileOutput data={analysis} />
+          {compressionPiles}
+          {tensionPiles}
         </div>
 
       )

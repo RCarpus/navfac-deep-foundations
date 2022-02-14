@@ -1,0 +1,15 @@
+.analysis-header {
+  width: 8in;
+}
+
+.analysis-header-title {
+  margin-bottom: 1em;
+}
+
+.analysis-header-table {
+  margin-bottom: 2em;
+}
+
+.analysis-header-label {
+  min-width: 300px;
+}

@@ -1,0 +1,31 @@
+.pile-output {
+  width: 8in;
+  font-size: 12px;
+}
+
+.pile-output-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 1em;
+
+}
+
+.pile-output-subgrid {
+  display: flex;
+  flex-direction: row;
+}
+
+.pile-output-subgrid-item {
+  margin-left: 1em;
+  height: 1em;;
+}
+
+.pile-output-subgrid-item-left {
+  flex-basis: 75%;
+  height: 1em;
+}
+
+.pile-type {
+  flex-basis: 30%;
+}
+

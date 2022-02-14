@@ -66,7 +66,7 @@ export default class SummaryCapacity extends React.Component {
       let capacities = [];
       for (let col = 0; col < widths.length; col++) {
         capacities.push(
-          <td key={`cap-${row}-${col}`}>
+          <td className="summary-table-cell" key={`cap-${row}-${col}`}>
             {this.getCapacity(compression, widths[col], depths[row], isAllowable)}
           </td>
         );
@@ -96,7 +96,7 @@ export default class SummaryCapacity extends React.Component {
       let capacities = [];
       for (let col = 0; col < widths.length; col++) {
         capacities.push(
-          <td key={`cap-${row}-${col}`}>
+          <td className="summary-table-cell" key={`cap-${row}-${col}`}>
             {this.getCapacity(tension, widths[col], depths[row], isAllowable)}
           </td>
         );
@@ -113,10 +113,10 @@ export default class SummaryCapacity extends React.Component {
 
     return (
       <div className="summary-capacity-page">
-        <h2>Summary of {capacityType} Axial Capacity</h2>
-        <h3>{capacityType} Capacity (kips) - Compression</h3>
-        <table>
-          <thead>
+        <h2 className="summary-capacity-title">Summary of {capacityType} Axial Capacity</h2>
+        <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Compression</h3>
+        <table className="summary-capacity-table">
+          <thead className="summary-table-head">
             <tr key="width-row">
               <td key="blank"></td>
               <th key="width-label">Width (ft)</th>
@@ -129,8 +129,8 @@ export default class SummaryCapacity extends React.Component {
             {compRows}
           </tbody>
         </table>
-        <h3>{capacityType} Capacity (kips) - Tension</h3>
-        <table>
+        <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Tension</h3>
+        <table className="summary-capacity-table">
           <thead>
             <tr key="width-row">
               <td key="blank"></td>
@@ -144,6 +144,7 @@ export default class SummaryCapacity extends React.Component {
             {tenRows}
           </tbody>
         </table>
+        <div className="pagebreak"></div>
       </div>
     )
   }

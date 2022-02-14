@@ -1,0 +1,23 @@
+.soil-profile-output {
+  width: 8in;
+  font-size: 12px;
+}
+
+.soil-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 2em;
+}
+
+.soil-profile-subgrid {
+  display: flex;
+  flex-direction: row;
+}
+
+.soil-profile-subgrid > p {
+margin-left: 1em;
+}
+
+.wide-col {
+  width: 100px;
+}
