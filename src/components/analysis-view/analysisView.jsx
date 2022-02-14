@@ -1,6 +1,8 @@
 import React from 'react';
 import DeepFoundationAnalysis from '../../navfac/DeepFoundationAnalysis';
 import SummaryCapacity from '../summary-allowable-capacity/summaryCapacity';
+import AnalysisHeader from '../analysis-header/analysisHeader';
+import SoilProfileOutput from '../soil-profile-output/soilProfileOutput';
 
 
 
@@ -16,7 +18,6 @@ export default class AnalysisView extends React.Component {
 
   analyzeProject() {
     let project = JSON.parse(localStorage.getItem('validatedProject'));
-    console.log(project);
     // We need to parse out the layerCohesions and layerPhis from the 
     // user's LayerCorPhiValues.
     let layerCohesions = [];
@@ -32,7 +33,6 @@ export default class AnalysisView extends React.Component {
         layerCohesions.push(values[i]);
       }
     }
-    console.log(layerCohesions, layerPhis);
     // Initialize the analysis
     let analysis = new DeepFoundationAnalysis(
       project.SoilProfile.LayerDepths,
@@ -52,7 +52,6 @@ export default class AnalysisView extends React.Component {
       project.FoundationDetails.BearingDepths,
       project.FoundationDetails.FS
     );
-    console.log(analysis.calculations);
     // Extract capacity data needed for summary tables
     const allCompSum = analysis.calculations.compressionAnalyses.map(analysis => {
       return {
@@ -98,14 +97,20 @@ export default class AnalysisView extends React.Component {
 
   render() {
     if (this.state.analyzed) {
-      const { allCompSum, allTenSum, ultCompSum, ultTenSum, analysis,
-        project } = this.state;
-      console.log(project);
-      console.log('ult ten sum');
-      console.log(ultTenSum);
+      const { allCompSum, 
+        allTenSum, 
+        ultCompSum, 
+        ultTenSum,
+        project,
+      analysis } = this.state;
+
+
+      console.log(analysis);
       return (
         <div>
-          <h1>calculation page</h1>
+          <AnalysisHeader name={project.Meta.Name}
+            client={project.Meta.Client}
+            engineer={project.Meta.Engineer} />
           <SummaryCapacity
             isAllowable={true} compression={allCompSum} tension={allTenSum}
             widths={project.FoundationDetails.Widths}
@@ -114,6 +119,7 @@ export default class AnalysisView extends React.Component {
             isAllowable={false} compression={ultCompSum} tension={ultTenSum}
             widths={project.FoundationDetails.Widths}
             depths={project.FoundationDetails.BearingDepths} />
+          <SoilProfileOutput data={analysis} />
         </div>
 
       )
