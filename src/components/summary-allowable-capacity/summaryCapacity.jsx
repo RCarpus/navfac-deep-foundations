@@ -57,7 +57,7 @@ export default class SummaryCapacity extends React.Component {
     );
     for (let width = 0; width < widths.length; width++) {
       compHeaderRow.push(
-        <th>{widths[width]}</th>
+        <th key={`width-${width}`}>{widths[width]}</th>
       )
     }
 
@@ -66,13 +66,13 @@ export default class SummaryCapacity extends React.Component {
       let capacities = [];
       for (let col = 0; col < widths.length; col++) {
         capacities.push(
-          <td>
+          <td key={`cap-${row}-${col}`}>
             {this.getCapacity(compression, widths[col], depths[row], isAllowable)}
           </td>
         );
       }
       let newRow = (
-        <tr>
+        <tr key={`row-${row}`}>
           <th scope="row">{depths[row]}</th>
           {capacities}
         </tr>
@@ -87,7 +87,7 @@ export default class SummaryCapacity extends React.Component {
     );
     for (let width = 0; width < widths.length; width++) {
       tenHeaderRow.push(
-        <th>{widths[width]}</th>
+        <th key={`width-${width}`}>{widths[width]}</th>
       )
     }
 
@@ -96,13 +96,13 @@ export default class SummaryCapacity extends React.Component {
       let capacities = [];
       for (let col = 0; col < widths.length; col++) {
         capacities.push(
-          <td>
+          <td key={`cap-${row}-${col}`}>
             {this.getCapacity(tension, widths[col], depths[row], isAllowable)}
           </td>
         );
       }
       let newRow = (
-        <tr>
+        <tr key={`row-${row}`}>
           <th scope="row">{depths[row]}</th>
           {capacities}
         </tr>
@@ -117,9 +117,9 @@ export default class SummaryCapacity extends React.Component {
         <h3>{capacityType} Capacity (kips) - Compression</h3>
         <table>
           <thead>
-            <tr>
-              <td></td>
-              <th>Width (ft)</th>
+            <tr key="width-row">
+              <td key="blank"></td>
+              <th key="width-label">Width (ft)</th>
             </tr>
             <tr>
               {compHeaderRow}
@@ -132,9 +132,9 @@ export default class SummaryCapacity extends React.Component {
         <h3>{capacityType} Capacity (kips) - Tension</h3>
         <table>
           <thead>
-            <tr>
-              <td></td>
-              <th>Width (ft)</th>
+            <tr key="width-row">
+              <td key="blank"></td>
+              <th key="width-label">Width (ft)</th>
             </tr>
             <tr>
               {tenHeaderRow}
