@@ -18,7 +18,6 @@ export default class PileOutput extends React.Component {
     const effectiveStressLimited = pile.limitedBottomStresses.isLimited
       ? 'yes'
       : 'no';
-    console.log(pile);
     let rows = pile.skinFrictions.map((layer, index) => {
       if (pile.bearingDepth + increment 
         >= pile.detailedSoilProfile.layerBottomDepths[index]) {

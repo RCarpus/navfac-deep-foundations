@@ -15,6 +15,7 @@ export default class AnalysisView extends React.Component {
   }
 
   componentDidMount() {
+    this.props.checkLoginStatus();
     this.analyzeProject();
   }
 
@@ -125,7 +126,6 @@ export default class AnalysisView extends React.Component {
         });
 
 
-      console.log(analysis);
       return (
         <div className="analysis-view">
           <AnalysisHeader name={project.Meta.Name}

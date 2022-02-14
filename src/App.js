@@ -87,7 +87,8 @@ class App extends React.Component {
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="/edit-project" element={<ProjectEditView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="analyze" element={<AnalysisView />} />
+            <Route path="analyze" element={<AnalysisView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
           </Routes>
         </Router>
       </div>
