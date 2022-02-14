@@ -8,6 +8,7 @@ import ProfileView from './components/profile-view/profileView';
 import NewProjectView from './components/new-project-view/newProjectView';
 import LoadProjectView from './components/load-project-view/loadProjectView';
 import ProjectEditView from './components/project-edit-view/projectEditView';
+import AnalysisView from './components/analysis-view/analysisView';
 
 import {
   BrowserRouter as Router,
@@ -86,6 +87,7 @@ class App extends React.Component {
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="/edit-project" element={<ProjectEditView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
+            <Route path="analyze" element={<AnalysisView />} />
           </Routes>
         </Router>
       </div>
