@@ -6,6 +6,7 @@ import React from "react";
 import './projectEditView.css';
 import axios from 'axios';
 import LoadingAnimation from "../loading-animation/loadingAnimation";
+import ProjectErrors from "../project-errors/projectErrors";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -29,6 +30,7 @@ export default class ProjectEditView extends React.Component {
       additionalWidthRows: 1,
       additionalDepthRows: 1,
       validation: undefined,
+      showErrors: false,
     }
   }
 
@@ -199,6 +201,18 @@ export default class ProjectEditView extends React.Component {
     info.classList.toggle('hidden');
   }
 
+  /**
+   * Toggles the Error info on or off.
+   * @param {object} e event object
+   */
+  toggleErrors(e) {
+    e.preventDefault();
+    const showErrors = !this.state.showErrors;
+    this.setState({ showErrors });
+    let errors = document.getElementById('project-errors');
+    errors.classList.toggle('not-rendered');
+  }
+
   /** TODO
    * Perform calculation sweet and generate a pdf.
    * @param {object} e event object
@@ -310,6 +324,7 @@ export default class ProjectEditView extends React.Component {
     // notify the user if they have issues
     if (!validationResult) {
       window.alert('Analysis failed. Your input data has issues.');
+      this.setState({ showErrors: true });
     } else {
       this.saveProject(validationResult);
     }
@@ -412,10 +427,12 @@ export default class ProjectEditView extends React.Component {
     validation.SoilProfile.LayerDepths = validDepths;
 
     // Cast depths as numbers
+    let maxDepth;
     if (validDepths) {
       cleanLayerDepths = cleanLayerDepths.map(depth => {
         return Number(depth);
-      })
+      });
+      maxDepth = cleanLayerDepths[cleanLayerDepths.length - 1];
     }
 
     // Layer Names
@@ -479,7 +496,9 @@ export default class ProjectEditView extends React.Component {
       }
     }
     let validBearingDepths = cleanBearingDepths.every(depth => {
-      return nonzeroNum.test(depth) && depth % increment === 0
+      return nonzeroNum.test(depth)
+        && depth % increment === 0
+        && depth < maxDepth
         ? true : false;
     });
 
@@ -586,7 +605,9 @@ export default class ProjectEditView extends React.Component {
       additionalWidthRows,
       additionalDepthRows,
       useTwoWidthColumns,
-      isLoading } = this.state;
+      isLoading,
+      validation,
+      showErrors } = this.state;
 
     let soilProfileRows = [];
     let blankSoilRows = [];
@@ -702,6 +723,19 @@ export default class ProjectEditView extends React.Component {
             className="edit__project-info-btn">
             {showProjectInfo ? "Hide Project Info" : "Show Project Info"}
           </button>
+          {validation &&
+            <div>
+              <button onClick={(e) => this.toggleErrors(e)}
+                className="edit__project-info-btn">
+                {showErrors ? "Hide errors" : "Show errors"}
+              </button>
+              <div id="project-errors">
+                <ProjectErrors valid={validation}
+                  toggleErrors={(e) => this.toggleErrors(e)} />
+              </div>
+            </div>
+          }
+          
           <button onClick={(e) => this.calculate(e)} className="edit__analyze-btn">
             Calculate
           </button>
