@@ -31,6 +31,7 @@ export default class HomeView extends React.Component {
           }
           <Link className="home-link" to="/new-project">Create New Project</Link>
           <Link className="home-link" to="/load-project">Load Project</Link>
+          <Link className="home-link" to="/clone-project">Clone Project</Link>
           <Link className="home-link" to="/profile">Edit Profile</Link>
           <a className="home-link"
             href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"

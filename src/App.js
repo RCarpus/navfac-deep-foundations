@@ -19,6 +19,7 @@ import {
 import React from 'react';
 import axios from 'axios';
 import LoadingAnimation from './components/loading-animation/loadingAnimation';
+import CloneProjectView from './components/clone-project-view/cloneProjectView';
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -102,6 +103,8 @@ class App extends React.Component {
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="/load-project" element={<LoadProjectView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
+            <Route path="/clone-project" element={<CloneProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} /> } />
             <Route path="/edit-project" element={<ProjectEditView
               checkLoginStatus={() => this.checkLoginStatus()} />} />
             <Route path="analyze" element={<AnalysisView
