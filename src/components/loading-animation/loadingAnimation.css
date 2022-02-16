@@ -61,10 +61,11 @@
 /* Everything after this line is mine */
 .loading-animation {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  top: 65px;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* background-color: white; */
+  top: 5px;
+  left: 600px;
   z-index: 500;
   font-size: 1.2em;
 }
@@ -72,5 +73,15 @@
 .loading-animation-container {
   margin: auto;
   width: 300px;
-  margin-top: 5em;
+  /* margin-top: 5em; */
+}
+
+.loading-animation-text {
+  line-height: .2em;
+}
+
+@media only screen and (max-width: 768px) {
+  .loading-animation {
+    left: 350px;
+  }
 }

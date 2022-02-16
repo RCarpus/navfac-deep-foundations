@@ -12,13 +12,11 @@ import './loadingAnimation.css';
 export default class LoadingAnimation extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      serverIsSleeping: false,
-    }
-    setTimeout(() => { this.setState({ serverIsSleeping: true }) }, 1400);
+    setTimeout(() => { this.state = { serverIsSleeping: true } }, 1400);
   }
   render() {
-    let { serverIsSleeping } = this.state;
+    let serverIsSleeping;
+    if (this.state) serverIsSleeping = this.state.serverIsSleeping;
     return (
       <div className="loading-animation">
         <div className="loading-animation-container">
@@ -29,7 +27,7 @@ export default class LoadingAnimation extends React.Component {
             <div>&#9632;</div>
             <div>&#9632;</div>
           </div>
-          <p>Loading...</p>
+          <p className="loading-animation-text">Loading...</p>
           {serverIsSleeping &&
             <p>The server is waking up...</p>}
         </div>
