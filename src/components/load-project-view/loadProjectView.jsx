@@ -92,6 +92,9 @@ export default class LoadProjectView extends React.Component {
     };
     axios.delete(API_URL + `users/${ID}/projects/${name}`, headers)
       .then(response => {
+        if (name === localStorage.getItem('currentProject')) {
+          localStorage.removeItem('currentProject');
+        }
         this.setState({ projects: response.data });
       })
       .catch(error => {
@@ -146,7 +149,7 @@ export default class LoadProjectView extends React.Component {
             {tableRows}
           </tbody>
         </table>
-        <button onClick={()=>this.openProject(selectedProject)}>Open</button>
+        <button onClick={() => this.openProject(selectedProject)}>Open</button>
       </div>
     )
   }
