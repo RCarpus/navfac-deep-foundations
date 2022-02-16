@@ -21,7 +21,7 @@ export default class Navbar extends React.Component {
   logout(e) {
     e.preventDefault();
     localStorage.clear();
-    window.location.reload();
+    window.location.href='/';
     return false;
   }
 
