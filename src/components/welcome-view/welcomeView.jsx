@@ -40,7 +40,7 @@ export default class WelcomeView extends React.Component {
               axial capacity of each foundation in compression and in tension.
               Beyond the summary tables, the user can view a detailed output
               for each individual pile showing the results of each calculation.
-              The results may be downloaded in PDF form, and users can save
+              The results may be saved in PDF form, and users can save
               their projects to enable tweaking the input parameters.
               Additionally, users can clone projects so they can easily analyze
               different pile types without needing to input the soil data again.
