@@ -385,7 +385,7 @@ export default class ProjectEditView extends React.Component {
     // Bottom Depth
     let validDepths = cleanLayerDepths.every(function (depth, index) {
       if (nonzeroNum.test(depth) && index === 0) return true;
-      if (nonzeroNum.test(depth) 
+      if (nonzeroNum.test(depth)
         && Number(depth) > Number(cleanLayerDepths[index - 1])) return true;
       return false;
     });
@@ -718,11 +718,14 @@ export default class ProjectEditView extends React.Component {
                 </div>
                 <div className="edit__subgrid__item">
                   <label htmlFor="sublayer-increment">Sublayer Increment (ft)</label>
-                  <input className="edit__subgrid__input" id="sublayer-increment"
-                    placeholder={project.SoilProfile.Increment || 'required'} />
+                  <select name="sublayer-increment" id="sublayer-increment" >
+                    <option value={project.SoilProfile.Increment || 1}>{project.SoilProfile.Increment || 1}</option>
+                    <option value="1">1</option>
+                    <option value="0.5">0.5</option>
+                  </select>
                   <p>
                     Soil profile will be divided up into small sublayers with
-                    this thickness. It is recommended to use 0.5 or 1.0.
+                    this thickness.
                   </p>
                 </div>
               </div>
