@@ -32,7 +32,6 @@ export default class HomeView extends React.Component {
           <Link to="/new-project">Create New Project</Link>
           <Link to="/load-project">Load Project</Link>
           <Link to="/profile">Edit Profile</Link>
-          <a>Load Demo Project</a>
           <a href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"
             target="_blank">View Demo Video</a>
           <a href="https://github.com/RCarpus/navfac-deep-foundations"
