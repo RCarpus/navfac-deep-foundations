@@ -6,6 +6,7 @@ import React from "react";
 import './registerView.css';
 import { Link } from "react-router-dom";
 import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -31,6 +32,7 @@ export default class RegisterView extends React.Component {
       companyValid: true,
       emailValid: true,
       passwordValid: true,
+      isLoading: false,
     }
   }
   componentDidMount() {
@@ -59,16 +61,21 @@ export default class RegisterView extends React.Component {
       .getElementById('register__form__password').value;
     const userInfo = { FirstName, LastName, Email, Company, Password };
     if (this.validateUserInfo(userInfo)) {
-      axios.post(API_URL + 'users/register', userInfo)
-        .then(response => {
-          console.log(response.data);
-          window.location.href = '/login';
-        })
-        .catch(e => {
-          console.error(e);
-          window.alert(`Something went wrong. 
+      this.setState({ isLoading: true }, () => {
+        axios.post(API_URL + 'users/register', userInfo)
+          .then(response => {
+            console.log(response.data);
+            this.setState({ isLoading: false });
+            window.location.href = '/login';
+          })
+          .catch(e => {
+            console.error(e);
+            this.setState({ isLoading: false });
+            window.alert(`Something went wrong. 
             Perhaps that email address is already in use.`);
-        });
+          });
+      })
+
     }
   }
 
@@ -121,9 +128,11 @@ export default class RegisterView extends React.Component {
       lastNameValid,
       companyValid,
       passwordValid,
-      emailValid } = this.state;
+      emailValid,
+      isLoading } = this.state;
     return (
       <div className="register">
+        {isLoading && <LoadingAnimation />}
         <h2 className="register__title">New User Registration</h2>
         <div className="register__grid">
           <div className="register__grid__item">

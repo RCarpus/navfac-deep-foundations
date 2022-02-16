@@ -5,6 +5,7 @@
 import React from "react";
 import './loadProjectView.css';
 import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -21,6 +22,7 @@ export default class LoadProjectView extends React.Component {
     this.state = {
       projects: [],
       selectedProject: undefined,
+      isLoading: false,
     }
   }
 
@@ -49,13 +51,22 @@ export default class LoadProjectView extends React.Component {
         Authorization: `Bearer ${token}`
       }
     };
-    axios.get(API_URL + `users/${ID}/projects`, headers)
-      .then(response => {
-        this.setState({ projects: response.data });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + `users/${ID}/projects`, headers)
+        .then(response => {
+          this.setState({
+            projects: response.data,
+            isLoading: false,
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          this.setState({
+            isLoading: false,
+          });
+        });
+    })
+
   }
 
   /**
@@ -116,7 +127,7 @@ export default class LoadProjectView extends React.Component {
   }
 
   render() {
-    const { projects, selectedProject } = this.state;
+    const { projects, selectedProject, isLoading } = this.state;
 
     // Generate a table row for each project
     let tableRows = [];
@@ -136,6 +147,7 @@ export default class LoadProjectView extends React.Component {
     });
     return (
       <div className="load">
+        {isLoading && <LoadingAnimation />}
         <h1 className="load__title">Load Project</h1>
         <table className="load__table">
           <thead>

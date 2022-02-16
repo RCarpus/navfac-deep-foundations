@@ -5,6 +5,7 @@
 import React from "react";
 import './profileView.css';
 import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
 
@@ -25,6 +26,7 @@ export default class ProfileView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       firstNameValid: true,
       lastNameValid: true,
       companyValid: true,
@@ -60,23 +62,29 @@ export default class ProfileView extends React.Component {
   getUserInfo() {
     const ID = localStorage.getItem('user');
     const token = localStorage.getItem('token');
+
     const headers = {
       headers: { Authorization: `Bearer ${token}` }
     };
-    axios.get(API_URL + `users/${ID}`, headers)
-      .then(response => {
-        this.setState({
-          userInfo: {
-            FirstName: response.data.FirstName,
-            LastName: response.data.LastName,
-            Email: response.data.Email,
-            Company: response.data.Company
-          }
-        });
-      })
-      .catch(error => {
-        console.error(error);
-      })
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + `users/${ID}`, headers)
+        .then(response => {
+          this.setState({
+            userInfo: {
+              FirstName: response.data.FirstName,
+              LastName: response.data.LastName,
+              Email: response.data.Email,
+              Company: response.data.Company
+            },
+            isLoading: false,
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          this.setState({ isLoading: false });
+        })
+    })
+
   }
 
   /**
@@ -116,26 +124,31 @@ export default class ProfileView extends React.Component {
       const headers = {
         headers: { Authorization: `Bearer ${token}` }
       };
-      // Send updated info to the server and set the state with the 
-      // returned new user info.
-      axios.put(API_URL + `users/${ID}`, userInfo, headers)
-        .then(response => {
-          this.setState({
-            userInfo: {
-              FirstName: response.data.updatedUser.FirstName,
-              LastName: response.data.updatedUser.LastName,
-              Company: response.data.updatedUser.Company,
-              Email: response.data.updatedUser.Email,
-            },
-            successfullyUpdated: true,
-          });
-          return response.data;
-        })
-        .catch(error => {
-          console.error(error);
-          window.alert(`Failed to update user data. 
+      this.setState({ isLoading: true }, () => {
+        // Send updated info to the server and set the state with the 
+        // returned new user info.
+        axios.put(API_URL + `users/${ID}`, userInfo, headers)
+          .then(response => {
+            this.setState({
+              userInfo: {
+                FirstName: response.data.updatedUser.FirstName,
+                LastName: response.data.updatedUser.LastName,
+                Company: response.data.updatedUser.Company,
+                Email: response.data.updatedUser.Email,
+              },
+              successfullyUpdated: true,
+              isLoading: false,
+            });
+            return response.data;
+          })
+          .catch(error => {
+            console.error(error);
+            this.setState({ isLoading: false });
+            window.alert(`Failed to update user data. 
             The email may already be in use.`);
-        });
+          });
+      })
+
     }
   }
 
@@ -242,10 +255,12 @@ export default class ProfileView extends React.Component {
       companyValid,
       passwordValid,
       emailValid,
-      deleteAccountFailed } = this.state;
+      deleteAccountFailed,
+      isLoading } = this.state;
     console.log(userInfo);
     return (
       <div className="profile">
+        {isLoading && <LoadingAnimation />}
         <h2 className="profile__title">
           User Profile
         </h2>

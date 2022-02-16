@@ -5,6 +5,7 @@
 import React from "react";
 import './projectEditView.css';
 import axios from 'axios';
+import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -19,6 +20,7 @@ export default class ProjectEditView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       project: undefined,
       names: [],
       showProjectInfo: false,
@@ -53,17 +55,25 @@ export default class ProjectEditView extends React.Component {
     const headers = {
       headers: { Authorization: `Bearer ${token}` }
     };
-    axios.get(API_URL + `users/${ID}/projects/${currentProject}`, headers)
-      .then(response => {
-        const useTwoWidthColumns = response.data.FoundationDetails.PileType
-          === "DRIVEN-SINGLE-H-PILE";
-        this.setState({ project: response.data, useTwoWidthColumns });
-      })
-      .catch(error => {
-        console.error(error);
-        window.alert(`Failed to load project. Returning home.`);
-        window.location.href = '/home';
-      });
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + `users/${ID}/projects/${currentProject}`, headers)
+        .then(response => {
+          const useTwoWidthColumns = response.data.FoundationDetails.PileType
+            === "DRIVEN-SINGLE-H-PILE";
+          this.setState({
+            project: response.data,
+            useTwoWidthColumns,
+            isLoading: false,
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          window.alert(`Failed to load project. Returning home.`);
+          this.setState({ isLoading: false });
+          window.location.href = '/home';
+        });
+    })
+
   }
 
   /**
@@ -469,8 +479,8 @@ export default class ProjectEditView extends React.Component {
       }
     }
     let validBearingDepths = cleanBearingDepths.every(depth => {
-      return nonzeroNum.test(depth) && depth % increment === 0 
-      ? true : false;
+      return nonzeroNum.test(depth) && depth % increment === 0
+        ? true : false;
     });
 
     // We need at least one valid depth
@@ -575,7 +585,8 @@ export default class ProjectEditView extends React.Component {
       additionalSoilRows,
       additionalWidthRows,
       additionalDepthRows,
-      useTwoWidthColumns } = this.state;
+      useTwoWidthColumns,
+      isLoading } = this.state;
 
     let soilProfileRows = [];
     let blankSoilRows = [];
@@ -684,7 +695,7 @@ export default class ProjectEditView extends React.Component {
 
     if (project) return (
       <div className="edit">
-
+        {isLoading && <LoadingAnimation />}
         <form className="edit__form">
 
           <button onClick={(e) => this.toggleProjectInfo(e)}

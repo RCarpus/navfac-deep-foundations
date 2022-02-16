@@ -3,8 +3,6 @@ import './welcomeView.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const API_URL = 'https://navfac-api.herokuapp.com/';
-
 export default class WelcomeView extends React.Component {
   constructor(props) {
     super(props);

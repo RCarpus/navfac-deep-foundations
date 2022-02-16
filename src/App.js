@@ -18,6 +18,7 @@ import {
 } from 'react-router-dom';
 import React from 'react';
 import axios from 'axios';
+import LoadingAnimation from './components/loading-animation/loadingAnimation';
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -27,6 +28,7 @@ class App extends React.Component {
     super();
     this.state = {
       isLoggedIn: false,
+      isLoading: false,
     }
   }
 
@@ -38,16 +40,25 @@ class App extends React.Component {
     const headers = {
       headers: { Authorization: `Bearer ${token}` }
     }
-    axios.get(API_URL + 'checktoken', headers)
-      .then(response => {
-        this.setState({ isLoggedIn: true });
-        return response;
-      })
-      .catch(error => {
-        this.setState({ isLoggedIn: false });
-        window.location.href = '/';
-        return error;
-      });
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + 'checktoken', headers)
+        .then(response => {
+          this.setState({
+            isLoggedIn: true,
+            isLoading: false,
+          });
+          return response;
+        })
+        .catch(error => {
+          this.setState({
+            isLoggedIn: false,
+            isLoading: false,
+          });
+          window.location.href = '/';
+          return error;
+        });
+    })
+
   }
 
   redirectHomeIfLoggedIn() {
@@ -55,20 +66,26 @@ class App extends React.Component {
     const headers = {
       headers: { Authorization: `Bearer ${token}` }
     }
-    axios.get(API_URL + 'checktoken', headers)
-      .then(response => {
-        window.location.href = '/home';
-        return response;
-      })
-      .catch(error => {
-        return error;
-      });
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + 'checktoken', headers)
+        .then(response => {
+          this.setState({ isLoading: false });
+          window.location.href = '/home';
+          return response;
+        })
+        .catch(error => {
+          this.setState({ isLoading: false });
+          return error;
+        });
+    });
+
   }
 
   render() {
-    const { isLoggedIn, currentProjectName } = this.state;
+    const { isLoggedIn, isLoading } = this.state;
     return (
       <div className="App">
+        {isLoading && <LoadingAnimation />}
         <Router>
           <Navbar isLoggedIn={isLoggedIn} />
           <Routes>

@@ -4,6 +4,7 @@
 import React from "react";
 import './newProjectView.css';
 import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
@@ -21,6 +22,7 @@ export default class NewProjectView extends React.Component {
       isValidForm: true,
       projectNameExists: false,
       names: [],
+      isLoading: false,
     }
   }
 
@@ -78,15 +80,19 @@ export default class NewProjectView extends React.Component {
           Authorization: `Bearer ${token}`
         }
       };
-      axios.post(API_URL + `users/${ID}/projects`, projectDetails, headers)
-        .then(response => {
-          console.log(response);
-          window.location.href = '/home'; // Change this later to edit project
-        })
-        .catch(error => {
-          console.error(error);
-          window.alert('Error: Something went wrong trying to create a project.');
-        });
+      this.setState({ isLoading: true }, () => {
+        axios.post(API_URL + `users/${ID}/projects`, projectDetails, headers)
+          .then(response => {
+            this.setState({ isLoading: false });
+            window.location.href = '/home'; // Change this later to edit project
+          })
+          .catch(error => {
+            console.error(error);
+            this.setState({ isLoading: false });
+            window.alert('Error: Something went wrong trying to create a project.');
+          });
+      })
+
 
     }
   }
@@ -119,9 +125,10 @@ export default class NewProjectView extends React.Component {
   }
 
   render() {
-    const { isValidForm, projectNameExists } = this.state;
+    const { isValidForm, projectNameExists, isLoading } = this.state;
     return (
       <div className="new-project">
+        {isLoading && <LoadingAnimation />}
         <h1 className="new-project__title">Create New Project</h1>
         <form className="new-project__form">
           <div className="new-project__form__line">
