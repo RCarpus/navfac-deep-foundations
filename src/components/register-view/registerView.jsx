@@ -66,7 +66,7 @@ export default class RegisterView extends React.Component {
           .then(response => {
             console.log(response.data);
             this.setState({ isLoading: false });
-            window.location.href = '/login';
+            window.location.href = '/#/login';
           })
           .catch(e => {
             console.error(e);

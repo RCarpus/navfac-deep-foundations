@@ -122,7 +122,7 @@ export default class LoadProjectView extends React.Component {
     const name = this.state.selectedProject;
     if (name) {
       localStorage.setItem('currentProject', name);
-      window.location.href = '/edit-project';
+      window.location.href = '/#/edit-project';
     }
   }
 

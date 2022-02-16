@@ -50,7 +50,7 @@ export default class LoginView extends React.Component {
       .then(response => {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', response.data.user._id);
-        window.location.href = 'home';
+        window.location.href = '/#/home';
       })
       .catch(error => {
         console.error(error);

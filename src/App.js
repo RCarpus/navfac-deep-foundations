@@ -11,7 +11,7 @@ import ProjectEditView from './components/project-edit-view/projectEditView';
 import AnalysisView from './components/analysis-view/analysisView';
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Link
@@ -70,7 +70,7 @@ class App extends React.Component {
       axios.get(API_URL + 'checktoken', headers)
         .then(response => {
           this.setState({ isLoading: false });
-          window.location.href = '/home';
+          window.location.href = '/#/home';
           return response;
         })
         .catch(error => {

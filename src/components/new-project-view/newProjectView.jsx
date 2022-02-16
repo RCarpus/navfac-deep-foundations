@@ -84,7 +84,7 @@ export default class NewProjectView extends React.Component {
         axios.post(API_URL + `users/${ID}/projects`, projectDetails, headers)
           .then(response => {
             this.setState({ isLoading: false });
-            window.location.href = '/home'; // Change this later to edit project
+            window.location.href = '/#/home'; // Change this later to edit project
           })
           .catch(error => {
             console.error(error);

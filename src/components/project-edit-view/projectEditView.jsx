@@ -72,7 +72,7 @@ export default class ProjectEditView extends React.Component {
           console.error(error);
           window.alert(`Failed to load project. Returning home.`);
           this.setState({ isLoading: false });
-          window.location.href = '/home';
+          window.location.href = '/#/home';
         });
     })
 
@@ -114,7 +114,7 @@ export default class ProjectEditView extends React.Component {
     axios.put(API_URL + `users/${ID}/projects/${projectName}`, project, headers)
       .then(response => {
         localStorage.setItem('currentProject', newProjectName);
-        window.location.href = "/analyze";
+        window.location.href = "/#/analyze";
       })
       .catch(error => {
         console.error(error);

@@ -128,7 +128,7 @@ export default class AnalysisView extends React.Component {
 
       return (
         <div className="analysis-view">
-          <button className="no-print" onClick={() => window.location.href="/edit-project"}>Back to Edit View</button>
+          <button className="no-print" onClick={() => window.location.href="/#/edit-project"}>Back to Edit View</button>
           <AnalysisHeader name={project.Meta.Name}
             client={project.Meta.Client}
             engineer={project.Meta.Engineer} />
