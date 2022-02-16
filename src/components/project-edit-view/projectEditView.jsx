@@ -392,7 +392,7 @@ export default class ProjectEditView extends React.Component {
 
     // We need to have at least one valid soil layer
     if (validDepths) {
-      validDepths = cleanLayerDepths > 0;
+      validDepths = cleanLayerDepths.length > 0;
     }
     validation.SoilProfile.LayerDepths = validDepths;
 
@@ -463,9 +463,15 @@ export default class ProjectEditView extends React.Component {
         cleanBearingDepths.splice(i, 1);
       }
     }
-    const validBearingDepths = cleanBearingDepths.every(depth => {
+    let validBearingDepths = cleanBearingDepths.every(depth => {
       return nonzeroNum.test(depth) ? true : false;
     });
+
+    // We need at least one valid depth
+    if (validBearingDepths) {
+      validBearingDepths = cleanBearingDepths.length > 0;
+    }
+
     validation.FoundationDetails.BearingDepths = validBearingDepths;
     if (validBearingDepths) {
       cleanBearingDepths = cleanBearingDepths.map(depth => {
