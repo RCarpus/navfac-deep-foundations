@@ -318,14 +318,17 @@ export default class ProjectEditView extends React.Component {
       Meta: {},
     };
     const nonzeroNum = /^[0-9]*\.?[0-9]*$/;
+    const increment = project.SoilProfile.Increment;
 
     /* GroundwaterDepth must be a non-negative number */
     validation.SoilProfile.GroundwaterDepth = nonzeroNum.test(
-      project.SoilProfile.GroundwaterDepth);
+      project.SoilProfile.GroundwaterDepth)
+      && project.SoilProfile.GroundwaterDepth % increment === 0;
 
     /* IgnoredDepth must be a non-negative number */
     validation.SoilProfile.IgnoredDepth = nonzeroNum.test(
-      project.SoilProfile.IgnoredDepth);
+      project.SoilProfile.IgnoredDepth)
+      && project.SoilProfile.IgnoredDepth % increment === 0;
 
     /* Increment must be a positive number */
     validation.SoilProfile.Increment = nonzeroNum.test(
@@ -384,9 +387,11 @@ export default class ProjectEditView extends React.Component {
     // After removing incomplete layers, each remaining layer must be correct
     // Bottom Depth
     let validDepths = cleanLayerDepths.every(function (depth, index) {
-      if (nonzeroNum.test(depth) && index === 0) return true;
+      if (nonzeroNum.test(depth) && index === 0
+        && depth % increment === 0) return true;
       if (nonzeroNum.test(depth)
-        && Number(depth) > Number(cleanLayerDepths[index - 1])) return true;
+        && Number(depth) > Number(cleanLayerDepths[index - 1])
+        && depth % increment === 0) return true;
       return false;
     });
 
@@ -464,7 +469,8 @@ export default class ProjectEditView extends React.Component {
       }
     }
     let validBearingDepths = cleanBearingDepths.every(depth => {
-      return nonzeroNum.test(depth) ? true : false;
+      return nonzeroNum.test(depth) && depth % increment === 0 
+      ? true : false;
     });
 
     // We need at least one valid depth
