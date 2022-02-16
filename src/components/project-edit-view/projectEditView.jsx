@@ -383,11 +383,17 @@ export default class ProjectEditView extends React.Component {
     }
     // After removing incomplete layers, each remaining layer must be correct
     // Bottom Depth
-    const validDepths = cleanLayerDepths.every(function (depth, index) {
+    let validDepths = cleanLayerDepths.every(function (depth, index) {
       if (nonzeroNum.test(depth) && index === 0) return true;
-      if (nonzeroNum.test(depth) && Number(depth) > Number(cleanLayerDepths[index - 1])) return true;
+      if (nonzeroNum.test(depth) 
+        && Number(depth) > Number(cleanLayerDepths[index - 1])) return true;
       return false;
     });
+
+    // We need to have at least one valid soil layer
+    if (validDepths) {
+      validDepths = cleanLayerDepths > 0;
+    }
     validation.SoilProfile.LayerDepths = validDepths;
 
     // Cast depths as numbers
