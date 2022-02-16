@@ -488,11 +488,17 @@ export default class ProjectEditView extends React.Component {
         cleanWidths.splice(i, 1);
       }
     }
-    const validWidths = cleanWidths.every(width => {
+    let validWidths = cleanWidths.every(width => {
       return width.every(subWidth => {
         return nonzeroNum.test(subWidth);
       });
     });
+
+    // We need at least one valid width
+    if (validWidths) {
+      validWidths = cleanWidths.length > 0;
+    }
+
     validation.FoundationDetails.Widths = validWidths;
     if (validWidths) {
       cleanWidths = cleanWidths.map(width => {
