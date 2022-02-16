@@ -145,12 +145,18 @@ export default class NewProjectView extends React.Component {
           </div>
           <div className="new-project__form__line">
             <label>Notes</label>
-            <input id="new-project__form__notes" />
+            <textarea id="new-project__form__notes"
+              rows="4" cols="50" />
           </div>
-          <button onClick={(e) => this.createNewProject(e)}>Save</button>
-          {!isValidForm && <span>Project Name/Number is required.</span>}
+          <button id="create-project-btn"
+            onClick={(e) => this.createNewProject(e)}>Create Project</button>
+          {!isValidForm && <span className="create-project-error">
+            Project Name/Number is required.
+            </span>}
           {projectNameExists &&
-            <span>You cannot have two projects with the same name</span>
+            <span className="create-project-error">
+              You cannot have two projects with the same name
+              </span>
           }
         </form>
       </div>

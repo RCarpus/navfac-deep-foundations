@@ -23,6 +23,7 @@ export default class WelcomeView extends React.Component {
         </div>
         <div className="welcome__grid">
           <div className="welcome__grid__item">
+            <h2>Welcome!</h2>
             <p>
               This application performs axial capacity analysis for a variety
               of deep foundation types in stratified soil profiles. The
@@ -56,7 +57,11 @@ export default class WelcomeView extends React.Component {
               Disclaimer
             </h2>
             <p>
-              This application is not a substitute for engineering knowledge, and this README is not a design tutorial. Any engineer who uses this tool is expected to understand the NAVFAC analysis process as a prerequite and to review the calculations for accuracy. The author of this program takes no responsibility for any engineering decisions made by anybody using this application. Use it at your own risk.
+              Any engineer who uses this tool is expected to understand the 
+              NAVFAC analysis process as a prerequite and to review the 
+              calculations for accuracy. The author of this program takes no 
+              responsibility for any engineering decisions made by anybody 
+              using this application. Use it at your own risk.
             </p>
           </div>
           <div className="welcome__grid__item">

@@ -1,5 +1,5 @@
 .profile {
-  max-width: 800px;
+  width: 100%;
 }
 
 .profile__title {
@@ -15,7 +15,8 @@
 
 .profile__form__line {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 100px 1fr 50px;
+  margin-bottom: 1em;
 }
 
 #delete-account-btn {
@@ -24,4 +25,15 @@
   margin: auto;
   max-width: 300px;
   display: block;
+}
+
+#update-profile-btn {
+  background-color: var(--color-secondary);
+  width: 200px;
+  margin-bottom: 5em;
+}
+
+#profile-saved {
+  color: green;
+  margin-left: 1em;
 }

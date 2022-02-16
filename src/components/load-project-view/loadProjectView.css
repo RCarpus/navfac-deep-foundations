@@ -1,3 +1,32 @@
-.active {
-  background-color: green;
+.load {
+  width: 100%;
+}
+
+.load__table {
+  max-width: 99%;
+  margin: auto;
+}
+
+.project-name {
+  width: 350px;
+  background-color: var(--color-tirtiary);
+  text-align: left;
+  margin-right: 1em;
+  margin-bottom: .5em;
+}
+
+.project-name:hover {
+ background-color: var(--color-secondary-transparent); 
+}
+
+.active button{
+  background-color: var(--color-secondary);
+}
+
+#open-project-btn {
+  margin: auto;
+  margin-top: 2em;
+  display: block;
+  width: 300px;
+  background-color: var(--color-secondary);
 }

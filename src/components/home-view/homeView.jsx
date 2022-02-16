@@ -27,19 +27,26 @@ export default class HomeView extends React.Component {
         <h2 className="home__title">Get Started</h2>
         <div className="home__grid">
           {currentProject &&
-            <Link to="/edit-project">Load Most Recent</Link>
+            <Link className="home-link" to="/edit-project">Load Most Recent</Link>
           }
-          <Link to="/new-project">Create New Project</Link>
-          <Link to="/load-project">Load Project</Link>
-          <Link to="/profile">Edit Profile</Link>
-          <a href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"
+          <Link className="home-link" to="/new-project">Create New Project</Link>
+          <Link className="home-link" to="/load-project">Load Project</Link>
+          <Link className="home-link" to="/profile">Edit Profile</Link>
+          <a className="home-link"
+            href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"
             target="_blank">View Demo Video</a>
-          <a href="https://github.com/RCarpus/navfac-deep-foundations"
+          <a className="home-link"
+            href="https://github.com/RCarpus/navfac-deep-foundations"
             target="_blank">About</a>
         </div>
         <p className="home__plug">
-          A personal plug for Ryan Carpus and his portfolio.
-          Very impressive stuff here.
+          I'm Ryan Carpus! I made this website because I love solving engineering
+          problems and writing code. To see some of my other work,&#160;
+          <a href="https://rcarpus.github.io" target="_blank">
+            check out my portfolio
+          </a>
+          . I am currently seeking work as a web developer, either onsite in
+          Ann Arbor, Michigan or remote, so drop me a line if you are a recruiter!
         </p>
       </div>
     )

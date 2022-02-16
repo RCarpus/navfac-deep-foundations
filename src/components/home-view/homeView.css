@@ -6,30 +6,35 @@
   max-width: 99%;
   margin: auto;
   text-align: center;
+  margin-bottom: 2em;
+  margin-top: 1em;
 }
 
 .home__grid {
-  display: grid;
   max-width: 750px;
   margin: auto;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  padding: 1em;
+  display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1em;
+  column-gap: 2em;
 }
 
 .home__plug {
   max-width: 750px;
   text-align: center;
   margin: auto;
+  margin-top: 5em;
 }
 
-a {
+.home-link {
   background-color: var(--color-secondary);
   border: outset var(--color-tirtiary);
   color: black;
   text-align: center;
   text-decoration: none;
   font-size: 1.2em;
+  display: block;
+  margin-bottom: 1em;
 }
 
 a:visited {

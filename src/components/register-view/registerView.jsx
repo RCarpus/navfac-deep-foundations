@@ -140,32 +140,38 @@ export default class RegisterView extends React.Component {
               <div className="register__form__line">
                 <label>First Name</label>
                 <input id="register__form__first-name" />
-                {!firstNameValid && <span>Invalid</span>}
+                {!firstNameValid &&
+                  <span className="invalid">Invalid</span>}
               </div>
               <div className="register__form__line">
                 <label>Last Name</label>
                 <input id="register__form__last-name" />
-                {!lastNameValid && <span>Invalid</span>}
+                {!lastNameValid &&
+                  <span className="invalid">Invalid</span>}
               </div>
               <div className="register__form__line">
                 <label>Email</label>
                 <input id="register__form__email" />
-                {!emailValid && <span>Invalid</span>}
+                {!emailValid &&
+                  <span className="invalid">Invalid</span>}
               </div>
               <div className="register__form__line">
                 <label>Company</label>
                 <input id="register__form__company" />
-                {!companyValid && <span>Invalid</span>}
+                {!companyValid &&
+                  <span className="invalid">Invalid</span>}
               </div>
               <div className="register__form__line">
                 <label>Password</label>
                 <input type="password" id="register__form__password" />
-                {!passwordValid && <span>Invalid</span>}
+                {!passwordValid &&
+                  <span className="invalid">Invalid</span>}
               </div>
-              <button onClick={(e) => this.register(e)}>Register</button>
+              <button id="register-button"
+                onClick={(e) => this.register(e)}>Register</button>
             </form>
             <div className="register__to-login-container">
-              <span>
+              <span className="register__to-login-text">
                 Already have an account?
               </span>
               <Link to="/login">Login</Link>

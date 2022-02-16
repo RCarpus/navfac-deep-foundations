@@ -729,13 +729,16 @@ export default class ProjectEditView extends React.Component {
                 className="edit__project-info-btn">
                 {showErrors ? "Hide errors" : "Show errors"}
               </button>
-              <div id="project-errors">
-                <ProjectErrors valid={validation}
-                  toggleErrors={(e) => this.toggleErrors(e)} />
-              </div>
+              {showErrors &&
+                <div id="project-errors">
+                  <ProjectErrors valid={validation}
+                    toggleErrors={(e) => this.toggleErrors(e)} />
+                </div>
+              }
+
             </div>
           }
-          
+
           <button onClick={(e) => this.calculate(e)} className="edit__analyze-btn">
             Calculate
           </button>
@@ -798,8 +801,10 @@ export default class ProjectEditView extends React.Component {
                   {blankSoilRows}
                 </tbody>
               </table>
-              <button onClick={(e) => this.addSoilRow(e)}>Add Row</button>
-              <button onClick={(e) => this.removeSoilRow(e)}>Remove</button>
+              <button className="project-edit-btn"
+                onClick={(e) => this.addSoilRow(e)}>Add Row</button>
+              <button className="project-edit-btn"
+                onClick={(e) => this.removeSoilRow(e)}>Remove</button>
             </div>
 
             <div className="edit__grid__item" id="foundation-details">
@@ -847,8 +852,10 @@ export default class ProjectEditView extends React.Component {
                       {blankWidthRows}
                     </tbody>
                   </table>
-                  <button onClick={(e) => this.addWidthRow(e)}>Add</button>
-                  <button onClick={(e) => this.removeWidthRow(e)}>Remove</button>
+                  <button className="project-edit-btn"
+                    onClick={(e) => this.addWidthRow(e)}>Add</button>
+                  <button className="project-edit-btn"
+                    onClick={(e) => this.removeWidthRow(e)}>Remove</button>
                 </div>
 
                 {/* Depths */}
@@ -864,8 +871,10 @@ export default class ProjectEditView extends React.Component {
                       {blankDepthRows}
                     </tbody>
                   </table>
-                  <button onClick={(e) => this.addDepthRow(e)}>Add</button>
-                  <button onClick={(e) => this.removeDepthRow(e)}>Remove</button>
+                  <button className="project-edit-btn"
+                    onClick={(e) => this.addDepthRow(e)}>Add</button>
+                  <button className="project-edit-btn"
+                    onClick={(e) => this.removeDepthRow(e)}>Remove</button>
                 </div>
 
               </div>

@@ -269,33 +269,35 @@ export default class ProfileView extends React.Component {
             <label>First Name</label>
             <input id="profile__form__first-name"
               placeholder={userInfo.FirstName} />
-            {!firstNameValid && <span>Invalid</span>}
+            {!firstNameValid && <span className="invalid">Invalid</span>}
           </div>
           <div className="profile__form__line">
             <label>Last Name</label>
             <input id="profile__form__last-name"
               placeholder={userInfo.LastName} />
-            {!lastNameValid && <span>Invalid</span>}
+            {!lastNameValid && <span className="invalid">Invalid</span>}
           </div>
           <div className="profile__form__line">
             <label>Email</label>
             <input id="profile__form__email"
               placeholder={userInfo.Email} />
-            {!emailValid && <span>Invalid</span>}
+            {!emailValid && <span className="invalid">Invalid</span>}
           </div>
           <div className="profile__form__line">
             <label>Company</label>
             <input id="profile__form__company"
               placeholder={userInfo.Company} />
-            {!companyValid && <span>Invalid</span>}
+            {!companyValid && <span className="invalid">Invalid</span>}
           </div>
           <div className="profile__form__line">
             <label>Password</label>
             <input type="password" id="profile__form__password" />
-            {!passwordValid && <span>Invalid</span>}
+            {!passwordValid && <span className="invalid">Invalid</span>}
           </div>
-          <button onClick={(e) => this.updateUserInfo(e)}>save</button>
-          {successfullyUpdated && <span>Saved</span>}
+          <button id="update-profile-btn" 
+          onClick={(e) => this.updateUserInfo(e)}>save</button>
+          {successfullyUpdated && 
+          <span id="profile-saved">Saved</span>}
         </form>
         <h3 className="profile__title">
           --- Danger Zone ---

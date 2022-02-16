@@ -12,14 +12,13 @@ button {
   width: 300px;
   height: 2em;
   font-size: 1.5em;
-  display: block;
-  margin: auto;
 }
 
 .edit__project-info-btn {
   background-color: var(--color-tirtiary);
   float: left;
   font-size: 1.2em;
+  width: 200px;
 }
 
 .edit__grid__container {
@@ -49,9 +48,14 @@ button {
 }
 
 #soil-table {
-  table-layout: fixed;
   width: 550px;
   margin-top: 2em;
+}
+
+@media only screen and (max-width: 830px) {
+  #soil-table {
+    table-layout: fixed;
+  }
 }
 
 .soil-table-row-count {
@@ -59,7 +63,7 @@ button {
 }
 
 .soil-table__narrow {
-  width: 3em;
+  width: 30px;
 }
 
 .soil-table__wide {
@@ -132,4 +136,8 @@ button {
 
 .not-rendered {
   display: none;
+}
+
+.project-edit-btn {
+  margin-bottom: 3em;
 }

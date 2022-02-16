@@ -134,13 +134,15 @@ export default class LoadProjectView extends React.Component {
     projects.forEach(project => {
       tableRows.push(
         <tr id={project.Name} key={project.Name}>
-          <td><button onClick={() => this.selectProject(project.Name)}>
+          <td><button className="project-name"
+            onClick={() => this.selectProject(project.Name)}>
             {project.Name}
           </button>
           </td>
           <td>{project.ModifiedDate.slice(0, 10)}</td>
           <td>
-            <button onClick={() => this.deleteProject(project.Name)}>X</button>
+            <button className="delete-btn"
+              onClick={() => this.deleteProject(project.Name)}>X</button>
           </td>
         </tr>
       );
@@ -161,7 +163,13 @@ export default class LoadProjectView extends React.Component {
             {tableRows}
           </tbody>
         </table>
-        <button onClick={() => this.openProject(selectedProject)}>Open</button>
+        <button
+          id="open-project-btn"
+          onClick={() => this.openProject(selectedProject)}>
+          Open
+        </button>
+
+
       </div>
     )
   }

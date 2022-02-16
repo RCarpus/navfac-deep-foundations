@@ -8,7 +8,6 @@ export default class ProjectErrors extends React.Component {
 
   render() {
     const { valid } = this.props;
-    console.log(valid);
     if (!valid) return (
       <div className="project-errors">
         <h2>Project Errors</h2>

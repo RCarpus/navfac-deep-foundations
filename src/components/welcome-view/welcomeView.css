@@ -31,11 +31,13 @@ h2 {
   background-color: var(--color-secondary);
   padding-top: 3px;
   padding-bottom: 3px;
+  border: outset var(--color-tirtiary);
 }
 
 .video-link {
   background-color: var(--color-tirtiary);
   margin-bottom: 0.5em;
+  border: outset var(--color-secondary);
 }
 
 @media only screen and (max-width: 768px) {

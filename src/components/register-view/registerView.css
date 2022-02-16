@@ -11,6 +11,7 @@
 .register__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  padding: 1em;
 }
 
 .register__form, .register__to-login-container {
@@ -20,6 +21,27 @@
 
 .register__form__line {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 100px 1fr 50px;
+  margin-bottom: 1em;
 }
 
+#register-button {
+  background-color: var(--color-secondary);
+}
+
+.invalid {
+  margin-left: .5em;
+  color: red;
+}
+
+.register__to-login-text {
+  display: inline-block;
+  margin-top: 2em;
+  margin-right: 1em;
+}
+
+@media only screen and (max-width: 768px) {
+  .register__grid {
+    display: block;
+  }
+}
