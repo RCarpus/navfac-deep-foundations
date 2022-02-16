@@ -402,6 +402,7 @@ export default class ProjectEditView extends React.Component {
     const validCorPhiValues = cleanLayerPhiOrCValues.every(function (value, index) {
       if (cleanLayerPhiOrCs[index] === 'PHI'
         && value >= 26 && value <= 40
+        && Number.isInteger(Number(value))
         && nonzeroNum.test(value)) {
         return true;
       } else if (cleanLayerPhiOrCs[index] === 'C'
