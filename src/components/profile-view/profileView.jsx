@@ -54,7 +54,7 @@ export default class ProfileView extends React.Component {
     this.getUserInfo();
   }
 
-  /** ------------UPDATE WITH NEW ENPOINT WHEN AVAILABLE ----
+  /** 
    * Gets the user's profile info from the server and save into 
    * state. This info is then used to display placeholder text in 
    * the form.
@@ -148,7 +148,6 @@ export default class ProfileView extends React.Component {
             The email may already be in use.`);
           });
       })
-
     }
   }
 
