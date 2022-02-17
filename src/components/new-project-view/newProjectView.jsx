@@ -8,14 +8,15 @@ import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
-
 /**
  * @description NewProjectView allows the user to create a new project. 
  * The user enters basic project details into the form and submits it.
- * Then, the user is redirected to the home screen THIS NEEDS TO CHANGE 
- * AFTER PROJECT EDIT VIEW IS IMPLEMENTED.
+ * Then, the user is redirected to the project edit screen. 
  */
 export default class NewProjectView extends React.Component {
+  /**
+   * @param {function} checkLoginStatus comes from App
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +27,10 @@ export default class NewProjectView extends React.Component {
     }
   }
 
+  /**
+   * Check to make sure we are logged in, then 
+   * download the project names so we don't make a duplicate.
+   */
   componentDidMount() {
     this.props.checkLoginStatus();
     this.getProjectNames();
@@ -58,8 +63,7 @@ export default class NewProjectView extends React.Component {
   /**
    * Extracts the data form the new project form, validates the form,
    * and then submits the new project to the server. The user is redirected 
-   * to the home screen. THIS NEEDS TO CHANGE TO REDIRECT TO THE PROJECT 
-   * EDIT SCREEN AFTER THAT SCREEN IS BUILT.
+   * to the project edit screen. 
    * If the form is invalid, the project is not created.
    * @param {object} e event object
    */
@@ -71,6 +75,7 @@ export default class NewProjectView extends React.Component {
     const Engineer = document.getElementById('new-project__form__engineer').value;
     const Notes = document.getElementById('new-project__form__notes').value;
     const projectDetails = { Name, Client, Engineer, Notes };
+
     // validate the data and then send it to the server
     if (this.validateNewProject(projectDetails)) {
       const ID = localStorage.getItem('user');
@@ -84,7 +89,9 @@ export default class NewProjectView extends React.Component {
         axios.post(API_URL + `users/${ID}/projects`, projectDetails, headers)
           .then(response => {
             this.setState({ isLoading: false });
-            window.location.href = '/#/home'; // Change this later to edit project
+            // Redirect to the project edit screen with this new project
+            localStorage.setItem('currentProject', Name);
+            window.location.href = '/#/edit-project';
           })
           .catch(error => {
             console.error(error);
@@ -92,8 +99,6 @@ export default class NewProjectView extends React.Component {
             window.alert('Error: Something went wrong trying to create a project.');
           });
       })
-
-
     }
   }
 
@@ -152,11 +157,11 @@ export default class NewProjectView extends React.Component {
             onClick={(e) => this.createNewProject(e)}>Create Project</button>
           {!isValidForm && <span className="create-project-error">
             Project Name/Number is required.
-            </span>}
+          </span>}
           {projectNameExists &&
             <span className="create-project-error">
               You cannot have two projects with the same name
-              </span>
+            </span>
           }
         </form>
       </div>
