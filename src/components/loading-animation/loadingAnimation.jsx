@@ -5,18 +5,12 @@ import React from "react";
 import './loadingAnimation.css';
 
 /**
- * @description Renders a loading animation that covers the whole screen 
- * except for the banner. After some time, an additional message indicates 
- * that the server is waking up.
+ * @description Renders a loading animation that hangs out 
+ * inside the banner. The CSS was borrowed from the 
+ * open-source animation library Whirl
+ * https://whirl.netlify.app/
  */
-export default class LoadingAnimation extends React.Component {
-  constructor(props) {
-    super(props);
-    setTimeout(() => { this.state = { serverIsSleeping: true } }, 1400);
-  }
-  render() {
-    let serverIsSleeping;
-    if (this.state) serverIsSleeping = this.state.serverIsSleeping;
+export default function LoadingAnimation() {
     return (
       <div className="loading-animation">
         <div className="loading-animation-container">
@@ -28,11 +22,7 @@ export default class LoadingAnimation extends React.Component {
             <div>&#9632;</div>
           </div>
           <p className="loading-animation-text">Loading...</p>
-          {serverIsSleeping &&
-            <p>The server is waking up...</p>}
         </div>
-
       </div>
     )
   }
-}
