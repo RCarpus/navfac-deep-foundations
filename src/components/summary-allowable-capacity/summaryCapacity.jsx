@@ -18,7 +18,7 @@ import { poundsToKips } from "../../navfac/navfacFunctions";
  * @param {Array.<number>} widths array of width arrays
  * @param {Array.<number>} depths array of depth values
  */
-export default class SummaryCapacity extends React.Component {
+export default function SummaryCapacity(props) {
 
   /**
    * Search through the piles to find the pile with a specified width, depth.
@@ -28,7 +28,7 @@ export default class SummaryCapacity extends React.Component {
    * @param {array} depth array of numbers
    * @returns the capacity (number) of the pile in kips.
    */
-  getCapacity(piles, width, depth) {
+  function getCapacity(piles, width, depth) {
     let pile = piles.find(pile => {
       if (pile.width.length === 1            // for circular foundations
         && pile.width[0] === width[0]
@@ -46,106 +46,104 @@ export default class SummaryCapacity extends React.Component {
 
   }
 
-  render() {
-    const { isAllowable, compression, tension, widths, depths } = this.props;
-    const capacityType = isAllowable ? 'Allowable' : 'Ultimate';
+  const { isAllowable, compression, tension, widths, depths } = props;
+  const capacityType = isAllowable ? 'Allowable' : 'Ultimate';
 
-    // Build a compression table
-    let compHeaderRow = [];
+  // Build a compression table
+  let compHeaderRow = [];
+  compHeaderRow.push(
+    <th scope="row">Embedment Depth (ft)</th>
+  );
+  for (let width = 0; width < widths.length; width++) {
     compHeaderRow.push(
-      <th scope="row">Embedment Depth (ft)</th>
-    );
-    for (let width = 0; width < widths.length; width++) {
-      compHeaderRow.push(
-        <th key={`width-${width}`}>{widths[width]}</th>
-      )
-    }
-
-    let compRows = [];
-    for (let row = 0; row < depths.length; row++) {
-      let capacities = [];
-      for (let col = 0; col < widths.length; col++) {
-        capacities.push(
-          <td className="summary-table-cell" key={`cap-${row}-${col}`}>
-            {this.getCapacity(compression, widths[col], depths[row], isAllowable)}
-          </td>
-        );
-      }
-      let newRow = (
-        <tr key={`row-${row}`}>
-          <th scope="row">{depths[row]}</th>
-          {capacities}
-        </tr>
-      );
-      compRows.push(newRow);
-    }
-
-    // Build a tension table
-    let tenHeaderRow = [];
-    tenHeaderRow.push(
-      <th scope="row">Embedment Depth (ft)</th>
-    );
-    for (let width = 0; width < widths.length; width++) {
-      tenHeaderRow.push(
-        <th key={`width-${width}`}>{widths[width]}</th>
-      )
-    }
-
-    let tenRows = [];
-    for (let row = 0; row < depths.length; row++) {
-      let capacities = [];
-      for (let col = 0; col < widths.length; col++) {
-        capacities.push(
-          <td className="summary-table-cell" key={`cap-${row}-${col}`}>
-            {this.getCapacity(tension, widths[col], depths[row], isAllowable)}
-          </td>
-        );
-      }
-      let newRow = (
-        <tr key={`row-${row}`}>
-          <th scope="row">{depths[row]}</th>
-          {capacities}
-        </tr>
-      );
-      tenRows.push(newRow);
-    }
-
-
-    return (
-      <div className="summary-capacity-page">
-        <h2 className="summary-capacity-title">Summary of {capacityType} Axial Capacity</h2>
-        <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Compression</h3>
-        <table className="summary-capacity-table">
-          <thead className="summary-table-head">
-            <tr key="width-row">
-              <td key="blank"></td>
-              <th key="width-label">Width (ft)</th>
-            </tr>
-            <tr>
-              {compHeaderRow}
-            </tr>
-          </thead>
-          <tbody>
-            {compRows}
-          </tbody>
-        </table>
-        <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Tension</h3>
-        <table className="summary-capacity-table">
-          <thead>
-            <tr key="width-row">
-              <td key="blank"></td>
-              <th key="width-label">Width (ft)</th>
-            </tr>
-            <tr>
-              {tenHeaderRow}
-            </tr>
-          </thead>
-          <tbody>
-            {tenRows}
-          </tbody>
-        </table>
-        <div className="pagebreak"></div>
-      </div>
+      <th key={`width-${width}`}>{widths[width]}</th>
     )
   }
+
+  let compRows = [];
+  for (let row = 0; row < depths.length; row++) {
+    let capacities = [];
+    for (let col = 0; col < widths.length; col++) {
+      capacities.push(
+        <td className="summary-table-cell" key={`cap-${row}-${col}`}>
+          {getCapacity(compression, widths[col], depths[row], isAllowable)}
+        </td>
+      );
+    }
+    let newRow = (
+      <tr key={`row-${row}`}>
+        <th scope="row">{depths[row]}</th>
+        {capacities}
+      </tr>
+    );
+    compRows.push(newRow);
+  }
+
+  // Build a tension table
+  let tenHeaderRow = [];
+  tenHeaderRow.push(
+    <th scope="row">Embedment Depth (ft)</th>
+  );
+  for (let width = 0; width < widths.length; width++) {
+    tenHeaderRow.push(
+      <th key={`width-${width}`}>{widths[width]}</th>
+    )
+  }
+
+  let tenRows = [];
+  for (let row = 0; row < depths.length; row++) {
+    let capacities = [];
+    for (let col = 0; col < widths.length; col++) {
+      capacities.push(
+        <td className="summary-table-cell" key={`cap-${row}-${col}`}>
+          {getCapacity(tension, widths[col], depths[row], isAllowable)}
+        </td>
+      );
+    }
+    let newRow = (
+      <tr key={`row-${row}`}>
+        <th scope="row">{depths[row]}</th>
+        {capacities}
+      </tr>
+    );
+    tenRows.push(newRow);
+  }
+
+
+  return (
+    <div className="summary-capacity-page">
+      <h2 className="summary-capacity-title">Summary of {capacityType} Axial Capacity</h2>
+      <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Compression</h3>
+      <table className="summary-capacity-table">
+        <thead className="summary-table-head">
+          <tr key="width-row">
+            <td key="blank"></td>
+            <th key="width-label">Width (ft)</th>
+          </tr>
+          <tr>
+            {compHeaderRow}
+          </tr>
+        </thead>
+        <tbody>
+          {compRows}
+        </tbody>
+      </table>
+      <h3 className="summary-capacity-subtitle">{capacityType} Capacity (kips) - Tension</h3>
+      <table className="summary-capacity-table">
+        <thead>
+          <tr key="width-row">
+            <td key="blank"></td>
+            <th key="width-label">Width (ft)</th>
+          </tr>
+          <tr>
+            {tenHeaderRow}
+          </tr>
+        </thead>
+        <tbody>
+          {tenRows}
+        </tbody>
+      </table>
+      <div className="pagebreak"></div>
+    </div>
+  )
 }
