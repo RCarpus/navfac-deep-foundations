@@ -94,5 +94,4 @@ Automatic deployement is enabled with Netflify. Just push new changes to master 
 ### Docs
 Documentation is hosted on Github Pages. To update the documentation, first regenerate the docs by running 
 `npm run docs`  
-Then, deploy to GH Pages with  
-`git subtree push --prefix docs master gh-pages`  
+Then, deploy changes to the gh-pages branch. gh-pages is configured to look in the docs folder as the source, so no additional work is needed.
