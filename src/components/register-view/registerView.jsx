@@ -24,6 +24,9 @@ const API_URL = 'https://navfac-api.herokuapp.com/';
  * accidentally navigated to this page.
  */
 export default class RegisterView extends React.Component {
+  /**
+   * @param {function} redirectHomeIfLoggedIn  
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -35,6 +38,10 @@ export default class RegisterView extends React.Component {
       isLoading: false,
     }
   }
+
+  /**
+   * Redirects the user to the home screen if they are logged in already.
+   */
   componentDidMount() {
     this.props.redirectHomeIfLoggedIn();
   }
