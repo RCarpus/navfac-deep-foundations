@@ -101,6 +101,14 @@ export default class ProjectEditView extends React.Component {
       });
   }
 
+  /**
+   * Saves the project on the server. Because the user may have changed 
+   * the project's name, it also saves the name of the project into 
+   * localStorage from the return object in the API call.
+   * The user is then routed to the AnalyzeView to see the 
+   * results of their analysis.
+   * @param {object} project a valid project object
+   */
   saveProject(project) {
     const ID = localStorage.getItem('user');
     const token = localStorage.getItem('token');
@@ -119,7 +127,6 @@ export default class ProjectEditView extends React.Component {
       .catch(error => {
         console.error(error);
       });
-
   }
 
   /**
@@ -213,8 +220,10 @@ export default class ProjectEditView extends React.Component {
     errors.classList.toggle('not-rendered');
   }
 
-  /** TODO
-   * Perform calculation sweet and generate a pdf.
+  /**
+   * Extract all the data from the forms, validate the input data, and 
+   * then, if the data passes all the validation checks, save the 
+   * project and route the user to the analysis view.
    * @param {object} e event object
    */
   calculate(e) {
@@ -240,6 +249,7 @@ export default class ProjectEditView extends React.Component {
     let LayerPhiOrCs = [];
     let LayerPhiOrCValues = [];
     let soilTable = document.getElementById('soil-table');
+    // Start from row=1 because row=0 is the header row
     for (let row = 1; row < soilTable.rows.length; row++) {
       LayerDepths.push(soilTable.rows[row].cells[1].firstChild.value
         || soilTable.rows[row].cells[1].firstChild.placeholder);
