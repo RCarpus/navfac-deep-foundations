@@ -1,9 +1,19 @@
+/**
+ * @module AnalysisHeader
+ */
+
 import React from "react";
 import './analysisHeader.css';
 
-export default class AnalysisHeader extends React.Component {
-  render() {
-    let {name, client, engineer} = this.props;
+/**
+ * Displays the project name, client, engineer, and date calculated at the 
+ * top of the AnalysisView.
+ * @param {string} name The project name
+ * @param {string} client The project client
+ * @param {string} engineer The project engineer 
+ */
+export default function AnalysisHeader(props) {
+    let {name, client, engineer} = props;
     return (
       <div className="analysis-header">
         <h1 className="analysis-header-title">NAVFAC Deep Foundation Axial Analysis</h1>
@@ -28,7 +38,5 @@ export default class AnalysisHeader extends React.Component {
           </tbody>
         </table>
       </div>
-      
     )
-  }
 }
