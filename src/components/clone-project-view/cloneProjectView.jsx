@@ -9,6 +9,11 @@ import LoadingAnimation from "../loading-animation/loadingAnimation";
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
+/**
+ * @decription Similar to the LoadProjectView, but instead of opening a project,
+ * make a copy. The copied project will be exactly the same but with 
+ * a different unique name.
+ */
 export default class CloneProjectView extends React.Component {
   constructor(props) {
     super(props);
