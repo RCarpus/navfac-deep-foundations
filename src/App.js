@@ -1,3 +1,7 @@
+/**
+ * @module App
+ */
+
 import './App.css';
 import Navbar from './components/navbar/navbar';
 import WelcomeView from './components/welcome-view/welcomeView';
@@ -14,7 +18,6 @@ import {
   HashRouter as Router,
   Routes,
   Route,
-  Link
 } from 'react-router-dom';
 import React from 'react';
 import axios from 'axios';
@@ -23,7 +26,10 @@ import CloneProjectView from './components/clone-project-view/cloneProjectView';
 
 const API_URL = 'https://navfac-api.herokuapp.com/';
 
-
+/**
+ * Controls the whole app. Contains routing information and 
+ * functions to check if the user is logged in.
+ */
 class App extends React.Component {
   constructor() {
     super();
@@ -33,9 +39,12 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
-  }
-
+  /**
+   * Check to see if the user is logged in. 
+   * If the user is logged in, they have access to the logged in features.
+   * If they are not logged in, they only have access to the login and register 
+   * views.
+   */
   checkLoginStatus() {
     const token = localStorage.getItem('token');
     const headers = {
@@ -62,6 +71,10 @@ class App extends React.Component {
 
   }
 
+  /**
+   * Used within the login and registration views to 
+   * redirect home if they are already logged in.
+   */
   redirectHomeIfLoggedIn() {
     const token = localStorage.getItem('token');
     const headers = {
