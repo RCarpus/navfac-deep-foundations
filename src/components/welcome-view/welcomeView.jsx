@@ -19,7 +19,9 @@ export default class WelcomeView extends React.Component {
           Axial capacity design tool
         </h2>
         <div className="welcome__video-container">
-          <a className="welcome__link video-link" href="#">Demonstration Video</a>
+          <a className="welcome__link video-link"
+            href="https://www.youtube.com/watch?v=Rb0EnvPmI84"
+            target="_blank">Demonstration Video</a>
         </div>
         <div className="welcome__grid">
           <div className="welcome__grid__item">
@@ -57,10 +59,10 @@ export default class WelcomeView extends React.Component {
               Disclaimer
             </h2>
             <p>
-              Any engineer who uses this tool is expected to understand the 
-              NAVFAC analysis process as a prerequite and to review the 
-              calculations for accuracy. The author of this program takes no 
-              responsibility for any engineering decisions made by anybody 
+              Any engineer who uses this tool is expected to understand the
+              NAVFAC analysis process as a prerequite and to review the
+              calculations for accuracy. The author of this program takes no
+              responsibility for any engineering decisions made by anybody
               using this application. Use it at your own risk.
             </p>
           </div>

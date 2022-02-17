@@ -34,7 +34,7 @@ export default class HomeView extends React.Component {
           <Link className="home-link" to="/clone-project">Clone Project</Link>
           <Link className="home-link" to="/profile">Edit Profile</Link>
           <a className="home-link"
-            href="https://www.youtube.com/channel/UCtsTjZ60eEUL7QC_wtlkKQw"
+            href="https://www.youtube.com/watch?v=Rb0EnvPmI84"
             target="_blank">View Demo Video</a>
           <a className="home-link"
             href="https://github.com/RCarpus/navfac-deep-foundations"
