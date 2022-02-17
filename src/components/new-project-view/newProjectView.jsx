@@ -52,7 +52,6 @@ export default class NewProjectView extends React.Component {
     axios.get(API_URL + `users/${ID}/projects`, headers)
       .then(response => {
         let names = response.data.map(project => project.Name);
-        console.log(names);
         this.setState({ names });
       })
       .catch(error => {
