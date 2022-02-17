@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/pile-output/pileOutput.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/pile-output/pileOutput.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module PileOutput
+ */
+
+import React from "react";
+import './pileOutput.css';
+import { poundsToKips } from "../../navfac/navfacFunctions";
+
+/**
+ * @description Renders detailed output for a single pile.
+ * @param {object} pile Pile object from either array of
+ * analysis.calaculations.compressionAnalyses or 
+ * analysis.calculations.tensionAnalyses.
+ * @param {number} groundwaterDepth
+ * @param {number} increment
+ */
+export default function PileOutput(props) {
+  const { pile, groundwaterDepth, increment } = props;
+  const loadDirection = pile.isCompression ? "Compression" : "Tension";
+
+  // Determine how to properly display the width based on if it has 
+  // 1 or 2 values
+  const width = pile.width.length === 1
+    ? pile.width[0]
+    : `${pile.width[0]}x${pile.width[1]}`;
+
+  // Determine which bearing capacity factor is being used.
+  const bearingCapacityFactorLabel = pile.endBearing.mode === "GRANULAR"
+    ? 'Nq'
+    : 'Nc';
+  const bearingCapacityFactorValue = bearingCapacityFactorLabel === 'Nq'
+    ? pile.granularNq
+    : pile.cohesiveNc;
+
+  // Determine if effective stress was limited by the pile width and depth
+  const effectiveStressLimited = pile.limitedBottomStresses.isLimited
+    ? 'yes'
+    : 'no';
+
+  // Generate table rows to be inserted in the table within the return
+  let rows = pile.skinFrictions.map((layer, index) => {
+    if (pile.bearingDepth + increment
+      >= pile.detailedSoilProfile.layerBottomDepths[index]) {
+      return (
+        &lt;tr key={`row-${index}`}>
+          &lt;td>{index + 1}&lt;/td>
+          &lt;td>{pile.detailedSoilProfile.layerBottomDepths[index]}&lt;/td>
+          &lt;td>{pile.detailedSoilProfile.layerNames[index]}&lt;/td>
+          &lt;td>{pile.detailedSoilProfile.layerUnitWeights[index]}&lt;/td>
+          &lt;td>{pile.detailedSoilProfile.layerPhis[index]}&lt;/td>
+          &lt;td>{pile.detailedSoilProfile.layerCohesions[index]}&lt;/td>
+          &lt;td>{Math.round(pile.limitedMidStresses.limitedEffStress[index])}&lt;/td>
+          &lt;td>{Math.round(pile.limitedBottomStresses.limitedEffStress[index])}&lt;/td>
+          &lt;td>{pile.contactFrictionAngles[index]}&lt;/td>
+          &lt;td>{pile.adhesions[index]}&lt;/td>
+          &lt;td>{pile.skinFrictions[index].toFixed(2)}&lt;/td>
+        &lt;/tr>
+      )
+    }
+    else { return null };
+  })
+
+
+  return (
+    &lt;div className="pile-output">
+      &lt;h2>Individual Pile Analysis&lt;/h2>
+      &lt;div className="pile-output-grid">
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Material&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.material}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left pile-type">Pile Type&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.pileType}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Load Direction&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{loadDirection}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Kh&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.earthPressureCoefficient}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Pile Area (sf)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.pileArea.toFixed(3)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Pile Perimeter (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.pilePerimeter.toFixed(3)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Width (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{width}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Bearing Depth (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.bearingDepth}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">FS&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.FS}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">&lt;b>Allowable Capacity (kip)&lt;/b>&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{poundsToKips(pile.allowableCapacity).toFixed(2)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Ultimate Capacity (kip)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{poundsToKips(pile.ultimateCapacity).toFixed(2)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">{/* This div intentionally left blank */}&lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Bearing Mode&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.endBearing.mode}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">{bearingCapacityFactorLabel}&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{bearingCapacityFactorValue}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Effective Stress Limited?&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{effectiveStressLimited}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Pile Weight (kip)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{poundsToKips(pile.pileWeight).toFixed(2)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Total Skin Friction (kip)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{poundsToKips(pile.totalSkinFriction).toFixed(2)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">End Bearing (kip)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{poundsToKips(pile.endBearing.value).toFixed(2)}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Groundwater Depth (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{groundwaterDepth}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Ignored Depth (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{pile.ignoredDepth}&lt;/p>
+        &lt;/div>
+        &lt;div className="pile-output-subgrid">
+          &lt;p className="pile-output-subgrid-item-left">Sublayer Thickness (ft)&lt;/p>
+          &lt;p className="pile-output-subgrid-item">{increment}&lt;/p>
+        &lt;/div>
+      &lt;/div>
+      &lt;table>
+        &lt;thead>
+          &lt;tr>
+            &lt;th>Layer No.&lt;/th>
+            &lt;th>Bottom Depth (ft)&lt;/th>
+            &lt;th>Name&lt;/th>
+            &lt;th>Unit Weight (pcf)&lt;/th>
+            &lt;th>Phi (deg)&lt;/th>
+            &lt;th>C (psf)&lt;/th>
+            &lt;th>Eff. Stress at Mid. (psf)&lt;/th>
+            &lt;th>Eff. Stress at Bot. (psf)&lt;/th>
+            &lt;th>contact friction angle 𝛿&lt;/th>
+            &lt;th>Adhesion α (psf)&lt;/th>
+            &lt;th>Skin Friction (psf)&lt;/th>
+          &lt;/tr>
+        &lt;/thead>
+        &lt;tbody>
+          {rows}
+        &lt;/tbody>
+      &lt;/table>
+      &lt;div className="pagebreak">&lt;/div>
+    &lt;/div>
+  )
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

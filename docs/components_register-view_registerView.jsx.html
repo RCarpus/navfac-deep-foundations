@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/register-view/registerView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/register-view/registerView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module RegisterView
+ */
+
+import React from "react";
+import './registerView.css';
+import { Link } from "react-router-dom";
+import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
+
+
+/**
+ * @description RegisterView lets the user create a new account. Because this 
+ * view should be inaccessible to logged in users, componentDidMount() includes
+ * a call to the prop function redirectHomeIfLoggedIn, which does exactly what 
+ * the name indicates.
+ * 
+ * The account creation form has real-time data validation to prevent 
+ * improperly formatted data being sent to the server.
+ * 
+ * This form also includes a link to the LoginView in case a registered user 
+ * accidentally navigated to this page.
+ */
+export default class RegisterView extends React.Component {
+  /**
+   * @param {function} redirectHomeIfLoggedIn  
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstNameValid: true,
+      lastNameValid: true,
+      companyValid: true,
+      emailValid: true,
+      passwordValid: true,
+      isLoading: false,
+    }
+  }
+
+  /**
+   * Redirects the user to the home screen if they are logged in already.
+   */
+  componentDidMount() {
+    this.props.redirectHomeIfLoggedIn();
+  }
+
+  /**
+   * Extract the data from the registration form, check the data for validity, 
+   * and register the user account. If there is a problem with the data, the 
+   * API call will not be made. If the data is valid but the registration fails,
+   * it is likely due to a conflict with an existing email in the database. 
+   * A window alert will warn the user of this.
+   * @param {object} e event object
+   */
+  register(e) {
+    e.preventDefault();
+    const FirstName = document
+      .getElementById('register__form__first-name').value;
+    const LastName = document
+      .getElementById('register__form__last-name').value;
+    const Email = document
+      .getElementById('register__form__email').value;
+    const Company = document
+      .getElementById('register__form__company').value;
+    const Password = document
+      .getElementById('register__form__password').value;
+    const userInfo = { FirstName, LastName, Email, Company, Password };
+    if (this.validateUserInfo(userInfo)) {
+      this.setState({ isLoading: true }, () => {
+        axios.post(API_URL + 'users/register', userInfo)
+          .then(response => {
+            console.log(response.data);
+            this.setState({ isLoading: false });
+            window.location.href = '/#/login';
+          })
+          .catch(e => {
+            console.error(e);
+            this.setState({ isLoading: false });
+            window.alert(`Something went wrong. 
+            Perhaps that email address is already in use.`);
+          });
+      })
+
+    }
+  }
+
+  /**
+   * Check each property of userInfo for compliance with data rules.
+   * userInfo should contain each of the following:
+   * - firstName
+   * - lastName
+   * - email
+   * - company
+   * - password
+   * As a side effect, sets state values for each field to render warnings 
+   * if inputs are invalid
+   * @param {object} userInfo 
+   * @returns {boolean} true if all included fields are valid, false otherwise
+   */
+  validateUserInfo(userInfo) {
+    // Define patterns
+    let alphaPattern = /^[a-zA-Z\s]+$/;
+    let alphaNumericPattern = /^[a-zA-Z\s0-9]+$/;
+    // https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
+    let emailPattern = /(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
+    // Test each field for validity
+    const firstNameValid = alphaPattern.test(userInfo.FirstName);
+    const lastNameValid = alphaPattern.test(userInfo.LastName);
+    const companyValid = alphaNumericPattern.test(userInfo.Company);
+    const passwordValid = userInfo.Password.length >= 8;
+    const emailValid = emailPattern.test(userInfo.Email);
+
+    // set state accordingly
+    this.setState({
+      firstNameValid,
+      lastNameValid,
+      companyValid,
+      passwordValid,
+      emailValid,
+    });
+    if (firstNameValid &amp;&amp; lastNameValid &amp;&amp; companyValid
+      &amp;&amp; passwordValid &amp;&amp; emailValid) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  render() {
+    const { firstNameValid,
+      lastNameValid,
+      companyValid,
+      passwordValid,
+      emailValid,
+      isLoading } = this.state;
+    return (
+      &lt;div className="register">
+        {isLoading &amp;&amp; &lt;LoadingAnimation />}
+        &lt;h2 className="register__title">New User Registration&lt;/h2>
+        &lt;div className="register__grid">
+          &lt;div className="register__grid__item">
+            &lt;form className="register__form">
+              &lt;div className="register__form__line">
+                &lt;label>First Name&lt;/label>
+                &lt;input id="register__form__first-name" />
+                {!firstNameValid &amp;&amp;
+                  &lt;span className="invalid">Invalid&lt;/span>}
+              &lt;/div>
+              &lt;div className="register__form__line">
+                &lt;label>Last Name&lt;/label>
+                &lt;input id="register__form__last-name" />
+                {!lastNameValid &amp;&amp;
+                  &lt;span className="invalid">Invalid&lt;/span>}
+              &lt;/div>
+              &lt;div className="register__form__line">
+                &lt;label>Email&lt;/label>
+                &lt;input id="register__form__email" />
+                {!emailValid &amp;&amp;
+                  &lt;span className="invalid">Invalid&lt;/span>}
+              &lt;/div>
+              &lt;div className="register__form__line">
+                &lt;label>Company&lt;/label>
+                &lt;input id="register__form__company" />
+                {!companyValid &amp;&amp;
+                  &lt;span className="invalid">Invalid&lt;/span>}
+              &lt;/div>
+              &lt;div className="register__form__line">
+                &lt;label>Password&lt;/label>
+                &lt;input type="password" id="register__form__password" />
+                {!passwordValid &amp;&amp;
+                  &lt;span className="invalid">Invalid&lt;/span>}
+              &lt;/div>
+              &lt;button id="register-button"
+                onClick={(e) => this.register(e)}>Register&lt;/button>
+            &lt;/form>
+            &lt;div className="register__to-login-container">
+              &lt;span className="register__to-login-text">
+                Already have an account?
+              &lt;/span>
+              &lt;Link to="/login">Login&lt;/Link>
+            &lt;/div>
+          &lt;/div>
+          &lt;div className="register__grid__item">
+            &lt;p>
+              Your full name and company name will appear on your calculation
+              reports.
+            &lt;/p>
+            &lt;p>
+              Your email is used to log into your account or to recover your
+              account if you forget your password.
+            &lt;/p>
+            &lt;p>
+              Your personal information will not be given to anybody for any
+              reason and will not be used for purposes other than those
+              described above.
+            &lt;/p>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    )
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

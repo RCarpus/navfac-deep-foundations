@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module App
+ */
+
+import './App.css';
+import Navbar from './components/navbar/navbar';
+import WelcomeView from './components/welcome-view/welcomeView';
+import LoginView from './components/login-view/loginView';
+import RegisterView from './components/register-view/registerView';
+import HomeView from './components/home-view/homeView';
+import ProfileView from './components/profile-view/profileView';
+import NewProjectView from './components/new-project-view/newProjectView';
+import LoadProjectView from './components/load-project-view/loadProjectView';
+import ProjectEditView from './components/project-edit-view/projectEditView';
+import AnalysisView from './components/analysis-view/analysisView';
+
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
+import React from 'react';
+import axios from 'axios';
+import LoadingAnimation from './components/loading-animation/loadingAnimation';
+import CloneProjectView from './components/clone-project-view/cloneProjectView';
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
+
+/**
+ * Controls the whole app. Contains routing information and 
+ * functions to check if the user is logged in.
+ */
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isLoggedIn: false,
+      isLoading: false,
+    }
+  }
+
+  /**
+   * Check to see if the user is logged in. 
+   * If the user is logged in, they have access to the logged in features.
+   * If they are not logged in, they only have access to the login and register 
+   * views.
+   */
+  checkLoginStatus() {
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + 'checktoken', headers)
+        .then(response => {
+          this.setState({
+            isLoggedIn: true,
+            isLoading: false,
+          });
+          return response;
+        })
+        .catch(error => {
+          this.setState({
+            isLoggedIn: false,
+            isLoading: false,
+          });
+          window.location.href = '/';
+          return error;
+        });
+    })
+
+  }
+
+  /**
+   * Used within the login and registration views to 
+   * redirect home if they are already logged in.
+   */
+  redirectHomeIfLoggedIn() {
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + 'checktoken', headers)
+        .then(response => {
+          this.setState({ isLoading: false });
+          window.location.href = '/#/home';
+          return response;
+        })
+        .catch(error => {
+          this.setState({ isLoading: false });
+          return error;
+        });
+    });
+
+  }
+
+  render() {
+    const { isLoggedIn, isLoading } = this.state;
+    return (
+      &lt;div className="App">
+        {isLoading &amp;&amp; &lt;LoadingAnimation />}
+        &lt;Router>
+          &lt;Navbar isLoggedIn={isLoggedIn} />
+          &lt;Routes>
+            &lt;Route path="/" element={&lt;WelcomeView />} />
+            &lt;Route path="/profile" element={&lt;ProfileView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            &lt;Route path="/login" element={&lt;LoginView
+              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+            &lt;Route path="/register" element={&lt;RegisterView
+              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+            &lt;Route path="/home" element={&lt;HomeView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            &lt;Route path="/new-project" element={&lt;NewProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            &lt;Route path="/load-project" element={&lt;LoadProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            &lt;Route path="/clone-project" element={&lt;CloneProjectView
+              checkLoginStatus={() => this.checkLoginStatus()} /> } />
+            &lt;Route path="/edit-project" element={&lt;ProjectEditView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+            &lt;Route path="analyze" element={&lt;AnalysisView
+              checkLoginStatus={() => this.checkLoginStatus()} />} />
+          &lt;/Routes>
+        &lt;/Router>
+      &lt;/div>
+    );
+  }
+
+}
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

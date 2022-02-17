@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/soil-profile-output/soilProfileOutput.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/soil-profile-output/soilProfileOutput.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module SoilProfileOutput
+ */
+
+import React from "react";
+import './soilProfileOutput.css';
+
+/**
+ * Display a table with detailed soil profile data for a completed analysis.
+ * @param {object} data The analysis object sent as a prop from AnalysisView.
+ */
+export default function SoilProfileOutput(props) {
+  const { data } = props;
+  const tableRows = data.detailedSoilProfile.layerPhis.map((layer, index) => {
+    return (
+      &lt;tr>
+        &lt;td>{index + 1}&lt;/td>
+        &lt;td>{data.detailedSoilProfile.layerBottomDepths[index]}&lt;/td>
+        &lt;td>{data.detailedSoilProfile.layerNames[index]}&lt;/td>
+        &lt;td>{data.detailedSoilProfile.layerUnitWeights[index]}&lt;/td>
+        &lt;td>{data.detailedSoilProfile.layerCohesions[index]}&lt;/td>
+        &lt;td>{data.detailedSoilProfile.layerPhis[index]}&lt;/td>
+        &lt;td>{Math.round(data.detailedSoilProfile.layerEffStressMids[index])}&lt;/td>
+        &lt;td>{Math.round(data.detailedSoilProfile.layerEffStressBottoms[index])}&lt;/td>
+      &lt;/tr>
+    )
+  })
+  return (
+    &lt;div className="soil-profile-output">
+      &lt;h2>Summary of Soil Properties&lt;/h2>
+      &lt;div className="soil-profile-grid">
+        &lt;div className="soil-profile-subgrid">
+          &lt;p>Groundwater Depth (ft):&lt;/p>
+          &lt;p>{data.generalSoilProfile.groundwaterDepth}&lt;/p>
+        &lt;/div>
+        &lt;div className="soil-profile-subgrid">
+          &lt;p>Ignored Depth (ft):&lt;/p>
+          &lt;p>{data.ignoredDepth}&lt;/p>
+        &lt;/div>
+        &lt;div className="soil-profile-subgrid">
+          &lt;p>Sublayer Thickness (ft):&lt;/p>
+          &lt;p>{data.increment}&lt;/p>
+        &lt;/div>
+
+      &lt;/div>
+      &lt;table className="soil-profile-table">
+        &lt;thead>
+          &lt;tr>
+            &lt;th>Layer No.&lt;/th>
+            &lt;th>Bottom Depth (ft)&lt;/th>
+            &lt;th>Name&lt;/th>
+            &lt;th>Unit Weight (pcf)&lt;/th>
+            &lt;th>C (psf)&lt;/th>
+            &lt;th>Φ (deg)&lt;/th>
+            &lt;th>Eff. Stress at Mid.&lt;/th>
+            &lt;th>Eff. Stress at Bot.&lt;/th>
+          &lt;/tr>
+        &lt;/thead>
+        &lt;tbody>
+          {tableRows}
+        &lt;/tbody>
+      &lt;/table>
+      &lt;div className="pagebreak">&lt;/div>
+    &lt;/div>
+  )
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

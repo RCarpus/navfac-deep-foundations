@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/new-project-view/newProjectView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/new-project-view/newProjectView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module NewProjectView
+ */
+import React from "react";
+import './newProjectView.css';
+import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
+
+/**
+ * @description NewProjectView allows the user to create a new project. 
+ * The user enters basic project details into the form and submits it.
+ * Then, the user is redirected to the project edit screen. 
+ */
+export default class NewProjectView extends React.Component {
+  /**
+   * @param {function} checkLoginStatus comes from App
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      isValidForm: true,
+      projectNameExists: false,
+      names: [],
+      isLoading: false,
+    }
+  }
+
+  /**
+   * Check to make sure we are logged in, then 
+   * download the project names so we don't make a duplicate.
+   */
+  componentDidMount() {
+    this.props.checkLoginStatus();
+    this.getProjectNames();
+  }
+
+  /**
+   * Download the names of the user's existing projects and save to state.
+   * This is used to check the new project's name and make sure their 
+   * are no duplicate names.
+   */
+  getProjectNames() {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.get(API_URL + `users/${ID}/projects`, headers)
+      .then(response => {
+        let names = response.data.map(project => project.Name);
+        this.setState({ names });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Extracts the data form the new project form, validates the form,
+   * and then submits the new project to the server. The user is redirected 
+   * to the project edit screen. 
+   * If the form is invalid, the project is not created.
+   * @param {object} e event object
+   */
+  createNewProject(e) {
+    e.preventDefault();
+    // Extract data from form
+    const Name = document.getElementById('new-project__form__name').value.trim();
+    const Client = document.getElementById('new-project__form__client').value;
+    const Engineer = document.getElementById('new-project__form__engineer').value;
+    const Notes = document.getElementById('new-project__form__notes').value;
+    const projectDetails = { Name, Client, Engineer, Notes };
+
+    // validate the data and then send it to the server
+    if (this.validateNewProject(projectDetails)) {
+      const ID = localStorage.getItem('user');
+      const token = localStorage.getItem('token');
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      this.setState({ isLoading: true }, () => {
+        axios.post(API_URL + `users/${ID}/projects`, projectDetails, headers)
+          .then(response => {
+            this.setState({ isLoading: false });
+            // Redirect to the project edit screen with this new project
+            localStorage.setItem('currentProject', Name);
+            window.location.href = '/#/edit-project';
+          })
+          .catch(error => {
+            console.error(error);
+            this.setState({ isLoading: false });
+            window.alert('Error: Something went wrong trying to create a project.');
+          });
+      })
+    }
+  }
+
+  /**
+   * Checks the new project information to make sure it's valid.
+   * First checks that the Name has been entered. That is the only required 
+   * field. Second, Checks that the does not already have a project with the
+   * same name. If the Name fails either of those tests, the state is 
+   * updated to render an error message to the user.
+   * @param {object} projectDetails object with the following {string} params:
+   * - Name
+   * - Client
+   * - Engineer
+   * - Notes
+   * @returns {boolean} true if form is valid, otherwise false.
+   */
+  validateNewProject(projectDetails) {
+    if (projectDetails.Name.length === 0) {
+      this.setState({ isValidForm: false, projectNameExists: false });
+      return false;
+    }
+    const names = this.state.names;
+    const projectNameExists = names.find(name => name === projectDetails.Name);
+    if (projectNameExists) {
+      this.setState({ projectNameExists: true, isValidForm: true });
+      return false;
+    }
+    return true;
+  }
+
+  render() {
+    const { isValidForm, projectNameExists, isLoading } = this.state;
+    return (
+      &lt;div className="new-project">
+        {isLoading &amp;&amp; &lt;LoadingAnimation />}
+        &lt;h1 className="new-project__title">Create New Project&lt;/h1>
+        &lt;form className="new-project__form">
+          &lt;div className="new-project__form__line">
+            &lt;label>Project Name/Number&lt;/label>
+            &lt;input id="new-project__form__name" placeholder="required" />
+          &lt;/div>
+          &lt;div className="new-project__form__line">
+            &lt;label>Client&lt;/label>
+            &lt;input id="new-project__form__client" />
+          &lt;/div>
+          &lt;div className="new-project__form__line">
+            &lt;label>Engineer&lt;/label>
+            &lt;input id="new-project__form__engineer" />
+          &lt;/div>
+          &lt;div className="new-project__form__line">
+            &lt;label>Notes&lt;/label>
+            &lt;textarea id="new-project__form__notes"
+              rows="4" cols="50" />
+          &lt;/div>
+          &lt;button id="create-project-btn"
+            onClick={(e) => this.createNewProject(e)}>Create Project&lt;/button>
+          {!isValidForm &amp;&amp; &lt;span className="create-project-error">
+            Project Name/Number is required.
+          &lt;/span>}
+          {projectNameExists &amp;&amp;
+            &lt;span className="create-project-error">
+              You cannot have two projects with the same name
+            &lt;/span>
+          }
+        &lt;/form>
+      &lt;/div>
+    )
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

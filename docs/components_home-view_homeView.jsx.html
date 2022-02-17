@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/home-view/homeView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/home-view/homeView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module HomeView
+ */
+
+import React from "react";
+import './homeView.css';
+import { Link } from "react-router-dom";
+
+/**
+ * @description The home view is where logged in user's generally start. 
+ * Several buttons are rendered that let the user choose what they want to do.
+ * The relative path for this view is "/home".
+ * Home view should only be accessible to logged in users, so the 
+ * checkLoginStatus() inside componentDidMount() redirects the user to the 
+ * WelcomeView "/" if the don't havea valide JWT.
+ */
+export default class HomeView extends React.Component {
+
+  componentDidMount() {
+    this.props.checkLoginStatus();
+  }
+
+  render() {
+    const currentProject = localStorage.getItem('currentProject');
+    return (
+      &lt;div className="home">
+        &lt;h2 className="home__title">Get Started&lt;/h2>
+        &lt;div className="home__grid">
+          {currentProject &amp;&amp;
+            &lt;Link className="home-link" to="/edit-project">Load Most Recent&lt;/Link>
+          }
+          &lt;Link className="home-link" to="/new-project">Create New Project&lt;/Link>
+          &lt;Link className="home-link" to="/load-project">Load Project&lt;/Link>
+          &lt;Link className="home-link" to="/clone-project">Clone Project&lt;/Link>
+          &lt;Link className="home-link" to="/profile">Edit Profile&lt;/Link>
+          &lt;a className="home-link"
+            href="https://www.youtube.com/watch?v=Rb0EnvPmI84"
+            target="_blank">View Demo Video&lt;/a>
+          &lt;a className="home-link"
+            href="https://github.com/RCarpus/navfac-deep-foundations"
+            target="_blank">About&lt;/a>
+        &lt;/div>
+        &lt;p className="home__plug">
+          I'm Ryan Carpus! I made this website because I love solving engineering
+          problems and writing code. To see some of my other work,&amp;#160;
+          &lt;a href="https://rcarpus.github.io" target="_blank">
+            check out my portfolio
+          &lt;/a>
+          . I am currently seeking work as a web developer, either onsite in
+          Ann Arbor, Michigan or remote, so drop me a line if you are a recruiter!
+        &lt;/p>
+      &lt;/div>
+    )
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

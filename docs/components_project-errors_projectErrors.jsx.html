@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/project-errors/projectErrors.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/project-errors/projectErrors.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module ProjectErrors
+ */
+import React from "react";
+import './projectErrors.css';
+
+/**
+ * Takes in an object full of booleans indicating whether input errors 
+ * have been detected. Displays an error message with hints on how to fix 
+ * them for each error found.
+ * @param {object} valid An object with the same keys as a project object,
+ * but each value is a boolean. 
+ * @param {function} toggleErrors Tells the Analysis view to close the 
+ * error box.
+ */
+export default function ProjectErrors(props) {
+  const { valid } = props;
+
+  // If for some reason valid isn't passed in, we still need something.
+  if (!valid) return (
+    &lt;div className="project-errors">
+      &lt;h2>Project Errors&lt;/h2>
+      &lt;p>No errors.&lt;/p>
+    &lt;/div>
+  );
+
+  return (
+    &lt;div className="project-errors">
+      &lt;button onClick={(e) => props.toggleErrors(e)}
+        id="close-errors-btn" >close&lt;/button>
+      &lt;h2>Project Errors&lt;/h2>
+      {!valid.Meta.Client &amp;&amp;
+        &lt;p>Client Name throwing an error, but that should be impossible.&lt;/p>}
+      {!valid.Meta.Engineer &amp;&amp;
+        &lt;p>Engineer is throwing an error, but that should be impossible.&lt;/p>}
+      {!valid.Meta.Name &amp;&amp;
+        &lt;p>You can't have two projects with the same name.
+          Change the name of the project to a name that is not already in use.&lt;/p>}
+      {!valid.Meta.Notes &amp;&amp;
+        &lt;p>Notes is throwing an error, but that should be impossible.&lt;/p>}
+      {!valid.SoilProfile.GroundwaterDepth &amp;&amp;
+        &lt;p>Groundwater Depth must be a nonzero number and must be evenly divisible by
+          Sublayer Increment.&lt;/p>}
+      {!valid.SoilProfile.IgnoredDepth &amp;&amp;
+        &lt;p>Ignored Depth must be a nonzero number and must be evenly divisible by
+          sublayer increment.&lt;/p>}
+      {!valid.SoilProfile.Increment &amp;&amp;
+        &lt;p>Sublayer Increment must be either 0.5 or 1.&lt;/p>}
+      {!valid.SoilProfile.LayerDepths &amp;&amp;
+        &lt;p>Each layer must be deeper than the previous layer, and each depth must
+          be evenly divisible by Sublayer Increment.&lt;/p>}
+      {!valid.SoilProfile.LayerNames &amp;&amp;
+        &lt;p>Each soil layer must have a name.&lt;/p>}
+      {!valid.SoilProfile.LayerPhiOrCValues &amp;&amp;
+        &lt;p>Phi values must be integers between 26 and 40.
+          Cohesion values must be nonzero numbers.&lt;/p>}
+      {!valid.SoilProfile.LayerPhiOrCs &amp;&amp;
+        &lt;p>Each layer must be either C or Phi.&lt;/p>}
+      {!valid.SoilProfile.LayerUnitWeights &amp;&amp;
+        &lt;p>Unit weights must be nonzero numbers.&lt;/p>}
+      {!valid.FoundationDetails.BearingDepths &amp;&amp;
+        &lt;p>Bearing depths must be positive numbers, must be evenly divisible
+          by Sublayer Increment, and must be shallower than your deepest
+          layer. Also, you need at least one.&lt;/p>}
+      {!valid.FoundationDetails.FS &amp;&amp;
+        &lt;p>FS must be a positive number. We recommend you use a value of 3.&lt;/p>}
+      {!valid.FoundationDetails.Material &amp;&amp;
+        &lt;p>Material must come from the dropdown list.&lt;/p>}
+      {!valid.FoundationDetails.PileType &amp;&amp;
+        &lt;p>Pile Type must come from the dropdown list.&lt;/p>}
+      {!valid.FoundationDetails.Widths &amp;&amp;
+        &lt;p>Widths must be positive numbers. Also, you need at least one
+          valid width.&lt;/p>}
+    &lt;/div>
+  );
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

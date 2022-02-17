@@ -1,4 +1,7 @@
 # NAVFAC Deep Foundations Design Tool
+## [Live Site Link](https://navfac-deep-foundations.netlify.app/)
+### [Documentation](https://rcarpus.github.io/navfac-deep-foundations)
+### [API GitHub](https://github.com/RCarpus/navfac-api)
 This application performs axial capacity analysis for a variety of deep foundation types in stratified soil profiles. The calculations are adapted from the NAVFAC Foundations & Earth Structures Design Manual 7.02, last edited September 1986. This tool allows users to input a custom soil profile with several layers, select a foundation type and installation type, and input a selection of foundation widths and bearing depths to analyze simultaneously. 
 
 After submitting an analysis, the user will be presented with a collection of summary tables showing the ultimate and allowable axial capacity of each foundation in compression and in tension. Beyond the summary tables, the user can view a detailed output for each individual pile showing the results of each calculation. The results may be downloaded in PDF form, and users can save their projects to enable tweaking the input parameters. Additionally, users can clone projects so they can easily analyze different pile types without needing to input the soil data again. 
@@ -32,7 +35,7 @@ console.log(myAnalysis.calculations.tensionAnalyses;
 ```
 
 The diagram below illustrates how each of these parts interact with each other behind the scenes:
-![diagram illustrating the interaction between navfac, DeepFoundationAnalysis, and FoundationCalc](src/img/navfac_class_interactions.svg)
+![diagram illustrating the interaction between navfac, DeepFoundationAnalysis, and FoundationCalc](./doc-img/navfac_class_interactions.svg)
 
 ## Rules to follow when implementing the calculation package
 This calculation package itself does not enforce correctly formatting the data input, so it's up to the developer to ensure that correctly-formatted data makes its way into the calculations. Practically, that means checking the rules layed out below on the user side before beginning to operate with the data.
@@ -85,4 +88,11 @@ TO BE CLEAR, If these rules are not applied before attempting to perform calcula
 - `FS` - See FoundationCalc constructor.
 
 
-
+## Deployment
+### Website
+Automatic deployement is enabled with Netflify. Just push new changes to master to trigger a new deploy.
+### Docs
+Documentation is hosted on Github Pages. To update the documentation, first regenerate the docs by running 
+`npm run docs`  
+Then, deploy to GH Pages with  
+`git subtree push --prefix docs master gh-pages`  

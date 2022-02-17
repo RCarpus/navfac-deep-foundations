@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/load-project-view/loadProjectView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/load-project-view/loadProjectView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module LoadProjectView
+ */
+
+import React from "react";
+import './loadProjectView.css';
+import axios from "axios";
+import LoadingAnimation from "../loading-animation/loadingAnimation";
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
+
+/**
+ * @description LoadProjectView displays a table with the names and 
+ * modified dates of the user's projects. They can select a project and 
+ * click open to open the project, or they can select the delete button 
+ * to delete a project. Opening a project redirects them to the 
+ * ProjectEditView.
+ */
+export default class LoadProjectView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      projects: [],
+      selectedProject: undefined,
+      isLoading: false,
+    }
+  }
+
+  /**
+   * Make sure the user is logged in and download their projects
+   */
+  componentDidMount() {
+    this.props.checkLoginStatus();
+    this.getProjects();
+  }
+
+  /**
+   * Downloads the user's project names and modified dates.
+   * Saves the response in state.
+   * This is an array of objects:
+   * [{
+   *    "Name" : "My first project",
+   *    "ModifiedDate": "2022-02-09T15:15:44.956+00:00"
+   * }]
+   */
+  getProjects() {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + `users/${ID}/projects`, headers)
+        .then(response => {
+          this.setState({
+            projects: response.data,
+            isLoading: false,
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          this.setState({
+            isLoading: false,
+          });
+        });
+    })
+
+  }
+
+  /**
+   * Sets selectedProject in state to the name of the project 
+   * and gives the table row for that project the active class.
+   * @param {string} name name of the selected project
+   */
+  selectProject(name) {
+    const tableRows = Array.from(document.querySelectorAll('tr.active'));
+    tableRows.forEach(row => {
+      row.classList.remove('active');
+    });
+    document.getElementById(name).classList.add('active');
+    this.setState({ selectedProject: name });
+  }
+
+  /**
+   * Deletes a project by name. Before deleting, uses a window confirm to 
+   * prevent accidental deletions. The return object from the server 
+   * set to the state. This removes the project from the list.
+   * @param {string} name name of projec to be deleted
+   * @returns null
+   */
+  deleteProject(name) {
+    const confirmed = window.confirm(`Are you you want to delete "${name}"?
+    This cannot be undone.`);
+    if (!confirmed) return;
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.delete(API_URL + `users/${ID}/projects/${name}`, headers)
+      .then(response => {
+        if (name === localStorage.getItem('currentProject')) {
+          localStorage.removeItem('currentProject');
+        }
+        this.setState({ projects: response.data });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Opens the selected project.
+   * This is done by saving the current project name in localStorage, 
+   * then redirecting to the project page.
+   */
+  openProject() {
+    const name = this.state.selectedProject;
+    if (name) {
+      localStorage.setItem('currentProject', name);
+      window.location.href = '/#/edit-project';
+    }
+  }
+
+  render() {
+    const { projects, selectedProject, isLoading } = this.state;
+
+    // Generate a table row for each project
+    let tableRows = [];
+    projects.forEach(project => {
+      tableRows.push(
+        &lt;tr id={project.Name} key={project.Name}>
+          &lt;td>&lt;button className="project-name"
+            onClick={() => this.selectProject(project.Name)}>
+            {project.Name}
+          &lt;/button>
+          &lt;/td>
+          &lt;td>{project.ModifiedDate.slice(0, 10)}&lt;/td>
+          &lt;td>
+            &lt;button className="delete-btn"
+              onClick={() => this.deleteProject(project.Name)}>X&lt;/button>
+          &lt;/td>
+        &lt;/tr>
+      );
+    });
+    return (
+      &lt;div className="load">
+        {isLoading &amp;&amp; &lt;LoadingAnimation />}
+        &lt;h1 className="load__title">Load Project&lt;/h1>
+        &lt;table className="load__table">
+          &lt;thead>
+            &lt;tr>
+              &lt;th>Project Name&lt;/th>
+              &lt;th>Date Modified&lt;/th>
+              &lt;th>&lt;/th>
+            &lt;/tr>
+          &lt;/thead>
+          &lt;tbody>
+            {tableRows}
+          &lt;/tbody>
+        &lt;/table>
+        &lt;button
+          id="open-project-btn"
+          onClick={() => this.openProject(selectedProject)}>
+          Open
+        &lt;/button>
+
+
+      &lt;/div>
+    )
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

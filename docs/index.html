@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>NAVFAC Deep Foundations Design Tool</h1>
+<h2><a href="https://navfac-deep-foundations.netlify.app/">Live Site Link</a></h2>
+<h3><a href="https://rcarpus.github.io/navfac-deep-foundations">Documentation</a></h3>
+<h3><a href="https://github.com/RCarpus/navfac-api">API GitHub</a></h3>
+<p>This application performs axial capacity analysis for a variety of deep foundation types in stratified soil profiles. The calculations are adapted from the NAVFAC Foundations &amp; Earth Structures Design Manual 7.02, last edited September 1986. This tool allows users to input a custom soil profile with several layers, select a foundation type and installation type, and input a selection of foundation widths and bearing depths to analyze simultaneously.</p>
+<p>After submitting an analysis, the user will be presented with a collection of summary tables showing the ultimate and allowable axial capacity of each foundation in compression and in tension. Beyond the summary tables, the user can view a detailed output for each individual pile showing the results of each calculation. The results may be downloaded in PDF form, and users can save their projects to enable tweaking the input parameters. Additionally, users can clone projects so they can easily analyze different pile types without needing to input the soil data again.</p>
+<h2>Disclaimer</h2>
+<p>This application is not a substitute for engineering knowledge, and this README is not a design tutorial. Any engineer who uses this tool is expected to understand the NAVFAC analysis process as a prerequite and to review the calculations for accuracy. The author of this program takes no responsibility for any engineering decisions made by anybody using this application. Use it at your own risk.</p>
+<h2>Caculations</h2>
+<p>Calculations are performed based on established soil science and the NAVFAC Foundations &amp; Earth Structures Design Manual 7.02, last edited September 1986. This manual is available to download for free at https://web.mst.edu/~rogersda/umrcourses/ge441/DM7_02.pdf.</p>
+<p>The calculation package is organized into three main files:</p>
+<ul>
+<li><code>navfacFunctions.js</code>, a collection of geotechnical calculation function</li>
+<li><code>DeepFoundationAnalysis.js</code>, DeepFoundationAnalysis class which parses the user input and stores analysis results</li>
+<li><code>FoundationCalc.js</code>, FoundationCalc class which performs and the design calculations for an individual pile</li>
+</ul>
+<p>The basic use-case for these classes is as follows:</p>
+<pre class="prettyprint source"><code>// Create an instance of DeepFoundationAnalysis with the required inputs
+let myAnalysis = new DeepFoundationAnalysis(
+  layerDepths, layerNames, layerUnitWeights, layerPhis, layerCohesions,
+  groundwaterDepth, increment, ignoredDepth);
+
+// Call analyze() with the required inputs to create several instances of 
+// FoundationCalc behind the scenes and save results into myAnalysis
+myAnalysis.analyze(material, pileType, widthArray,
+  bearingDepthArray, FS, ignoredDepth);
+
+// Access the calculation results with the calculations parameter
+console.log(myAnalysis.calculations.compressionAnalyses;
+console.log(myAnalysis.calculations.tensionAnalyses; 
+</code></pre>
+<p>The diagram below illustrates how each of these parts interact with each other behind the scenes:
+<img src="./doc-img/navfac_class_interactions.svg" alt="diagram illustrating the interaction between navfac, DeepFoundationAnalysis, and FoundationCalc"></p>
+<h2>Rules to follow when implementing the calculation package</h2>
+<p>This calculation package itself does not enforce correctly formatting the data input, so it's up to the developer to ensure that correctly-formatted data makes its way into the calculations. Practically, that means checking the rules layed out below on the user side before beginning to operate with the data.</p>
+<p>TO BE CLEAR, If these rules are not applied before attempting to perform calculations, the results will at best be completely and obviously broken, and at worst, quietly and unknowingly broken.</p>
+<h3>Data Input Rules</h3>
+<h4>DeepFoundationAnalysis constructor</h4>
+<ul>
+<li>When instantiating a new <code>DeepFoundationAnalysis</code>, the following parameters must all be arrays of equal length:
+<ul>
+<li><code>layerDepths</code></li>
+<li><code>layerNames</code></li>
+<li><code>layerUnitWeights</code></li>
+<li><code>layerPhis</code></li>
+<li><code>layerCohesions</code></li>
+</ul>
+</li>
+<li>The value of <code>increment</code> must be a value that every other depth value involved in the calculation is a multiple of. For example, if the increment is 1, then I could have <code>layerDepths</code> of [3, 6, 20], a <code>groundwaterDepth</code> of 17, and a <code>bearingElevation</code> of 15. However, I could not have, for example, a <code>bearingElevation</code> of 14.5 because that 14.5 is not a multiple of 1. If you want to use layers with a 0.5 foot resolution, you need to use an <code>increment</code> of 0.5 feet. Lastly, I would never recommend using &quot;uneven&quot; values like 0.33 or 1.5 for <code>increment</code>. While they could theoretically work, nobody needs that kind of confusion in their life.</li>
+<li><code>layerDepths</code> must be an array of positive numbers arranged in ascending order with no duplicates.</li>
+<li><code>layerNames</code> must be an array of strings.</li>
+<li><code>layerUnitWeights</code> must be an array of positive numbers.</li>
+<li><code>layerPhis</code> must be an array of integers with values of either 0 (for cohesive soils) or from 28 to 40 inclusive (for granular soils).</li>
+<li><code>layerCohesions</code> must be an array of numbers with values of either 0 (for granular soils) or positive values (for cohesive soils).</li>
+<li><code>ignoredDepth</code> must be any non-negative number following the increment rule.</li>
+</ul>
+<h4>FoundationCalc constructor</h4>
+<ul>
+<li><code>detailedSoilProfile</code> should be the <code>detailelSoilProfile</code> saved as a property within <code>DeepFoundationAnalysis</code>.</li>
+<li><code>material</code> must be one of the following strings:
+<ul>
+<li>&quot;TIMBER&quot;</li>
+<li>&quot;CONCRETE&quot;</li>
+<li>&quot;STEEL&quot;</li>
+</ul>
+</li>
+<li><code>pileType</code> must be one of the following strings:
+<ul>
+<li>&quot;DRIVEN-SINGLE-H-PILE&quot;</li>
+<li>&quot;DRIVEN-SINGLE-DISPLACEMENT-PILE&quot;</li>
+<li>&quot;DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE&quot;</li>
+<li>&quot;DRIVEN-JETTED-PILE&quot;</li>
+<li>&quot;DRILLED-PILE&quot;</li>
+</ul>
+</li>
+<li><code>width</code> must be an array with either 1 or 2 positive numbers.
+<ul>
+<li>1 number of the pileType is NOT &quot;DRIVEN-SINGLE-H-PILE&quot;</li>
+<li>2 numbers if the foundation IS &quot;DRIVEN-SINGLE-H-PILE&quot;</li>
+<li>If two numbers are passed, the smaller number should be first.</li>
+</ul>
+</li>
+<li><code>bearingDepth</code> must be a positive multiple of <code>increment</code> AND must be less than the deepest depth in the soil profile (ie: <code>bearingDepth &lt; layerDepths[layerDepths.length-1]</code>).</li>
+<li><code>increment</code> is the same increment from <code>DeepFoundationAnalysis</code>.</li>
+<li><code>isCompression</code> is a boolean. Must be true or false</li>
+<li><code>FS</code> must be a positive number, and should be greater than 1. The recommended value is 3.</li>
+<li><code>ignoredDepth</code> is the same <code>ignoredDepth</code> from <code>DeepFoundationAnalysis</code>.</li>
+</ul>
+<h4>DeepFoundationAnalysis.analyze()</h4>
+<ul>
+<li><code>material</code> - See FoundationCalc constructor.</li>
+<li><code>pileType</code> - See FoundationCalc constructor.</li>
+<li><code>widthArray</code> must be an array of widths meeting the requirements in FoundationCalc constructor.</li>
+<li><code>bearingDepthArray</code> must be an array of depths meeting the requirements in FoundationCalc constructor.</li>
+<li><code>FS</code> - See FoundationCalc constructor.</li>
+</ul>
+<h2>Deployment</h2>
+<h3>Website</h3>
+<p>Automatic deployement is enabled with Netflify. Just push new changes to master to trigger a new deploy.</p>
+<h3>Docs</h3>
+<p>Documentation is hosted on Github Pages. To update the documentation, first regenerate the docs by running
+<code>npm run docs</code><br>
+Then, deploy to GH Pages with<br>
+<code>git subtree push --prefix docs master gh-pages</code></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

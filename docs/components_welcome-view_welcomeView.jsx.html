@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/welcome-view/welcomeView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/welcome-view/welcomeView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module WelcomeView
+ */
+
+import React from 'react';
+import './welcomeView.css';
+import { Link } from 'react-router-dom';
+
+/**
+ * Displays some info about the app and has links to the 
+ * login view, registration, and demo video.
+ */
+export default function WelcomeView() {
+  return (
+    &lt;div className="welcome">
+      &lt;h1 className="welcome__title">
+        NAVFAC Deep Foundations
+      &lt;/h1>
+      &lt;h2 className="welcome__title">
+        Axial capacity design tool
+      &lt;/h2>
+      &lt;div className="welcome__video-container">
+        &lt;a className="welcome__link video-link"
+          href="https://www.youtube.com/watch?v=Rb0EnvPmI84"
+          target="_blank">Demonstration Video&lt;/a>
+      &lt;/div>
+      &lt;div className="welcome__grid">
+        &lt;div className="welcome__grid__item">
+          &lt;h2>Welcome!&lt;/h2>
+          &lt;p>
+            This application performs axial capacity analysis for a variety
+            of deep foundation types in stratified soil profiles. The
+            calculations are adapted from the NAVFAC Foundations &amp; Earth
+            Structures Design Manual 7.02, last edited September 1986. This
+            tool allows users to input a custom soil profile with several
+            layers, select a foundation type and installation type, and
+            input a selection of foundation widths and bearing depths to
+            analyze simultaneously.
+          &lt;/p>
+          &lt;p>
+            After submitting an analysis, the user will be presented with a
+            collection of summary tables showing the ultimate and allowable
+            axial capacity of each foundation in compression and in tension.
+            Beyond the summary tables, the user can view a detailed output
+            for each individual pile showing the results of each calculation.
+            The results may be saved in PDF form, and users can save
+            their projects to enable tweaking the input parameters.
+            Additionally, users can clone projects so they can easily analyze
+            different pile types without needing to input the soil data again.
+          &lt;/p>
+          &lt;p>
+            Calculations are performed based on established soil science and
+            the NAVFAC Foundations &amp; Earth Structures Design Manual 7.02,
+            last edited September 1986. This manual is available to download
+            for free
+            &lt;a href="https://web.mst.edu/~rogersda/umrcourses/ge441/DM7_02.pdf"
+              target="_blank"> here&lt;/a>.
+          &lt;/p>
+          &lt;h2>
+            Disclaimer
+          &lt;/h2>
+          &lt;p>
+            Any engineer who uses this tool is expected to understand the
+            NAVFAC analysis process as a prerequite and to review the
+            calculations for accuracy. The author of this program takes no
+            responsibility for any engineering decisions made by anybody
+            using this application. Use it at your own risk.
+          &lt;/p>
+        &lt;/div>
+        &lt;div className="welcome__grid__item">
+          &lt;h2>
+            Have an account?
+          &lt;/h2>
+          &lt;Link className="welcome__link" to="/login">Login&lt;/Link>
+          &lt;h2>
+            New user?
+          &lt;/h2>
+          &lt;Link className="welcome__link" to="/register">
+            Create a free account
+          &lt;/Link>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+
+  )
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/project-edit-view/projectEditView.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/project-edit-view/projectEditView.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module ProjectEditView
+ */
+
+import React from "react";
+import './projectEditView.css';
+import axios from 'axios';
+import LoadingAnimation from "../loading-animation/loadingAnimation";
+import ProjectErrors from "../project-errors/projectErrors";
+
+const API_URL = 'https://navfac-api.herokuapp.com/';
+
+
+/**
+ * @description ProjectEditView is the main interface where users edit the 
+ * input parameters for their project and submit the project for analysis.
+ * A project name must be stored in localStorage as "currentProject" along 
+ * with the user's ID and token.
+ */
+export default class ProjectEditView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false,
+      project: undefined,
+      names: [],
+      showProjectInfo: false,
+      useTwoWidthColumns: false,
+      additionalSoilRows: 1,
+      additionalWidthRows: 1,
+      additionalDepthRows: 1,
+      validation: undefined,
+      showErrors: false,
+    }
+  }
+
+  /**
+   * Load the current project immediately. Redirects to home if this fails for
+   * some reason.
+   */
+  componentDidMount() {
+    this.props.checkLoginStatus();
+    this.loadCurrentProject();
+    this.getProjectNames();
+  }
+
+  /**
+   * Loads data for the current project from the server. The name of the 
+   * current project must be saved as 'currentProject' in localStorage 
+   * along with the user ID and token. If loading the project fails,
+   * the user is redirected to the home screen.
+   */
+  loadCurrentProject() {
+    const currentProject = localStorage.getItem('currentProject');
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    this.setState({ isLoading: true }, () => {
+      axios.get(API_URL + `users/${ID}/projects/${currentProject}`, headers)
+        .then(response => {
+          const useTwoWidthColumns = response.data.FoundationDetails.PileType
+            === "DRIVEN-SINGLE-H-PILE";
+          this.setState({
+            project: response.data,
+            useTwoWidthColumns,
+            isLoading: false,
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          window.alert(`Failed to load project. Returning home.`);
+          this.setState({ isLoading: false });
+          window.location.href = '/#/home';
+        });
+    })
+
+  }
+
+  /**
+ * Download the names of the user's existing projects and save to state.
+ * This is used to check the new project's name and make sure their 
+ * are no duplicate names.
+ */
+  getProjectNames() {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.get(API_URL + `users/${ID}/projects`, headers)
+      .then(response => {
+        let names = response.data.map(project => project.Name);
+        this.setState({ names });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Saves the project on the server. Because the user may have changed 
+   * the project's name, it also saves the name of the project into 
+   * localStorage from the return object in the API call.
+   * The user is then routed to the AnalyzeView to see the 
+   * results of their analysis.
+   * @param {object} project a valid project object
+   */
+  saveProject(project) {
+    const ID = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const projectName = localStorage.getItem('currentProject');
+    const newProjectName = project.Meta.Name;
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.put(API_URL + `users/${ID}/projects/${projectName}`, project, headers)
+      .then(response => {
+        localStorage.setItem('currentProject', newProjectName);
+        window.location.href = "/#/analyze";
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Adds a row to the soil profile table
+   * @param {object} e event object
+   */
+  addSoilRow(e) {
+    e.preventDefault();
+    let current = this.state.additionalSoilRows;
+    this.setState({ additionalSoilRows: current + 1 });
+  }
+
+  /**
+  * Removes a row from the soil table
+  * @param {object} e event object 
+  */
+  removeSoilRow(e) {
+    e.preventDefault();
+    let table = document.getElementById('soil-table');
+    let tableBody = table.children[1];
+    tableBody.removeChild(tableBody.lastChild);
+  }
+
+  /**
+   * Adds a row to the width table
+   * @param {object} e event object
+   */
+  addWidthRow(e) {
+    e.preventDefault();
+    let current = this.state.additionalWidthRows;
+    this.setState({ additionalWidthRows: current + 1 });
+  }
+
+  /**
+   * Removes a row from the width table
+   * @param {object} e event object 
+   */
+  removeWidthRow(e) {
+    e.preventDefault();
+    let table = document.getElementById('width-table');
+    let tableBody = table.children[1];
+    tableBody.removeChild(tableBody.lastChild);
+  }
+
+  /**
+   * Adds a row to the depth table
+   * @param {object} e event object
+   */
+  addDepthRow(e) {
+    e.preventDefault();
+    let current = this.state.additionalDepthRows;
+    this.setState({ additionalDepthRows: current + 1 });
+  }
+
+  /**
+  * Removes a row from the soil table
+  * @param {object} e event object 
+  */
+  removeDepthRow(e) {
+    e.preventDefault();
+    let table = document.getElementById('depth-table');
+    let tableBody = table.children[1];
+    tableBody.removeChild(tableBody.lastChild);
+  }
+
+  /**
+   * Toggles the Project info content on or off. This content includes 
+   * - Name
+   * - Client
+   * - Engineer
+   * - Notes
+   * @param {object} e event object
+   */
+  toggleProjectInfo(e) {
+    e.preventDefault();
+    const showProjectInfo = !this.state.showProjectInfo;
+    this.setState({ showProjectInfo });
+    let info = document.getElementById('edit__project-info');
+    info.classList.toggle('hidden');
+  }
+
+  /**
+   * Toggles the Error info on or off.
+   * @param {object} e event object
+   */
+  toggleErrors(e) {
+    e.preventDefault();
+    const showErrors = !this.state.showErrors;
+    this.setState({ showErrors });
+    let errors = document.getElementById('project-errors');
+    errors.classList.toggle('not-rendered');
+  }
+
+  /**
+   * Extract all the data from the forms, validate the input data, and 
+   * then, if the data passes all the validation checks, save the 
+   * project and route the user to the analysis view.
+   * @param {object} e event object
+   */
+  calculate(e) {
+    e.preventDefault();
+    const project = this.state.project;
+    // collect all the info from the form
+    // Start with the easy stuff
+    const GroundwaterDepth = Number(document.getElementById('groundwater-depth').value)
+      || project.SoilProfile.GroundwaterDepth;
+    const IgnoredDepth = Number(document.getElementById('ignored-depth').value)
+      || project.SoilProfile.IgnoredDepth;
+    const Increment = Number(document.getElementById('sublayer-increment').value)
+      || project.SoilProfile.Increment;
+    const PileType = document.getElementById('pile-type').value;
+    const Material = document.getElementById('material').value;
+    const FS = Number(document.getElementById('FS').value)
+      || project.FoundationDetails.FS;
+
+    // Extract data from the SoilProfile table
+    let LayerDepths = [];
+    let LayerNames = [];
+    let LayerUnitWeights = [];
+    let LayerPhiOrCs = [];
+    let LayerPhiOrCValues = [];
+    let soilTable = document.getElementById('soil-table');
+    // Start from row=1 because row=0 is the header row
+    for (let row = 1; row &lt; soilTable.rows.length; row++) {
+      LayerDepths.push(soilTable.rows[row].cells[1].firstChild.value
+        || soilTable.rows[row].cells[1].firstChild.placeholder);
+      LayerNames.push(soilTable.rows[row].cells[2].firstChild.value
+        || soilTable.rows[row].cells[2].firstChild.placeholder);
+      LayerUnitWeights.push(soilTable.rows[row].cells[3].firstChild.value
+        || soilTable.rows[row].cells[3].firstChild.placeholder);
+      LayerPhiOrCs.push(soilTable.rows[row].cells[4].firstChild.value
+        || soilTable.rows[row].cells[4].firstChild.placeholder);
+      LayerPhiOrCValues.push(soilTable.rows[row].cells[5].firstChild.value
+        || soilTable.rows[row].cells[5].firstChild.placeholder);
+    }
+
+    // Extract data from widths table
+    let Widths = [];
+    let widthTable = document.getElementById('width-table');
+    for (let row = 1; row &lt; widthTable.rows.length; row++) {
+      let width1 = widthTable.rows[row].cells[0].firstChild.value
+        || widthTable.rows[row].cells[0].firstChild.placeholder;
+      let width2;
+      if (widthTable.rows[row].cells[1]) {
+        width2 = widthTable.rows[row].cells[1].firstChild.value
+          || widthTable.rows[row].cells[1].firstChild.placeholder;
+      }
+      if (width2) {
+        Widths.push([width1, width2]);
+      } else {
+        Widths.push([width1]);
+      }
+    }
+
+    // Extract data from the depths table
+    let BearingDepths = [];
+    let depthTable = document.getElementById('depth-table');
+    for (let row = 1; row &lt; depthTable.rows.length; row++) {
+      BearingDepths.push(depthTable.rows[row].cells[0].firstChild.value
+        || depthTable.rows[row].cells[0].firstChild.placeholder);
+    }
+
+    // Extract Project Info
+    let Name = document.getElementById('project-info-name').value
+      || project.Meta.Name;
+    let Client = document.getElementById('project-info-client').value
+      || project.Meta.Client;
+    let Engineer = document.getElementById('project-info-engineer').value
+      || project.Meta.Engineer;
+    let Notes = document.getElementById('project-info-notes').value
+      || project.Meta.Notes;
+
+    // Aggregate form data into a new updatedProject object
+    let updatedProject = {
+      SoilProfile: {
+        GroundwaterDepth,
+        IgnoredDepth,
+        Increment,
+        LayerDepths,
+        LayerNames,
+        LayerUnitWeights,
+        LayerPhiOrCs,
+        LayerPhiOrCValues
+      },
+      FoundationDetails: {
+        PileType,
+        Material,
+        FS,
+        Widths,
+        BearingDepths,
+      },
+      Meta: {
+        Name,
+        Client,
+        Engineer,
+        Notes,
+      }
+    }
+    // Do various validation checks
+    const validationResult = this.validateProjectInputs(updatedProject);
+
+    // Set the result of validation into localStorage
+    localStorage.setItem('validatedProject', JSON.stringify(validationResult));
+
+    // notify the user if they have issues
+    if (!validationResult) {
+      window.alert('Analysis failed. Your input data has issues.');
+      this.setState({ showErrors: true });
+    } else {
+      this.saveProject(validationResult);
+    }
+  }
+
+  /**
+   * Attempt to clean data and notify via state if any inputs are bad.
+   * Return cleaned object if inputs are valid, return false otherwise
+   * @param {object} project object containing all user-modifiable project data
+   * @returns {object} cleaned project data or false.
+   */
+  validateProjectInputs(project) {
+    let validation = {
+      SoilProfile: {},
+      FoundationDetails: {},
+      Meta: {},
+    };
+    const nonzeroNum = /^[0-9]*\.?[0-9]*$/;
+    const increment = project.SoilProfile.Increment;
+
+    /* GroundwaterDepth must be a non-negative number */
+    validation.SoilProfile.GroundwaterDepth = nonzeroNum.test(
+      project.SoilProfile.GroundwaterDepth)
+      &amp;&amp; project.SoilProfile.GroundwaterDepth % increment === 0;
+
+    /* IgnoredDepth must be a non-negative number */
+    validation.SoilProfile.IgnoredDepth = nonzeroNum.test(
+      project.SoilProfile.IgnoredDepth)
+      &amp;&amp; project.SoilProfile.IgnoredDepth % increment === 0;
+
+    /* Increment must be a positive number */
+    validation.SoilProfile.Increment = nonzeroNum.test(
+      project.SoilProfile.Increment)
+      &amp;&amp; project.SoilProfile.Increment > 0;
+
+    /* PileType must have a selection (ie: not "required") */
+    validation.FoundationDetails.PileType = project.FoundationDetails.PileType
+      !== "required";
+
+    /* Material must have a selection (ie: not "required") */
+    validation.FoundationDetails.Material = project.FoundationDetails.Material
+      !== "required";
+
+    /* FS must be a positive number */
+    validation.FoundationDetails.FS = nonzeroNum.test(
+      project.FoundationDetails.FS)
+      &amp;&amp; project.FoundationDetails.FS > 0;
+
+    /* Name must be a non-null string with no trailing white space.
+    We can cut the white space here for the user.
+    Also, the name must either be the current project name or a unique name */
+    let Name = project.Meta.Name.trim();
+    validation.Meta.Name = Name.length > 0
+      &amp;&amp; (this.state.names.indexOf(Name) === -1
+        || Name === this.state.project.Meta.Name);
+
+    /* The Client, Engineer, and Notes fields have no rules */
+    validation.Meta.Client = true;
+    validation.Meta.Engineer = true;
+    validation.Meta.Notes = true;
+
+    /* SoilProfile cleaning 
+      Removes any unfinished layers and then makes sure each layer is good.*/
+    let cleanLayerDepths = project.SoilProfile.LayerDepths;
+    let cleanLayerNames = project.SoilProfile.LayerNames;
+    let cleanLayerUnitWeights = project.SoilProfile.LayerUnitWeights;
+    let cleanLayerPhiOrCs = project.SoilProfile.LayerPhiOrCs;
+    let cleanLayerPhiOrCValues = project.SoilProfile.LayerPhiOrCValues;
+    let start = cleanLayerDepths.length - 1;
+    // iterate backwards through the arrays so we can remove by index without
+    // messing anything up.
+    for (let i = start; i >= 0; i--) {
+      if (cleanLayerDepths[i] === '---'
+        || cleanLayerNames[i] === '---'
+        || cleanLayerUnitWeights[i] === '---'
+        || cleanLayerPhiOrCs[i] === '---'
+        || cleanLayerPhiOrCValues[i] === '---') {
+        cleanLayerDepths.splice(i, 1);
+        cleanLayerNames.splice(i, 1);
+        cleanLayerUnitWeights.splice(i, 1);
+        cleanLayerPhiOrCs.splice(i, 1);
+        cleanLayerPhiOrCValues.splice(i, 1);
+      }
+    }
+    // After removing incomplete layers, each remaining layer must be correct
+    // Bottom Depth
+    let validDepths = cleanLayerDepths.every(function (depth, index) {
+      if (nonzeroNum.test(depth) &amp;&amp; index === 0
+        &amp;&amp; depth % increment === 0) return true;
+      if (nonzeroNum.test(depth)
+        &amp;&amp; Number(depth) > Number(cleanLayerDepths[index - 1])
+        &amp;&amp; depth % increment === 0) return true;
+      return false;
+    });
+
+    // We need to have at least one valid soil layer
+    if (validDepths) {
+      validDepths = cleanLayerDepths.length > 0;
+    }
+    validation.SoilProfile.LayerDepths = validDepths;
+
+    // Cast depths as numbers
+    let maxDepth;
+    if (validDepths) {
+      cleanLayerDepths = cleanLayerDepths.map(depth => {
+        return Number(depth);
+      });
+      maxDepth = cleanLayerDepths[cleanLayerDepths.length - 1];
+    }
+
+    // Layer Names
+    const validLayerNames = cleanLayerNames.every(name => {
+      return name.length > 0 ? true : false;
+    });
+    validation.SoilProfile.LayerNames = validLayerNames;
+
+    // Unit Weights
+    const validUnitWeights = cleanLayerUnitWeights.every(weight => {
+      return nonzeroNum.test(weight) &amp;&amp; Number(weight) > 0;
+    });
+    validation.SoilProfile.LayerUnitWeights = validUnitWeights;
+    // cast the weights as numbers
+    if (validUnitWeights) {
+      cleanLayerUnitWeights = cleanLayerUnitWeights.map(weight => {
+        return Number(weight);
+      });
+    }
+
+    // C or Phi
+    const validCorPhis = cleanLayerPhiOrCs.every(value => {
+      return value === 'C' || value === 'Φ';
+    });
+    validation.SoilProfile.LayerPhiOrCs = validCorPhis;
+    // Change the phi character to the string expected by the server
+    if (validCorPhis) {
+      cleanLayerPhiOrCs = cleanLayerPhiOrCs.map(value => {
+        if (value === 'Φ') {
+          return 'PHI';
+        } else {
+          return value;
+        }
+      })
+    }
+
+    // C or Phi value
+    const validCorPhiValues = cleanLayerPhiOrCValues.every(function (value, index) {
+      if (cleanLayerPhiOrCs[index] === 'PHI'
+        &amp;&amp; value >= 26 &amp;&amp; value &lt;= 40
+        &amp;&amp; Number.isInteger(Number(value))
+        &amp;&amp; nonzeroNum.test(value)) {
+        return true;
+      } else if (cleanLayerPhiOrCs[index] === 'C'
+        &amp;&amp; nonzeroNum.test(value)) return true;
+      return false;
+    });
+    validation.SoilProfile.LayerPhiOrCValues = validCorPhiValues;
+    if (validCorPhiValues) {
+      cleanLayerPhiOrCValues = cleanLayerPhiOrCValues.map(value => {
+        return Number(value);
+      })
+    }
+
+    /* Bearing depths cleaning */
+    let cleanBearingDepths = project.FoundationDetails.BearingDepths;
+    start = cleanBearingDepths.length - 1;
+    for (let i = start; i >= 0; i--) {
+      if (cleanBearingDepths[i] === '---') {
+        cleanBearingDepths.splice(i, 1);
+      }
+    }
+    let validBearingDepths = cleanBearingDepths.every(depth => {
+      return nonzeroNum.test(depth)
+        &amp;&amp; depth % increment === 0
+        &amp;&amp; depth &lt; maxDepth
+        ? true : false;
+    });
+
+    // We need at least one valid depth
+    if (validBearingDepths) {
+      validBearingDepths = cleanBearingDepths.length > 0;
+    }
+
+    validation.FoundationDetails.BearingDepths = validBearingDepths;
+    if (validBearingDepths) {
+      cleanBearingDepths = cleanBearingDepths.map(depth => {
+        return Number(depth);
+      })
+    }
+
+    /* Widths cleaning */
+    let cleanWidths = project.FoundationDetails.Widths;
+    start = cleanWidths.length - 1;
+    for (let i = start; i >= 0; i--) {
+      let blankWidth = cleanWidths[i].indexOf('---') > -1;
+      if (blankWidth) {
+        cleanWidths.splice(i, 1);
+      }
+    }
+    let validWidths = cleanWidths.every(width => {
+      return width.every(subWidth => {
+        return nonzeroNum.test(subWidth);
+      });
+    });
+
+    // We need at least one valid width
+    if (validWidths) {
+      validWidths = cleanWidths.length > 0;
+    }
+
+    validation.FoundationDetails.Widths = validWidths;
+    if (validWidths) {
+      cleanWidths = cleanWidths.map(width => {
+        return width.map(subWidth => {
+          return Number(subWidth);
+        });
+      });
+    }
+
+    // The validation is done, so we can update state to render and warnings.
+    this.setState({ validation });
+
+    // If ANY of these validations failed, we need to return false.
+    let keys = Object.keys(validation);
+    let validationSuccess = true;
+    keys.forEach(key => {
+      let subkeys = Object.keys(validation[key]);
+      subkeys.forEach(subkey => {
+        if (!validation[key][subkey]) validationSuccess = false;
+      });
+    });
+    if (!validationSuccess) return false;
+
+    // This is the object that will be sent to the server if valid
+    const validatedProject = {
+      SoilProfile: {
+        GroundwaterDepth: project.SoilProfile.GroundwaterDepth,
+        IgnoredDepth: project.SoilProfile.IgnoredDepth,
+        Increment: project.SoilProfile.Increment,
+        LayerDepths: cleanLayerDepths,
+        LayerNames: cleanLayerNames,
+        LayerUnitWeights: cleanLayerUnitWeights,
+        LayerPhiOrCs: cleanLayerPhiOrCs,
+        LayerPhiOrCValues: cleanLayerPhiOrCValues,
+      },
+      FoundationDetails: {
+        PileType: project.FoundationDetails.PileType,
+        Material: project.FoundationDetails.Material,
+        FS: project.FoundationDetails.FS,
+        Widths: cleanWidths,
+        BearingDepths: cleanBearingDepths,
+      },
+      Meta: {
+        Name,
+        Client: project.Meta.Client,
+        Engineer: project.Meta.Engineer,
+        Notes: project.Meta.Notes,
+      }
+    }
+
+    return validatedProject;
+  }
+
+  /**
+   * When the user changes the pile type with the dropdown selector, 
+   * determines whether two columns should be displayed for the 
+   * width selections.
+   */
+  handleChangePileType() {
+    let pileType = document.getElementById('pile-type').value;
+    const useTwoWidthColumns = pileType === 'DRIVEN-SINGLE-H-PILE';
+    this.setState({ useTwoWidthColumns });
+  }
+
+  render() {
+    const { project,
+      showProjectInfo,
+      additionalSoilRows,
+      additionalWidthRows,
+      additionalDepthRows,
+      useTwoWidthColumns,
+      isLoading,
+      validation,
+      showErrors } = this.state;
+
+    let soilProfileRows = [];
+    let blankSoilRows = [];
+    let widthRows = [];
+    let blankWidthRows = [];
+    let depthRows = [];
+    let blankDepthRows = [];
+
+    let layerNo = 1;
+    let widthNo = 1;
+    let depthNo = 1;
+    if (project) {
+
+      // Generate table rows for the soil profile
+      for (let i = 0; i &lt; project.SoilProfile.LayerDepths.length; i++) {
+        let phiOrC = project.SoilProfile.LayerPhiOrCs[i] === 'PHI' ? 'Φ' : 'C';
+        soilProfileRows.push(
+          &lt;tr key={`row:${layerNo}`}>
+            &lt;td className="soil-table-row-count">{layerNo}&lt;/td>
+            &lt;td>&lt;input placeholder={project.SoilProfile.LayerDepths[i]} />&lt;/td>
+            &lt;td>&lt;input placeholder={project.SoilProfile.LayerNames[i]} />&lt;/td>
+            &lt;td>&lt;input placeholder={project.SoilProfile.LayerUnitWeights[i]} />&lt;/td>
+            &lt;td>
+              &lt;select name="phi-or-c" >
+                &lt;option value={phiOrC}>{phiOrC}&lt;/option>
+                &lt;option value="Φ">Φ&lt;/option>
+                &lt;option value="C">C&lt;/option>
+              &lt;/select>
+            &lt;/td>
+            &lt;td>&lt;input placeholder={project.SoilProfile.LayerPhiOrCValues[i]} />&lt;/td>
+          &lt;/tr>
+        );
+        layerNo++;
+      }
+
+      // Generate additional rows beyond those originally included
+      for (let i = 0; i &lt; additionalSoilRows; i++) {
+        blankSoilRows.push(
+          &lt;tr key={`row:${layerNo}`}>
+            &lt;td className="soil-table-row-count">{layerNo}&lt;/td>
+            &lt;td>&lt;input placeholder='---' />&lt;/td>
+            &lt;td>&lt;input placeholder='---' />&lt;/td>
+            &lt;td>&lt;input placeholder='---' />&lt;/td>
+            &lt;td>
+              &lt;select name="phi-or-c" >
+                &lt;option value="---">---&lt;/option>
+                &lt;option value="Φ">Φ&lt;/option>
+                &lt;option value="C">C&lt;/option>
+              &lt;/select>
+            &lt;/td>
+            &lt;td>&lt;input placeholder='---' />&lt;/td>
+          &lt;/tr>
+        )
+        layerNo++;
+      }
+
+      // Generate table rows for the width selections
+      for (let i = 0; i &lt; project.FoundationDetails.Widths.length; i++) {
+        widthRows.push(
+          &lt;tr key={`row:${widthNo}`}>
+            &lt;td>&lt;input placeholder={project.FoundationDetails.Widths[i][0]} />&lt;/td>
+            {useTwoWidthColumns &amp;&amp;
+              &lt;td>&lt;input placeholder={project.FoundationDetails.Widths[i][1]} />&lt;/td>
+            }
+          &lt;/tr>
+        );
+        widthNo++;
+      };
+
+
+      // Generate additional table rows beyond those originally included
+      for (let i = 0; i &lt; additionalWidthRows; i++) {
+        blankWidthRows.push(
+          &lt;tr key={`row:${widthNo}`}>
+            &lt;td>&lt;input placeholder="---" />&lt;/td>
+            {useTwoWidthColumns &amp;&amp;
+              &lt;td>&lt;input placeholder="---" />&lt;/td>
+            }
+
+          &lt;/tr>
+        );
+        widthNo++;
+      }
+
+      // Generate table rows for the width selections
+      for (let i = 0; i &lt; project.FoundationDetails.BearingDepths.length; i++) {
+        depthRows.push(
+          &lt;tr key={`row:${depthNo}`}>
+            &lt;td>&lt;input placeholder={project.FoundationDetails.BearingDepths[i]} />&lt;/td>
+          &lt;/tr>
+        );
+        depthNo++;
+      };
+
+      // Generate additional table rows beyond those originally included
+      for (let i = 0; i &lt; additionalDepthRows; i++) {
+        blankDepthRows.push(
+          &lt;tr key={`row:${depthNo}`}>
+            &lt;td>&lt;input placeholder="---" />&lt;/td>
+          &lt;/tr>
+        );
+        depthNo++;
+      }
+    }
+
+
+    if (project) return (
+      &lt;div className="edit">
+        {isLoading &amp;&amp; &lt;LoadingAnimation />}
+        &lt;form className="edit__form">
+
+          &lt;button onClick={(e) => this.toggleProjectInfo(e)}
+            className="edit__project-info-btn">
+            {showProjectInfo ? "Hide Project Info" : "Show Project Info"}
+          &lt;/button>
+          {validation &amp;&amp;
+            &lt;div>
+              &lt;button onClick={(e) => this.toggleErrors(e)}
+                className="edit__project-info-btn">
+                {showErrors ? "Hide errors" : "Show errors"}
+              &lt;/button>
+              {showErrors &amp;&amp;
+                &lt;div id="project-errors">
+                  &lt;ProjectErrors valid={validation}
+                    toggleErrors={(e) => this.toggleErrors(e)} />
+                &lt;/div>
+              }
+
+            &lt;/div>
+          }
+
+          &lt;button onClick={(e) => this.calculate(e)} className="edit__analyze-btn">
+            Calculate
+          &lt;/button>
+          &lt;div className="edit__grid__container">
+            &lt;div className="edit__grid__item">
+              &lt;h2 className="edit__title">Soil Profile&lt;/h2>
+              &lt;p className="edit__subtitle">
+                These inputs are independent of the individual piles to be analyzed.
+              &lt;/p>
+
+              {/* Groundwater Depth, Ignored Depth, Sublayer Increment */}
+              &lt;div className="edit__subgrid">
+                &lt;div className="edit__subgrid__item">
+                  &lt;label htmlFor="groundwater-depth">
+                    Groundwater Depth (ft)
+                  &lt;/label>
+                  &lt;input className="edit__subgrid__input" id="groundwater-depth"
+                    placeholder={project.SoilProfile.GroundwaterDepth || 'required'} />
+                  &lt;p>
+                    Leave blank or input a high number of no groundwater is present.
+                  &lt;/p>
+                &lt;/div>
+                &lt;div className="edit__subgrid__item">
+                  &lt;label htmlFor="ignored-depth">Ignored Depth (ft)&lt;/label>
+                  &lt;input className="edit__subgrid__input" id="ignored-depth"
+                    placeholder={project.SoilProfile.IgnoredDepth || 'required'} />
+                  &lt;p>
+                    Soil within this depth from the ground surface will be ignored
+                    in skin friction calculations
+                  &lt;/p>
+                &lt;/div>
+                &lt;div className="edit__subgrid__item">
+                  &lt;label htmlFor="sublayer-increment">Sublayer Increment (ft)&lt;/label>
+                  &lt;select name="sublayer-increment" id="sublayer-increment" >
+                    &lt;option value={project.SoilProfile.Increment || 1}>{project.SoilProfile.Increment || 1}&lt;/option>
+                    &lt;option value="1">1&lt;/option>
+                    &lt;option value="0.5">0.5&lt;/option>
+                  &lt;/select>
+                  &lt;p>
+                    Soil profile will be divided up into small sublayers with
+                    this thickness.
+                  &lt;/p>
+                &lt;/div>
+              &lt;/div>
+
+              {/* Soil layer details */}
+              &lt;table id="soil-table">
+                &lt;thead>
+                  &lt;tr>
+                    &lt;th>Layer No.&lt;/th>
+                    &lt;th className="soil-table__narrow">Bottom Depth (ft)&lt;/th>
+                    &lt;th className="soil-table__wide">Name&lt;/th>
+                    &lt;th className="soil-table__narrow">Unit Weight (pcf)&lt;/th>
+                    &lt;th className="soil-table__narrow">C/Φ&lt;/th>
+                    &lt;th className="soil-table__wide">C/Φ value (deg or psf)&lt;/th>
+                  &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                  {soilProfileRows}
+                  {blankSoilRows}
+                &lt;/tbody>
+              &lt;/table>
+              &lt;button className="project-edit-btn"
+                onClick={(e) => this.addSoilRow(e)}>Add Row&lt;/button>
+              &lt;button className="project-edit-btn"
+                onClick={(e) => this.removeSoilRow(e)}>Remove&lt;/button>
+            &lt;/div>
+
+            &lt;div className="edit__grid__item" id="foundation-details">
+              &lt;h2 className="edit__title">Foundation Details&lt;/h2>
+              &lt;p className="edit__subtitle">These inputs affect the soil properties and capacity calculations&lt;/p>
+
+              {/* Pile Type, Material, Factor of Safety */}
+              &lt;div className="foundation-details-line">
+                &lt;label className="foundation-details-label" htmlFor="pile-type">Pile Type&lt;/label>
+                &lt;select name="pile-type" id="pile-type" onChange={() => this.handleChangePileType()}>
+                  &lt;option value={project.FoundationDetails.PileType || 'required'}>{project.FoundationDetails.PileType || 'required'}&lt;/option>
+                  &lt;option value="DRIVEN-SINGLE-H-PILE">DRIVEN-SINGLE-H-PILE&lt;/option>
+                  &lt;option value="DRIVEN-SINGLE-DISPLACEMENT-PILE">DRIVEN-SINGLE-DISPLACEMENT-PILE&lt;/option>
+                  &lt;option value="DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE">DRIVEN-SINGLE-DISPLACEMENT-TAPERED-PILE&lt;/option>
+                  &lt;option value="DRIVEN-JETTED-PILE">DRIVEN-JETTED-PILE&lt;/option>
+                  &lt;option value="DRILLED-PILE">DRILLED-PILE&lt;/option>
+                &lt;/select>
+              &lt;/div>
+              &lt;div className="foundation-details-line">
+                &lt;label className="foundation-details-label" htmlFor="material">Material&lt;/label>
+                &lt;select name="material" id="material">
+                  &lt;option value={project.FoundationDetails.Material || 'required'}>{project.FoundationDetails.Material || 'required'}&lt;/option>
+                  &lt;option value="CONCRETE">CONCRETE&lt;/option>
+                  &lt;option value="STEEL">STEEL&lt;/option>
+                  &lt;option value="TIMBER">TIMBER&lt;/option>
+                &lt;/select>
+              &lt;/div>
+              &lt;div className="foundation-details-line">
+                &lt;label className="foundation-details-label" htmlFor="FS">Factor of Safety&lt;/label>
+                &lt;input id="FS" placeholder={project.FoundationDetails.FS || 'required'} />
+              &lt;/div>
+
+              {/* Nested grid for width and depth tables */}
+              &lt;div className="edit__subgrid">
+                {/* Widths */}
+                &lt;div className="edit__widths">
+                  &lt;table id="width-table" className="foundation-table">
+                    &lt;thead>
+                      &lt;tr>
+                        &lt;th>Widths (ft)&lt;/th>
+                      &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                      {widthRows}
+                      {blankWidthRows}
+                    &lt;/tbody>
+                  &lt;/table>
+                  &lt;button className="project-edit-btn"
+                    onClick={(e) => this.addWidthRow(e)}>Add&lt;/button>
+                  &lt;button className="project-edit-btn"
+                    onClick={(e) => this.removeWidthRow(e)}>Remove&lt;/button>
+                &lt;/div>
+
+                {/* Depths */}
+                &lt;div className="edit__depths">
+                  &lt;table id="depth-table" className="foundation-table">
+                    &lt;thead>
+                      &lt;tr>
+                        &lt;th>Bearing Depths (ft)&lt;/th>
+                      &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                      {depthRows}
+                      {blankDepthRows}
+                    &lt;/tbody>
+                  &lt;/table>
+                  &lt;button className="project-edit-btn"
+                    onClick={(e) => this.addDepthRow(e)}>Add&lt;/button>
+                  &lt;button className="project-edit-btn"
+                    onClick={(e) => this.removeDepthRow(e)}>Remove&lt;/button>
+                &lt;/div>
+
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+
+
+          {/* Project Info */}
+          &lt;div id="edit__project-info" className="hidden">
+            &lt;button id="project-info-close-btn" onClick={(e) => this.toggleProjectInfo(e)}>close&lt;/button>
+            &lt;h2 className="edit__title">Project Info&lt;/h2>
+            &lt;div className="project-info-line">
+              &lt;label className="project-info-label">Project Name/Number&lt;/label>
+              &lt;input id="project-info-name" placeholder={project.Meta.Name} />
+            &lt;/div>
+            &lt;div className="project-info-line">
+              &lt;label className="project-info-label">Client&lt;/label>
+              &lt;input id="project-info-client" placeholder={project.Meta.Client} />
+            &lt;/div>
+            &lt;div className="project-info-line">
+              &lt;label className="project-info-label">Engineer&lt;/label>
+              &lt;input id="project-info-engineer" placeholder={project.Meta.Engineer} />
+            &lt;/div>
+            &lt;div className="project-info-line">
+              &lt;label className="project-info-label">Notes&lt;/label>
+              &lt;textarea id="project-info-notes" placeholder={project.Meta.Notes} />
+            &lt;/div>
+          &lt;/div>
+        &lt;/form>
+
+      &lt;/div>
+    )
+    return null;
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AnalysisHeader.html">AnalysisHeader</a></li><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadingAnimation.html">LoadingAnimation</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-Navbar.html">Navbar</a></li><li><a href="module-navfac.html">navfac</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-PileOutput.html">PileOutput</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-ProjectErrors.html">ProjectErrors</a></li><li><a href="module-RegisterView.html">RegisterView</a></li><li><a href="module-SoilProfileOutput.html">SoilProfileOutput</a></li><li><a href="module-SummaryCapacity.html">SummaryCapacity</a></li><li><a href="module-WelcomeView.html">WelcomeView</a></li></ul><h3>Classes</h3><ul><li><a href="module-AnalysisView.html">AnalysisView</a></li><li><a href="module-App-App.html">App</a></li><li><a href="module-CloneProjectView.html">CloneProjectView</a></li><li><a href="module-DeepFoundationAnalyis.html">DeepFoundationAnalyis</a></li><li><a href="module-FoundationCalc.html">FoundationCalc</a></li><li><a href="module-HomeView.html">HomeView</a></li><li><a href="module-LoadProjectView.html">LoadProjectView</a></li><li><a href="module-NewProjectView.html">NewProjectView</a></li><li><a href="module-ProfileView.html">ProfileView</a></li><li><a href="module-ProjectEditView.html">ProjectEditView</a></li><li><a href="module-RegisterView.html">RegisterView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 17 2022 10:10:31 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
