@@ -223,7 +223,6 @@ export default class ProfileView extends React.Component {
     To confirm that you want to DELETE your account, enter your email.
     ${email}`;
     const confirmed = window.prompt(promptText);
-    console.log(confirmed);
     if (confirmed !== email) {
       this.setState({ deleteAccountFailed: true });
       return;
@@ -256,7 +255,6 @@ export default class ProfileView extends React.Component {
       emailValid,
       deleteAccountFailed,
       isLoading } = this.state;
-    console.log(userInfo);
     return (
       <div className="profile">
         {isLoading && <LoadingAnimation />}
