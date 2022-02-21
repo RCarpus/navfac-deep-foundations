@@ -14,9 +14,6 @@ const API_URL = 'https://navfac-api.herokuapp.com/';
  * Then, the user is redirected to the project edit screen. 
  */
 export default class NewProjectView extends React.Component {
-  /**
-   * @param {function} checkLoginStatus comes from App
-   */
   constructor(props) {
     super(props);
     this.state = {
@@ -28,11 +25,9 @@ export default class NewProjectView extends React.Component {
   }
 
   /**
-   * Check to make sure we are logged in, then 
    * download the project names so we don't make a duplicate.
    */
   componentDidMount() {
-    this.props.checkLoginStatus();
     this.getProjectNames();
   }
 

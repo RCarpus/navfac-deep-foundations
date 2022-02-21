@@ -44,13 +44,10 @@ export default class ProfileView extends React.Component {
   }
 
   /**
-   * When the profile component loads, check the token for validity and 
-   * redirect the user if needed, and download the user's info to be useed 
-   * as form placeholders.
+   * Download the user's info to be useed as form placeholders.
    * @param {object} props none
    */
   componentDidMount(props) {
-    this.props.checkLoginStatus();
     this.getUserInfo();
   }
 

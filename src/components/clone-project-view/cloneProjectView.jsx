@@ -25,10 +25,9 @@ export default class CloneProjectView extends React.Component {
   }
 
   /**
-   * Make the the user is logged in and download their projects
+   * Download the user's projects
    */
   componentDidMount() {
-    this.props.checkLoginStatus();
     this.getProjects();
   }
 

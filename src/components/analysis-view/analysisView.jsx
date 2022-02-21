@@ -29,7 +29,6 @@ export default class AnalysisView extends React.Component {
    * suite on the validated project saved in localStorage.
    */
   componentDidMount() {
-    this.props.checkLoginStatus();
     this.analyzeProject();
   }
 

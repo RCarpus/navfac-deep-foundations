@@ -39,7 +39,6 @@ export default class ProjectEditView extends React.Component {
    * some reason.
    */
   componentDidMount() {
-    this.props.checkLoginStatus();
     this.loadCurrentProject();
     this.getProjectNames();
   }

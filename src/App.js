@@ -39,6 +39,11 @@ class App extends React.Component {
     }
   }
 
+  componentDidMount() {
+    console.log('loaded the app');
+    this.checkLoginStatus();
+  }
+
   /**
    * Check to see if the user is logged in. 
    * If the user is logged in, they have access to the logged in features.
@@ -64,7 +69,7 @@ class App extends React.Component {
             isLoggedIn: false,
             isLoading: false,
           });
-          window.location.href = '/';
+          // window.location.href = '/';
           return error;
         });
     })
@@ -102,27 +107,34 @@ class App extends React.Component {
         {isLoading && <LoadingAnimation />}
         <Router>
           <Navbar isLoggedIn={isLoggedIn} />
-          <Routes>
-            <Route path="/" element={<WelcomeView />} />
-            <Route path="/profile" element={<ProfileView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="/login" element={<LoginView
-              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
-            <Route path="/register" element={<RegisterView
-              redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
-            <Route path="/home" element={<HomeView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="/new-project" element={<NewProjectView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="/load-project" element={<LoadProjectView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="/clone-project" element={<CloneProjectView
-              checkLoginStatus={() => this.checkLoginStatus()} /> } />
-            <Route path="/edit-project" element={<ProjectEditView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-            <Route path="analyze" element={<AnalysisView
-              checkLoginStatus={() => this.checkLoginStatus()} />} />
-          </Routes>
+          {isLoggedIn &&
+            <Routes>
+              <Route path="/" element={<WelcomeView />} />
+              <Route path="/profile" element={<ProfileView />} />
+              <Route path="/login" element={<LoginView
+                redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+              <Route path="/register" element={<RegisterView
+                redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+              <Route path="/home" element={<HomeView />} />
+              <Route path="/new-project" element={<NewProjectView />} />
+              <Route path="/load-project" element={<LoadProjectView />} />
+              <Route path="/clone-project" element={<CloneProjectView />} />
+              <Route path="/edit-project" element={<ProjectEditView />} />
+              <Route path="/analyze" element={<AnalysisView />} />
+              <Route path="/*" element={<WelcomeView />} />
+            </Routes>
+          }
+          {!isLoggedIn &&
+            <Routes>
+              <Route path="/" element={<WelcomeView />} />
+              <Route path="/login" element={<LoginView
+                redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+              <Route path="/register" element={<RegisterView
+                redirectHomeIfLoggedIn={() => this.redirectHomeIfLoggedIn()} />} />
+              <Route path="/*" element={<WelcomeView />} />
+            </Routes>
+          }
+
         </Router>
       </div>
     );

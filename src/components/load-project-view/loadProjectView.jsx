@@ -27,10 +27,9 @@ export default class LoadProjectView extends React.Component {
   }
 
   /**
-   * Make sure the user is logged in and download their projects
+   * Download the user's projects
    */
   componentDidMount() {
-    this.props.checkLoginStatus();
     this.getProjects();
   }
 
