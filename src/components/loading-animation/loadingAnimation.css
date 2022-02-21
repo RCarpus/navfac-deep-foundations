@@ -37,7 +37,7 @@
 .flippers-alternate {
   height: 20px;
   display: grid;
-  grid-template-columns: repeat(7, 20px);
+  grid-template-columns: repeat(5, 20px);
   grid-gap: 5px; }
   .flippers-alternate div {
     background-color: var(--primary); }
@@ -78,10 +78,30 @@
 
 .loading-animation-text {
   line-height: .2em;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 @media only screen and (max-width: 768px) {
   .loading-animation {
     left: 350px;
   }
+}
+
+.loading-fullscreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding-top: 30%;
+  left: 0;
+  top: 65px;
+  justify-content: center;
+  background-color: white;
+}
+
+.flippers-alternate {
+  justify-content: center;
 }

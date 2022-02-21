@@ -40,7 +40,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('loaded the app');
     this.checkLoginStatus();
   }
 
@@ -69,7 +68,6 @@ class App extends React.Component {
             isLoggedIn: false,
             isLoading: false,
           });
-          // window.location.href = '/';
           return error;
         });
     })
@@ -104,7 +102,7 @@ class App extends React.Component {
     const { isLoggedIn, isLoading } = this.state;
     return (
       <div className="App">
-        {isLoading && <LoadingAnimation />}
+        {isLoading && <LoadingAnimation fullScreen={true}/>}
         <Router>
           <Navbar isLoggedIn={isLoggedIn} />
           {isLoggedIn &&

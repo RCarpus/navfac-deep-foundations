@@ -10,9 +10,23 @@ import './loadingAnimation.css';
  * open-source animation library Whirl
  * https://whirl.netlify.app/
  */
-export default function LoadingAnimation() {
-    return (
-      <div className="loading-animation">
+export default function LoadingAnimation(props) {
+  const { fullScreen } = props;
+  return (
+    <div className="loading-animation">
+      {fullScreen &&
+        <div className="loading-animation-container loading-fullscreen">
+          <div className="flippers-alternate">
+            <div>&#9632;</div>
+            <div>&#9632;</div>
+            <div>&#9632;</div>
+            <div>&#9632;</div>
+            <div>&#9632;</div>
+            
+          </div>
+          <p className="loading-animation-text">Loading...</p>
+        </div>}
+      {!fullScreen &&
         <div className="loading-animation-container">
           <div className="flippers-alternate">
             <div>&#9632;</div>
@@ -23,6 +37,8 @@ export default function LoadingAnimation() {
           </div>
           <p className="loading-animation-text">Loading...</p>
         </div>
-      </div>
-    )
-  }
+      }
+
+    </div>
+  )
+}
