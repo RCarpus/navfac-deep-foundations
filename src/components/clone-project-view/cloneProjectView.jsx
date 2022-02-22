@@ -165,7 +165,7 @@ export default class CloneProjectView extends React.Component {
     return (
       <div className="load">
         {isLoading && <LoadingAnimation />}
-        <h1 className="load__title">Load Project</h1>
+        <h1 className="load__title">Clone Project</h1>
         <table className="load__table">
           <thead>
             <tr>
