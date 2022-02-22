@@ -767,7 +767,7 @@ export default class ProjectEditView extends React.Component {
                   <input className="edit__subgrid__input" id="groundwater-depth"
                     placeholder={project.SoilProfile.GroundwaterDepth || 'required'} />
                   <p>
-                    Leave blank or input a high number of no groundwater is present.
+                    Input a high number if no groundwater is present.
                   </p>
                 </div>
                 <div className="edit__subgrid__item">
