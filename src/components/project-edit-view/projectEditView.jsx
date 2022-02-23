@@ -230,10 +230,23 @@ export default class ProjectEditView extends React.Component {
     const project = this.state.project;
     // collect all the info from the form
     // Start with the easy stuff
-    const GroundwaterDepth = Number(document.getElementById('groundwater-depth').value)
-      || project.SoilProfile.GroundwaterDepth;
-    const IgnoredDepth = Number(document.getElementById('ignored-depth').value)
-      || project.SoilProfile.IgnoredDepth;
+    let GroundwaterDepth;
+    // There is a bit of extra logic here to handle the case of water at 0
+    // This is needed because 0 is falsy
+    if (document.getElementById('groundwater-depth').value === '0') {
+      GroundwaterDepth = 0;
+    } else {
+      GroundwaterDepth = Number(document.getElementById('groundwater-depth').value)
+        || project.SoilProfile.GroundwaterDepth;
+    }
+    // Similar logic to account for 0 ignored depth
+    let IgnoredDepth;
+    if (document.getElementById('ignored-depth').value === '0') {
+      IgnoredDepth = 0;
+    } else {
+      IgnoredDepth = Number(document.getElementById('ignored-depth').value)
+        || project.SoilProfile.IgnoredDepth;
+    }
     const Increment = Number(document.getElementById('sublayer-increment').value)
       || project.SoilProfile.Increment;
     const PileType = document.getElementById('pile-type').value;
@@ -351,21 +364,22 @@ export default class ProjectEditView extends React.Component {
       FoundationDetails: {},
       Meta: {},
     };
-    const nonzeroNum = /^[0-9]*\.?[0-9]*$/;
+    const nonNegativeNum = /^[0-9]*\.?[0-9]*$/;
     const increment = project.SoilProfile.Increment;
 
     /* GroundwaterDepth must be a non-negative number */
-    validation.SoilProfile.GroundwaterDepth = nonzeroNum.test(
+    validation.SoilProfile.GroundwaterDepth = nonNegativeNum.test(
       project.SoilProfile.GroundwaterDepth)
-      && project.SoilProfile.GroundwaterDepth % increment === 0;
+      && project.SoilProfile.GroundwaterDepth % increment === 0
+      || project.SoilProfile.GroundwaterDepth === '0';
 
     /* IgnoredDepth must be a non-negative number */
-    validation.SoilProfile.IgnoredDepth = nonzeroNum.test(
+    validation.SoilProfile.IgnoredDepth = nonNegativeNum.test(
       project.SoilProfile.IgnoredDepth)
       && project.SoilProfile.IgnoredDepth % increment === 0;
 
     /* Increment must be a positive number */
-    validation.SoilProfile.Increment = nonzeroNum.test(
+    validation.SoilProfile.Increment = nonNegativeNum.test(
       project.SoilProfile.Increment)
       && project.SoilProfile.Increment > 0;
 
@@ -378,7 +392,7 @@ export default class ProjectEditView extends React.Component {
       !== "required";
 
     /* FS must be a positive number */
-    validation.FoundationDetails.FS = nonzeroNum.test(
+    validation.FoundationDetails.FS = nonNegativeNum.test(
       project.FoundationDetails.FS)
       && project.FoundationDetails.FS > 0;
 
@@ -421,9 +435,9 @@ export default class ProjectEditView extends React.Component {
     // After removing incomplete layers, each remaining layer must be correct
     // Bottom Depth
     let validDepths = cleanLayerDepths.every(function (depth, index) {
-      if (nonzeroNum.test(depth) && index === 0
+      if (nonNegativeNum.test(depth) && index === 0
         && depth % increment === 0) return true;
-      if (nonzeroNum.test(depth)
+      if (nonNegativeNum.test(depth)
         && Number(depth) > Number(cleanLayerDepths[index - 1])
         && depth % increment === 0) return true;
       return false;
@@ -452,7 +466,7 @@ export default class ProjectEditView extends React.Component {
 
     // Unit Weights
     const validUnitWeights = cleanLayerUnitWeights.every(weight => {
-      return nonzeroNum.test(weight) && Number(weight) > 0;
+      return nonNegativeNum.test(weight) && Number(weight) > 0;
     });
     validation.SoilProfile.LayerUnitWeights = validUnitWeights;
     // cast the weights as numbers
@@ -483,10 +497,10 @@ export default class ProjectEditView extends React.Component {
       if (cleanLayerPhiOrCs[index] === 'PHI'
         && value >= 26 && value <= 40
         && Number.isInteger(Number(value))
-        && nonzeroNum.test(value)) {
+        && nonNegativeNum.test(value)) {
         return true;
       } else if (cleanLayerPhiOrCs[index] === 'C'
-        && nonzeroNum.test(value)) return true;
+        && nonNegativeNum.test(value)) return true;
       return false;
     });
     validation.SoilProfile.LayerPhiOrCValues = validCorPhiValues;
@@ -505,7 +519,7 @@ export default class ProjectEditView extends React.Component {
       }
     }
     let validBearingDepths = cleanBearingDepths.every(depth => {
-      return nonzeroNum.test(depth)
+      return nonNegativeNum.test(depth)
         && depth % increment === 0
         && depth < maxDepth
         ? true : false;
@@ -534,7 +548,7 @@ export default class ProjectEditView extends React.Component {
     }
     let validWidths = cleanWidths.every(width => {
       return width.every(subWidth => {
-        return nonzeroNum.test(subWidth);
+        return nonNegativeNum.test(subWidth);
       });
     });
 
@@ -764,8 +778,13 @@ export default class ProjectEditView extends React.Component {
                   <label htmlFor="groundwater-depth">
                     Groundwater Depth (ft)
                   </label>
+                  {/* This extra logic for groundwater and ignored depth is
+                      due to the fact that 0 is falsy */}
                   <input className="edit__subgrid__input" id="groundwater-depth"
-                    placeholder={project.SoilProfile.GroundwaterDepth || 'required'} />
+                    placeholder={project.SoilProfile.GroundwaterDepth === 0
+                      ? 0
+                      : project.SoilProfile.GroundwaterDepth
+                      || 'required'} />
                   <p>
                     Input a high number if no groundwater is present.
                   </p>
@@ -773,7 +792,10 @@ export default class ProjectEditView extends React.Component {
                 <div className="edit__subgrid__item">
                   <label htmlFor="ignored-depth">Ignored Depth (ft)</label>
                   <input className="edit__subgrid__input" id="ignored-depth"
-                    placeholder={project.SoilProfile.IgnoredDepth || 'required'} />
+                    placeholder={project.SoilProfile.IgnoredDepth === 0
+                      ? 0
+                      : project.SoilProfile.IgnoredDepth
+                      || 'required'} />
                   <p>
                     Soil within this depth from the ground surface will be ignored
                     in skin friction calculations

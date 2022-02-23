@@ -39,11 +39,11 @@ export default function ProjectErrors(props) {
       {!valid.Meta.Notes &&
         <p>Notes is throwing an error, but that should be impossible.</p>}
       {!valid.SoilProfile.GroundwaterDepth &&
-        <p>Groundwater Depth must be a nonzero number and must be evenly divisible by
-          Sublayer Increment.</p>}
+        <p>Groundwater Depth must be a non-negative number and must be evenly 
+          divisible by Sublayer Increment.</p>}
       {!valid.SoilProfile.IgnoredDepth &&
-        <p>Ignored Depth must be a nonzero number and must be evenly divisible by
-          sublayer increment.</p>}
+        <p>Ignored Depth must be a non-negative number and must be evenly 
+          divisible by sublayer increment.</p>}
       {!valid.SoilProfile.Increment &&
         <p>Sublayer Increment must be either 0.5 or 1.</p>}
       {!valid.SoilProfile.LayerDepths &&
