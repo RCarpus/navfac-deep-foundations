@@ -33,3 +33,6 @@ mockups
 
 # Debug config
 .vscode/launch.json
+
+# User manual word file
+user_manual

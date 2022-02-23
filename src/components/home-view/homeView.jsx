@@ -30,7 +30,10 @@ export default class HomeView extends React.Component {
             target="_blank">View Demo Video</a>
           <a className="home-link"
             href="https://github.com/RCarpus/navfac-deep-foundations"
-            target="_blank">About</a>
+            target="_blank">Github</a>
+          <a className="home-link"
+            href="NAVFAC_Deep_Foundations_User_Manual.pdf"
+            target="_blank">User Manual</a>
         </div>
         <p className="home__plug">
           I'm Ryan Carpus! I made this website because I love solving engineering
